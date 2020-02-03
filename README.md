@@ -22,3 +22,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### vs code tips
+[vuetify snippets ](https://github.com/Coder911th/Vuetify-CamelCase-Snippets/blob/master/documentation.md)
