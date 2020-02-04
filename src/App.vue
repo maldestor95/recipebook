@@ -14,21 +14,18 @@
             <v-list dense>
               <v-subheader>TOOLS</v-subheader>
               <v-list-item-group v-model="item" color="primary">
-                <v-list-item v-for="(item, i) in navlist" :key="i">
-                  <div v-if="item.logrequired">
-                    <v-list-item-icon>
-                      <v-icon v-text="item.icon"></v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="item.text"></v-list-item-title>
-                    </v-list-item-content>
-                  </div>
+                <v-list-item v-for="(item, i) in navlistfiltered" :key="i">
+                  <v-list-item-icon>
+                    <v-icon v-text="item.icon"></v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item.text"></v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
             </v-list>
           </v-navigation-drawer>
         </v-col>
-
         <v-col>
           <v-container>
             <v-row>
@@ -46,7 +43,6 @@
 <script>
 import LoginUser from "./components/LoginUser.vue";
 import storey from "./store.js";
-
 export default {
   name: "App",
   components: {
@@ -59,9 +55,14 @@ export default {
     item: 1,
     navlist: [
       {
+        icon: "mdi-information-variant",
+        text: "About",
+        logrequired: false
+      },
+      {
         icon: "mdi-alert-box",
         text: "Risks",
-        logrequired: false
+        logrequired: true
       },
       {
         icon: "mdi-cash-100",
@@ -71,8 +72,12 @@ export default {
     ]
   }),
   computed: {
-    navlistfilter() {
-      return this.data;
+    // filter navlist depending on user's right to access other menus
+    navlistfiltered() {
+      const res = this.navlist.filter(
+        nav => !nav.logrequired | this.Store.logged
+      );
+      return res;
     }
   }
 };
