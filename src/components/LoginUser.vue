@@ -1,46 +1,35 @@
 <template>
-    <v-dialog v-model="dialog" persistent max-width="400" @keydown.esc="dialog=false">
-    
-        <template v-slot:activator="{ on }">
-    
-          <v-btn dense v-on="on" class="small primary light">
-    
-            <v-icon small>{{islogged==true?'mdi-logout':'mdi-login'}}</v-icon>
-    
-          </v-btn>
-</template>
+  <v-dialog v-model="dialog" persistent max-width="400" @keydown.esc="dialog=false">
+    <template v-slot:activator="{ on }">
+      <v-btn dense v-on="on" class="small primary light">
+        <v-icon small>{{islogged==true?'mdi-logout':'mdi-login'}}</v-icon>
+      </v-btn>
+      <h1>{{storeState.logged}}</h1>
+    </template>
+    <!-- </v-dialog> -->
 
     <!-- logout -->
-    <v-card v-if="islogged" raised shaped >
+    <v-card v-if="storeState.logged" raised shaped>
       <v-row no-gutters>
-        <v-col 
-          md="12"
-          align="center"
-        >
+        <v-col md="12" align="center">
           <p>Are you sure you want to log out?</p>
         </v-col>
       </v-row>
-      <v-row  no-gutters>
-        <v-col 
-          md="6"
-          align="center">
+      <v-row no-gutters>
+        <v-col md="6" align="center">
           <v-btn color="primary" @click="logout">Yes</v-btn>
         </v-col>
         <v-col md="6" align="center">
-          <v-btn color="primary" @click="dialog=false">
-            No
-          </v-btn>
+          <v-btn color="primary" @click="dialog=false">No</v-btn>
         </v-col>
       </v-row>
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!islogged" raised shaped >      
+    <v-card v-if="!storeState.logged" raised shaped>
       <v-row no-gutters>
         <v-col align="center">
-        <h1 >
-            Login
-        </h1>
+          <h1>Login</h1>
         </v-col>
       </v-row>
       <v-row no-gutters dense>
@@ -49,38 +38,28 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col 
-          align="center"
-          md="4"
-        >
-          <p >forgot password?</p>
+        <v-col align="center" md="4">
+          <p>forgot password?</p>
         </v-col>
         <v-col offset-md="2" md="4">
           <v-btn md-4 color="success">create new user</v-btn>
         </v-col>
       </v-row>
       <v-row dense no-gutters>
-        <v-col
-          align="center"
-          cols="10"
-          offset="1"
-        >
-
-        <v-text-field name="password" outlined label="password"></v-text-field>
+        <v-col align="center" cols="10" offset="1">
+          <v-text-field name="password" outlined label="password"></v-text-field>
         </v-col>
       </v-row>
 
       <v-row no-gutters dense>
-        <v-col  align="center">
+        <v-col align="center">
           <v-btn raised rounded md3 color="primary" @click="login">Login</v-btn>
         </v-col>
-        <v-col>
-        </v-col>
+        <v-col></v-col>
         <v-col>
           <v-btn raised rounded md3 color="primary" @click="dialog=false">Cancel</v-btn>
         </v-col>
       </v-row>
-
     </v-card>
 
     <!-- form new user -->
@@ -89,39 +68,41 @@
 </template>
 
 <script>
+import store from "../store.js";
+
 export default {
-    props: {
-        logged: {
-            type: Boolean,
-            default: true
-        }
-    },
-    data() {
-        return {
-            islogged: this.logged,
-            dialog: false
-        };
-    },
-    methods: {
-        logout() {
-            this.dialog = false;
-            this.islogged = false;
-        },
-        login() {
-            this.dialog = false;
-            this.islogged = true;
-        },
-        escapeform(){
-          this.dialog=false
-        }
+  props: {
+    logged: {
+      type: Boolean,
+      default: true
     }
+  },
+  data() {
+    return {
+      storeState: store.state,
+      dialog: false
+    };
+  },
+  methods: {
+    logout() {
+      this.dialog = false;
+      store.logout();
+    },
+    login() {
+      this.dialog = false;
+      store.login();
+    },
+    escapeform() {
+      this.dialog = false;
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .borderout {
-    border-color: black;
-    border-style: solid;
+  border-color: black;
+  border-style: solid;
 }
 </style>
 
