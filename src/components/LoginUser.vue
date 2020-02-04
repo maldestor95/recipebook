@@ -1,48 +1,86 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="400">
-    <template v-slot:activator="{ on }">
-      <v-btn v-on="on" class="small primary light">
-        <v-icon small>{{islogged==true?'mdi-logout':'mdi-login'}}</v-icon>
-      </v-btn>
-    </template>
+    <v-dialog v-model="dialog" persistent max-width="400" @keydown.esc="dialog=false">
+    
+        <template v-slot:activator="{ on }">
+    
+          <v-btn dense v-on="on" class="small primary light">
+    
+            <v-icon small>{{islogged==true?'mdi-logout':'mdi-login'}}</v-icon>
+    
+          </v-btn>
+</template>
 
     <!-- logout -->
-    <v-card v-if="islogged" class="blue lighten-2">
-      <v-row class="borderout">
-        <v-col class="mb-12 borderout pink lighten-2">
+    <v-card v-if="islogged" raised shaped >
+      <v-row no-gutters>
+        <v-col 
+          md="12"
+          align="center"
+        >
           <p>Are you sure you want to log out?</p>
         </v-col>
       </v-row>
-      <v-row class="red lighten-3" no-gutters>
-        <v-col class="mb-3 borderout">
-          <v-btn color="primary" @click="logout">confirm</v-btn>
+      <v-row  no-gutters>
+        <v-col 
+          md="6"
+          align="center">
+          <v-btn color="primary" @click="logout">Yes</v-btn>
         </v-col>
-        <v-col class="mb-6 borderout">
+        <v-col md="6" align="center">
           <v-btn color="primary" @click="dialog=false">
-            <v-icon>mdi-cancel</v-icon>
+            No
           </v-btn>
         </v-col>
       </v-row>
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!islogged">
-      <v-text-field name="username" outlined label="Username or email address"></v-text-field>
-      <v-row>
-        <v-col md6>
-          <p>forgot password?</p>
+    <v-card v-if="!islogged" raised shaped >      
+      <v-row no-gutters>
+        <v-col align="center">
+        <h1 >
+            Login
+        </h1>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row no-gutters dense>
+        <v-col align="center" cols="10" offset="1">
+          <v-text-field name="username" outlined label="Username or email address"></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col 
+          align="center"
+          md="4"
+        >
+          <p >forgot password?</p>
+        </v-col>
+        <v-col offset-md="2" md="4">
+          <v-btn md-4 color="success">create new user</v-btn>
+        </v-col>
+      </v-row>
+      <v-row dense no-gutters>
+        <v-col
+          align="center"
+          cols="10"
+          offset="1"
+        >
+
         <v-text-field name="password" outlined label="password"></v-text-field>
+        </v-col>
       </v-row>
-      <v-row>
-        <v-btn md3 color="success">create new user</v-btn>
-        <v-btn md3 color="primary" @click="login">Login</v-btn>
-        <v-btn sm6 color="primary" @click="dialog=false">
-          <v-icon>mdi-cancel</v-icon>
-        </v-btn>
+
+      <v-row no-gutters dense>
+        <v-col  align="center">
+          <v-btn raised rounded md3 color="primary" @click="login">Login</v-btn>
+        </v-col>
+        <v-col>
+        </v-col>
+        <v-col>
+          <v-btn raised rounded md3 color="primary" @click="dialog=false">Cancel</v-btn>
+        </v-col>
       </v-row>
+
     </v-card>
 
     <!-- form new user -->
@@ -52,35 +90,38 @@
 
 <script>
 export default {
-  props: {
-    logged: {
-      type: Boolean,
-      default: true
-    }
-  },
-  data() {
-    return {
-      islogged: this.logged,
-      dialog: false
-    };
-  },
-  methods: {
-    logout() {
-      this.dialog = false;
-      this.islogged = false;
+    props: {
+        logged: {
+            type: Boolean,
+            default: true
+        }
     },
-    login() {
-      this.dialog = false;
-      this.islogged = true;
+    data() {
+        return {
+            islogged: this.logged,
+            dialog: false
+        };
+    },
+    methods: {
+        logout() {
+            this.dialog = false;
+            this.islogged = false;
+        },
+        login() {
+            this.dialog = false;
+            this.islogged = true;
+        },
+        escapeform(){
+          this.dialog=false
+        }
     }
-  }
 };
 </script>
 
 <style lang="scss" scoped>
 .borderout {
-  border-color: black;
-  border-style: solid;
+    border-color: black;
+    border-style: solid;
 }
 </style>
 
