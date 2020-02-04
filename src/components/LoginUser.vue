@@ -1,9 +1,9 @@
 <template>
-    <v-dialog v-model="dialog" persistent max-width="400">
+    <v-dialog v-model="dialog" persistent max-width="400" @keydown.esc="dialog=false">
     
         <template v-slot:activator="{ on }">
     
-          <v-btn v-on="on" class="small primary light">
+          <v-btn dense v-on="on" class="small primary light">
     
             <v-icon small>{{islogged==true?'mdi-logout':'mdi-login'}}</v-icon>
     
@@ -11,7 +11,7 @@
 </template>
 
     <!-- logout -->
-    <v-card v-if="islogged" >
+    <v-card v-if="islogged" raised shaped >
       <v-row no-gutters>
         <v-col 
           md="12"
@@ -32,13 +32,10 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-row no-gutters>
-        <br>
-      </v-row>
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!islogged">      
+    <v-card v-if="!islogged" raised shaped >      
       <v-row no-gutters>
         <v-col align="center">
         <h1 >
@@ -113,6 +110,9 @@ export default {
         login() {
             this.dialog = false;
             this.islogged = true;
+        },
+        escapeform(){
+          this.dialog=false
         }
     }
 };
