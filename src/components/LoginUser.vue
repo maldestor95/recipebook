@@ -1,10 +1,17 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="400" @keydown.esc="dialog=false">
+  <v-dialog
+    v-model="dialog"
+    persistent
+    max-width="400"
+    @keydown.esc="dialog = false"
+  >
     <template v-slot:activator="{ on }">
       <v-btn dense v-on="on" class="small primary light">
-        <v-icon small>{{islogged==true?'mdi-logout':'mdi-login'}}</v-icon>
+        <v-icon small>{{
+          storeState.logged == true ? "mdi-logout" : "mdi-login"
+        }}</v-icon>
       </v-btn>
-      <h1>{{storeState.logged}}</h1>
+      <h1>{{ storeState.logged }}</h1>
     </template>
     <!-- </v-dialog> -->
 
@@ -20,7 +27,7 @@
           <v-btn color="primary" @click="logout">Yes</v-btn>
         </v-col>
         <v-col md="6" align="center">
-          <v-btn color="primary" @click="dialog=false">No</v-btn>
+          <v-btn color="primary" @click="dialog = false">No</v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -34,7 +41,11 @@
       </v-row>
       <v-row no-gutters dense>
         <v-col align="center" cols="10" offset="1">
-          <v-text-field name="username" outlined label="Username or email address"></v-text-field>
+          <v-text-field
+            name="username"
+            outlined
+            label="Username or email address"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row dense>
@@ -47,7 +58,11 @@
       </v-row>
       <v-row dense no-gutters>
         <v-col align="center" cols="10" offset="1">
-          <v-text-field name="password" outlined label="password"></v-text-field>
+          <v-text-field
+            name="password"
+            outlined
+            label="password"
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -57,7 +72,9 @@
         </v-col>
         <v-col></v-col>
         <v-col>
-          <v-btn raised rounded md3 color="primary" @click="dialog=false">Cancel</v-btn>
+          <v-btn raised rounded md3 color="primary" @click="dialog = false"
+            >Cancel</v-btn
+          >
         </v-col>
       </v-row>
     </v-card>
@@ -105,4 +122,3 @@ export default {
   border-style: solid;
 }
 </style>
-

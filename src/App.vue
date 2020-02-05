@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <v-app-bar dense app color="primary" dark>
-      <v-icon @click="navdrawer=!navdrawer">mdi-menu</v-icon>
+      <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon>
       <v-spacer></v-spacer>
-      <h1>{{currentApp}}</h1>
+      <h1>{{ currentApp }}</h1>
       <v-spacer></v-spacer>
       <login-user color="info"></login-user>
     </v-app-bar>
@@ -30,8 +30,17 @@
           <v-container>
             <v-row>
               <v-col>
-                <h1>Is Logged ?{{Store.logged}}</h1>
+                <h1>Is Logged ?{{ Store.logged }}</h1>
+                <p>{{ currentroute }}</p>
+                <router-link to="/foo">Go to Foo</router-link>
+                <br />
+                <router-link to="/bar">Go to Bar</router-link>
               </v-col>
+            </v-row>
+            <v-row id="routerview">
+              <p>{{ currentroute.path }}</p>
+
+              <p><router-view></router-view></p>
             </v-row>
           </v-container>
         </v-col>
@@ -43,6 +52,7 @@
 <script>
 import LoginUser from "./components/LoginUser.vue";
 import storey from "./store.js";
+
 export default {
   name: "App",
   components: {
@@ -57,16 +67,19 @@ export default {
       {
         icon: "mdi-information-variant",
         text: "About",
+        link: "/About",
         logrequired: false
       },
       {
         icon: "mdi-alert-box",
         text: "Risks",
+        link: "/Risks",
         logrequired: true
       },
       {
         icon: "mdi-cash-100",
         text: "Expenses",
+        link: "/Expenses",
         logrequired: true
       }
     ]
@@ -78,7 +91,15 @@ export default {
         nav => !nav.logrequired | this.Store.logged
       );
       return res;
+    },
+    currentroute() {
+      return this.$route;
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+#routerview {
+  border-style: solid;
+}
+</style>
