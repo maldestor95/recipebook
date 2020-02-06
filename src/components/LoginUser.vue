@@ -11,9 +11,7 @@
           storeState.logged == true ? "mdi-logout" : "mdi-login"
         }}</v-icon>
       </v-btn>
-      <h1>{{ storeState.logged }}</h1>
     </template>
-    <!-- </v-dialog> -->
 
     <!-- logout -->
     <v-card v-if="storeState.logged" raised shaped>
@@ -80,7 +78,9 @@
     </v-card>
 
     <!-- form new user -->
-    <v-card></v-card>
+    <v-card>
+      <!-- TODO -->
+    </v-card>
   </v-dialog>
 </template>
 

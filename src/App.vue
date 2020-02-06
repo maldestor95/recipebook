@@ -7,25 +7,33 @@
       <v-spacer></v-spacer>
       <login-user color="info"></login-user>
     </v-app-bar>
+    <v-navigation-drawer temporary v-model="navdrawer">
+      <v-list dense>
+        <v-list-item @click="navdrawer = !navdrawer">
+          <v-list-item-icon>
+            <v-icon>mdi-menu</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>menu</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-subheader>TOOLS</v-subheader>
+        <v-list-item-group v-model="item" color="primary">
+          <v-list-item v-for="(item, i) in navlistfiltered" :key="i">
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+        <v-subheader>Info</v-subheader>
+        <login-user color="info"></login-user>
+      </v-list>
+    </v-navigation-drawer>
     <v-content>
       <v-row>
-        <v-col fluid>
-          <v-navigation-drawer temporary v-model="navdrawer">
-            <v-list dense>
-              <v-subheader>TOOLS</v-subheader>
-              <v-list-item-group v-model="item" color="primary">
-                <v-list-item v-for="(item, i) in navlistfiltered" :key="i">
-                  <v-list-item-icon>
-                    <v-icon v-text="item.icon"></v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item.text"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-navigation-drawer>
-        </v-col>
         <v-col>
           <v-container>
             <v-row>
