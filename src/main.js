@@ -7,27 +7,43 @@ Vue.config.productionTip = false;
 Vue.use(VueRouter);
 
 // 1. Define route components.
-// These can be imported from other files
-const Foo = { template: "<h1>foormidable</h1>" };
-const Bar = { template: "<h1>bar</h1>" };
-
-// 2. Define some routes
-// Each route should map to a component. The "component" can
-// either be an actual component constructor created via
-// `Vue.extend()`, or just a component options object.
-// We'll talk about nested routes later.
-const routes = [
-  { path: "/foo", component: Foo },
-  { path: "/bar", component: Bar }
-];
-
-// 3. Create the router instance and pass the `routes` option
-// You can pass in additional options here, but let's
-// keep it simple for now.
+import Expenses from "./components/Expenses.vue";
+import About from "./components/About.vue";
+const Foo = {
+  template: "<h1>foormidable</h1>"
+};
+const Bar = {
+  template: "<h1>bar</h1>"
+};
+//2 Map routes
 const router = new VueRouter({
   mode: "history",
   base: __dirname,
-  routes // short for `routes: routes`
+  routes: [{
+      path: "/foo",
+      component: Foo
+    },
+    {
+
+      path: "/a",
+      redirect: {
+        name: "/About"
+      }
+
+    },
+    {
+      path: "/bar",
+      component: Bar
+    },
+    {
+      path: "/Expenses",
+      component: Expenses
+    },
+    {
+      path: "/About",
+      component: About
+    }
+  ]
 });
 
 new Vue({

@@ -7,7 +7,8 @@
       <v-spacer></v-spacer>
       <login-user color="info"></login-user>
     </v-app-bar>
-    <v-navigation-drawer temporary v-model="navdrawer">
+
+    <v-navigation-drawer temporary v-model="navdrawer" class="NavMenu">
       <v-list dense>
         <v-list-item @click="navdrawer = !navdrawer">
           <v-list-item-icon>
@@ -18,8 +19,12 @@
           </v-list-item-content>
         </v-list-item>
         <v-subheader>TOOLS</v-subheader>
-        <v-list-item-group v-model="item" color="primary">
-          <v-list-item v-for="(item, i) in navlistfiltered" :key="i">
+        <v-list-item-group v-model="item">
+          <v-list-item
+            v-for="(item, i) in navlistfiltered"
+            :key="i"
+            @click="navigateTo(item)"
+          >
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -28,31 +33,15 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
+
         <v-subheader>Info</v-subheader>
+        <p>{{ currentroute.path }}</p>
         <login-user color="info"></login-user>
       </v-list>
     </v-navigation-drawer>
-    <v-content>
-      <v-row>
-        <v-col>
-          <v-container>
-            <v-row>
-              <v-col>
-                <h1>Is Logged ?{{ Store.logged }}</h1>
-                <p>{{ currentroute }}</p>
-                <router-link to="/foo">Go to Foo</router-link>
-                <br />
-                <router-link to="/bar">Go to Bar</router-link>
-              </v-col>
-            </v-row>
-            <v-row id="routerview">
-              <p>{{ currentroute.path }}</p>
 
-              <p><router-view></router-view></p>
-            </v-row>
-          </v-container>
-        </v-col>
-      </v-row>
+    <v-content>
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>
@@ -91,6 +80,13 @@ export default {
       }
     ]
   }),
+  methods: {
+    navigateTo(it) {
+      this.$router.push(it.link);
+      this.currentApp = it.text;
+      return true;
+    }
+  },
   computed: {
     // filter navlist depending on user's right to access other menus
     navlistfiltered() {
@@ -100,7 +96,7 @@ export default {
       return res;
     },
     currentroute() {
-      return this.$route;
+      return JSON.stringify(this.$route);
     }
   }
 };
@@ -108,5 +104,14 @@ export default {
 <style lang="scss" scoped>
 #routerview {
   border-style: solid;
+}
+.NavMenu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5); /*dim the background*/
 }
 </style>

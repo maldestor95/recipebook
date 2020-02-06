@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h2>{{storeState.numbers}}</h2>
+    <h2>{{ storeState.numbers }}</h2>
   </div>
 </template>
 
 <script>
-import store from "./store.js";
+import store from "../store.js";
 export default {
   name: "Expenses",
   data() {
@@ -16,5 +16,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
