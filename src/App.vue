@@ -60,7 +60,6 @@
 <script>
 import LoginUser from "./components/LoginUser.vue";
 import storey from "./store.js";
-
 export default {
   name: "App",
   components: {
