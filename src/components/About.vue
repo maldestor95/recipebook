@@ -5,6 +5,8 @@
     <router-link to="/bar">Go to Bar</router-link>
     <br />
     <router-link to="/Expenses">Go to Expenses</router-link>
+    <br />
+    <router-link to="/SandBox">Go to Sandbox</router-link>
   </div>
 </template>
 

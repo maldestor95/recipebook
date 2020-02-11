@@ -9,6 +9,7 @@ Vue.use(VueRouter);
 // 1. Define route components.
 import Expenses from "./components/Expenses.vue";
 import About from "./components/About.vue";
+import Sandbox from "./components/Sandbox.vue";
 const Foo = {
   template: "<h1>foormidable</h1>"
 };
@@ -19,17 +20,16 @@ const Bar = {
 const router = new VueRouter({
   mode: "history",
   base: __dirname,
-  routes: [{
+  routes: [
+    {
       path: "/foo",
       component: Foo
     },
     {
-
       path: "/a",
       redirect: {
         name: "/About"
       }
-
     },
     {
       path: "/bar",
@@ -42,6 +42,10 @@ const router = new VueRouter({
     {
       path: "/About",
       component: About
+    },
+    {
+      path: "/Sandbox",
+      component: Sandbox
     }
   ]
 });
