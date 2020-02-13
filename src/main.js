@@ -5,6 +5,7 @@ import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
+Vue.use(require('vue-moment'));
 
 // 1. Define route components.
 import Expenses from "./components/Expenses.vue";

@@ -1,28 +1,30 @@
 <template>
   <div>
     <v-text-field
+      outlined
+      dense
+      :append-icon="'mdi-calendar'"
+      @click:append="ShowPicker = true"
       class="text-center"
       :name="name"
       :label="label"
       :id="id"
       :value="SelectDate"
-      @focus="ShowPicker = true"
       @blur="ShowPicker = false"
       @keyup.esc="ShowPicker = false"
       @keyup.enter="ShowPicker = false"
       v-if="ShowPicker == false"
-    >
-    </v-text-field>
+    ></v-text-field>
     <v-dialog v-model="ShowPicker" width="500">
-      <v-date-picker
-        v-model="SelectDate"
-        type="month"
-        @blur="ShowPicker = false"
-        @change="$emit('input', SelectDate)"
-      >
-        v-if="ShowPicker == true"
-        <p align-center>Select Start Date</p>
-        <v-btn text color="primary" @click="ShowPicker = false">Quit</v-btn>
+      <v-date-picker v-model="SelectDate" @blur="ShowPicker = false">
+        <v-btn
+          text
+          color="primary"
+          @click="
+            ShowPicker = false;
+            $emit('input', SelectDate);
+          "
+        >Quit</v-btn>
       </v-date-picker>
     </v-dialog>
   </div>

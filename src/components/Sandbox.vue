@@ -1,5 +1,6 @@
 <template>
   <div>
+    <base-date></base-date>
     <h1>SandBox</h1>
     <input id="fileItem" type="file" accept=".pdf" />
     <div
@@ -9,14 +10,24 @@
       ondragover="event.stopPropagation(); event.preventDefault();"
       ondrop="event.stopPropagation(); event.preventDefault();
      dodrop(event);"
-    >
-      DROP FILES HERE FROM FINDER OR EXPLORER
-    </div>
+    >DROP FILES HERE FROM FINDER OR EXPLORER</div>
   </div>
 </template>
 
 <script>
+import baseDate from "@/components/baseDate";
+
 export default {
+  name: "SandBox",
+  components: {
+    baseDate
+  },
+  data() {
+    return {
+      testmoment: "none"
+    };
+  },
+  created() {},
   methods: {
     dodrop: function(event) {
       var dt = event.dataTransfer;
