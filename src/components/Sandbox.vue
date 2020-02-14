@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-date></base-date>
     <h1>SandBox</h1>
     <input id="fileItem" type="file" accept=".pdf" />
     <div
@@ -15,13 +14,9 @@
 </template>
 
 <script>
-import baseDate from "@/components/baseDate";
-
 export default {
   name: "SandBox",
-  components: {
-    baseDate
-  },
+  components: {},
   data() {
     return {
       testmoment: "none"
