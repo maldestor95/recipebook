@@ -1,4 +1,4 @@
 {
-  "watch": ["server", "lib"],
+  "watch": ["server", "lib", "test"],
   "ext": "js"
 }
