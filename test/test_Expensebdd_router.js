@@ -36,6 +36,7 @@ describe("ExpenseBddRouter - tests REST API", function () {
                 .then(() => {})
         });
     it("shall delete an expense", (done) => {
+
         axios
             .delete(rootpath + "/API/expense/12")
             .then(res => {

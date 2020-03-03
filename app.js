@@ -16,7 +16,7 @@ app.get("/tot", function (req, res) {
 app.use("/API", require("./lib/expensesbdd_router"));
 app.get("/", (req, res) => res.send("Hello toto!"));
 
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
     console.log(`App listening on port ${port} since ${d}!`)
     console.log()
