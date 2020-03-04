@@ -19,5 +19,5 @@ app.get("/", (req, res) => res.send("Hello toto!"));
 app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
     console.log(`App listening on port ${port} since ${d}!`)
-    console.log()
+    console.log(`Server started in ${dev?"Development":"Production"} mode`)
 });
