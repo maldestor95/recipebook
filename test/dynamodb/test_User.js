@@ -1,22 +1,12 @@
 var assert = require("chai").assert;
 let User = require('../../lib/dynamodb/User').User
 let UTable = require('../../lib/dynamodb/User')
+const constants = require('../../lib/definition')
 
-before(function (done) {
-    try {
-        UTable.create_userTable(done)
-    } catch (error) {
-        throw error
 
-    }
-});
-after(function (done) {
-    UTable.delete_userTable((err, data) => {
-        console.log('after')
-        done()
-    })
 
-});
+
+
 describe("User", function () {
     it("shall create one user", done => {
         let U = new User()
@@ -50,6 +40,12 @@ describe("User", function () {
                 V.createLogin("update", (err, data) => {
                     done()
                 })
+            })
+        });
+        afterEach((done) => {
+            V.deleteLogin("update", (err, data) => {
+                // console.log(JSON.stringify(err),JSON.stringify(data))
+                done()
             })
         });
         // describe("shall", function () {
@@ -117,34 +113,181 @@ describe("User", function () {
             })
         })
         // })
-        afterEach((done) => {
-            V.deleteLogin("update", (err, data) => {
-                // console.log(JSON.stringify(err),JSON.stringify(data))
-                done()
-            })
-        });
+
         it("shall change one pwd", done => {
             let newpwd = "newpwd"
             let newpwd2 = "newpwd2"
 
             assert.equal(V.login, "update", "[message]");
-            // assert.equal(V.pwd, '', "[message]");
-
             V.updateLoginPwd(newpwd, (err, data) => {
-                // console.log("FINAL  :" + JSON.stringify(V))
                 assert.isNull(err, "[message]");
                 V.getLogin("update", (err, data) => {
-                    // console.log("FINAL  :" + JSON.stringify(V))
                     assert.deepEqual(V.pwd, newpwd, "verification pwd1");
                     V.updateLoginPwd(newpwd2, (err, data) => {
-                        // console.log("FINAL  :" + JSON.stringify(V))
                         assert.isNull(err, "[message]");
                         V.getLogin("update", (err, data) => {
-                            // console.log("FINAL  :" + JSON.stringify(V))
                             assert.deepEqual(V.pwd, newpwd2, "verification pwd2");
                             done()
                         })
                     })
+                })
+            })
+        })
+    })
+    describe("update authorisations", function () {
+        let V = new User()
+        beforeEach((done) => {
+            V.deleteLogin("Authorisation", (err, data) => {
+                V.createLogin("Authorisation", (err, data) => {
+                    V.getLogin(null, (err2, data2) => {
+                        V.print("Initialised :")
+                        done()
+                    })
+                })
+            })
+        });
+        afterEach((done) => {
+            V.deleteLogin("Authorisation", (err, data) => {
+                // console.log(JSON.stringify(err),JSON.stringify(data))
+                done()
+            })
+        });
+        it("shall add a valid application", done => {
+            V.updateApplication({
+                applicationName: constants._application.Todo,
+                authorisation: constants._role.Editor,
+                operation: "ADD"
+            }, (err, data) => {
+                V.print("Initial :")
+                assert.equal(err, null, "valid application");
+                // V.print("Initial :")
+                V.getLogin(V.login, (err, data) => {
+                    V.print("Final :")
+                    V.updateApplication({
+                        applicationName: constants._application.Expenses,
+                        authorisation: constants._role.Viewer,
+                        operation: "ADD"
+                    }, (err, data) => {
+                        assert.equal(err, null, "valid application");
+                        V.print("Initial2 :")
+                        V.getLogin(V.login, (err, data) => {
+                            V.print("Final2 :")
+                            assert.equal(V.userApplication.Todo, "Editor")
+                            assert.equal(V.userApplication.Expenses, "Viewer");
+                            assert.equal(V.version, 2);
+                            done()
+                        })
+                    })
+                })
+            })
+        })
+
+        it("shall fail ADD/DEL an  invalid operation", done => {
+            V.updateApplication({
+                applicationName: constants._application.Todo,
+                authorisation: constants._role.Editor,
+                operation: "VV"
+            }, (err, data) => {
+                assert.equal(err, constants._errorMessage.InvalidParam, "valid application");
+                done()
+            })
+        })
+        it("shall fail Add an  invalid role", done => {
+            V.updateApplication({
+                applicationName: constants._application.Todo,
+                authorisation: "VV",
+                operation: 'ADD'
+            }, (err, data) => {
+                assert.equal(err, constants._errorMessage.InvalidParam, "valid application");
+                done()
+            })
+        })
+        it("shall fail Add an  invalid application", done => {
+            V.updateApplication({
+                applicationName: "BAD APP",
+                authorisation: constants._role.Editor,
+                operation: 'ADD'
+            }, (err, data) => {
+                assert.equal(err, constants._errorMessage.InvalidParam, "valid application");
+                done()
+            })
+        })
+        it("shall remove a valid application", done => {
+            V.updateApplication({
+                applicationName: constants._application.Todo,
+                authorisation: constants._role.Editor,
+                operation: "ADD"
+            }, (err, data) => {
+                V.print("Initial :")
+                assert.equal(err, null, "valid application");
+                // V.print("Initial :")
+                V.getLogin(V.login, (err, data) => {
+                    assert.equal(V.version, 1);
+                    V.print("Final :")
+                    V.updateApplication({
+                        applicationName: constants._application.Expenses,
+                        authorisation: constants._role.Viewer,
+                        operation: "ADD"
+                    }, (err, data) => {
+                        assert.equal(err, null, "valid application");
+                        V.print("Initial2 :")
+                        V.getLogin(V.login, (err, data) => {
+                            V.print("Final2 :")
+                            assert.equal(V.userApplication.Todo, "Editor")
+                            assert.equal(V.userApplication.Expenses, "Viewer");
+                            assert.equal(V.version, 2);
+                            V.updateApplication({
+                                applicationName: constants._application.Expenses,
+                                authorisation: constants._role.Viewer,
+                                operation: "DEL"
+                            }, (err, data) => {
+                                assert.equal(err, null, "valid application");
+                                V.print("Initial3 :")
+                                V.getLogin(V.login, (err, data) => {
+                                    V.print("Final3 :")
+                                    assert.deepEqual(V.userApplication, {
+                                        "Todo": "Editor"
+                                    })
+                                    // assert.equal(V.userApplication.Expenses,"Viewer");
+                                    assert.equal(V.version, 3);
+                                    done()
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+        it("shall add create a complete user", done => {
+            const EntryUser = {
+                login: "rty",
+                pwd: "rtypwd",
+                userApplication: {
+                    'Todo': 'Root',
+                    'Expenses': "Viewer"
+                }
+            }
+            let T = new User()
+            T.createLogin(EntryUser.login, (e1, r1) => {
+                if (e1) {
+                    console.log(e1)
+                    console.log(e1, r1)
+                }
+                T.updateLoginPwd(EntryUser.pwd, (e2, r2) => {
+                    if (e2) {
+                        console.log(e2, r2)
+                    } else {
+                        T.updateApplicationList(EntryUser.userApplication, (err, data) => {
+                            let V = new User()
+                            V.getLogin(EntryUser.login, (err, data) => {
+                                assert.deepEqual(EntryUser.login, data.Item.login, "[message]");
+                                assert.deepEqual(EntryUser.pwd, data.Item.pwd, "[message]");
+                                assert.deepEqual(EntryUser.userApplication, data.Item.userApplication, "[message]");
+                                done()
+                            })
+                        })
+
+                    }
                 })
             })
         })

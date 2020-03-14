@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "createTable": "node lib/dynamodb/createTable.js",
+    "deleteTable": "node lib/dynamodb/deleteTable.js"
   },
   "author": "maldestor95",
   "license": "ISC",
