@@ -9,6 +9,7 @@ Vue.use(require('vue-moment'));
 
 // 1. Define route components.
 import Expenses from "./components/Expenses.vue";
+import Users from "./components/Users.vue";
 import About from "./components/About.vue";
 import Sandbox from "./components/Sandbox.vue";
 const Foo = {
@@ -39,6 +40,10 @@ const router = new VueRouter({
     {
       path: "/Expenses",
       component: Expenses
+    },
+    {
+      path: "/Users",
+      component: Users
     },
     {
       path: "/About",

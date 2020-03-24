@@ -49,6 +49,7 @@
 <script>
 import LoginUser from "./components/LoginUser.vue";
 import storey from "./store.js";
+
 export default {
   name: "App",
   components: {
@@ -77,6 +78,12 @@ export default {
         text: "Expenses",
         link: "/Expenses",
         logrequired: true
+      },
+      {
+        icon: "mdi-account-group",
+        text: "Users",
+        link: "/Users",
+        logrequired: false
       }
     ]
   }),
