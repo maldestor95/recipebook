@@ -28,40 +28,63 @@
         <template v-slot:item.login="{item}">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-btn icon color="primary" v-on="on" @click="userEditDetails(item.login)">
+              <v-btn icon color="primary" v-on="on" @click="userEditDialog=true">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
-            <span>Edit details</span>
+            <span>Edit</span>
           </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon color="primary" v-on="on">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </template>
-              <span>Delete User</span>
-          </v-tooltip>
-
             {{ item.login.toUpperCase() }}
         </template>
       </v-data-table>
     </v-card>
+
+    <v-btn color="success" @click="usersAddDialog()">Add User</v-btn>
+
+    <v-dialog v-model="userEditDialog">
+      <v-tabs v-model="tabs" color="primary" slider-color="primary">
+        <v-tab>Application</v-tab>
+        <v-tab>Details</v-tab>
+        <v-tab>Pwd</v-tab>
+        <v-tab>Administration</v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="tabs">
+        <v-tab-item>
+          <!-- TODO  updateApplication-->
+          <users-app :details="details" @change="updatePwd"></users-app>
+        </v-tab-item>
+        <v-tab-item>
     <users-details :details="details" @change="updateDetails"></users-details>
+        </v-tab-item>
+        <v-tab-item>
+          <users-pwd :details="details" @change="updatePwd"></users-pwd>
+        </v-tab-item>
+        <v-tab-item>
+          <!-- TODO  admin-->
+          <users-admin :details="details" :toDelete="itemToDelete" @leave="userEditDialog=false;scan()"></users-admin>
+        </v-tab-item>
+      </v-tabs-items>
+    </v-dialog>
   </div>
 </template>
 <script>
 import store from "../store.js";
 import axios from "axios";
 import usersDetails from "./UsersDetails";
+import usersPwd from "./UsersPwd";
+import usersApp from "./UsersApp";
+import usersAdmin from "./UsersAdmin";
 import qs from "qs";
 
 export default {
   name: "User",
-  components: { usersDetails },
+  components: { usersDetails, usersPwd, usersApp, usersAdmin },
   data() {
     return {
+      tabs: "",
+      itemToDelete:false,
+      userEditDialog: false,
       search: "",
       singleSelect: false,
       selected: [],
@@ -98,15 +121,26 @@ export default {
           this.Users = err;
         });
     },
+    usersAddDialog(){
+      this.tabs=3
+      this.details={login:null}
+      this.userEditDialog=true
+      this.itemToDelete=false
+    },
+
     handleClick(value) {
       this.Value = value;
+      // this.$set(this.details,'login',value.login)
       this.details = {
         login: value.login,
         version: value.version,
         email: value.details.email,
         address: value.details.address,
-        phone: value.details.phone
+        phone: value.details.phone,
+        pwd: value.pwd,
+        userApplication: value.userApplication
       };
+      this.itemToDelete=true
     },
     updateDetails() {
       const user = this.details.login;
@@ -134,9 +168,31 @@ export default {
           }
         });
     },
-    editUsersDetail(){
-
-      this.updateDetails()
+    updatePwd() {
+      const user = this.details.login;
+      let data = {
+        details: {
+          address: this.details.address,
+          email: this.details.email,
+          phone: this.details.phone
+        },
+        version: this.details.version
+      };
+      axios
+        .put(`/API/users/${user}/details`, qs.stringify(data))
+        .then(res => {
+          if (res) {
+            this.msg = JSON.stringify(`Update details of ${user}`);
+            this.showMsg = true;
+            this.scan();
+          }
+        })
+        .catch(err => {
+          if (err) {
+            this.msg = JSON.stringify(err);
+            this.showMsg = true;
+          }
+        });
     }
   }
 };
@@ -144,7 +200,6 @@ export default {
 
 <style lang="scss" scoped>
 .bord {
-  border-color: black;
   border-style: solid;
 }
 </style>
