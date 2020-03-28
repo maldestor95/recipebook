@@ -68,7 +68,12 @@ describe("Users router", function () {
     })
     describe("modify user", function () {
         let modifiedUser = {
-            "login": "modifieduser"
+            login: "modifieduser",
+            pwd: "rtypwd",
+            userApplication: {
+                'Todo': 'Root',
+                'Expenses': "Viewer"
+            }
         }
         beforeEach((done) => {
             axios.request({
@@ -106,23 +111,46 @@ describe("Users router", function () {
                     done()
                 })
         })
-        it("put /API/Users/modifieduser/pwd", done => {
-            let data = {pwd: "abc"}
-
-            axios.request({
-                    url: baseURL + '/API/Users/modifieduser/pwd',
-                    method: 'put',
-                    data: qs.stringify(data)
-                })
+        it(" get /API/Users/unknownuser", done => {
+            axios.get(baseURL + '/API/Users/unknownuser')
                 .then((response) => {
-                    axios.get('/API/Users/modifieduser')
-                    .then ((responseGet)=>{
-                        assert.equal(responseGet.status,200)
-                        assert.isNull(responseGet.data.err)
-                        assert.equal(responseGet.data.pwd,data.pwd)
-                        done()
+                    done()
+                })
+                .catch((response) => {
+                    console.log(response)
+                    assert.equal(response.response.status, 404)
+                    assert.equal(response.response.data, "/API/Users/unknownuser not found")
+                    done()
 
-                    })
+                })
+        })
+
+        it("put /API/Users/modifieduser/pwd", done => {
+            let data = {
+                pwd: "abc"
+            }
+            axios.get(baseURL+'/API/Users/modifieduser') 
+                .then((modUser) => {
+                    data.version=modUser.data.data.version
+
+                    axios.request({
+                            url: baseURL + '/API/Users/modifieduser/pwd',
+                            method: 'put',
+                            data: qs.stringify(data)
+                        })
+                        .then((response) => {
+                            axios.get(baseURL +'/API/Users/modifieduser')
+                                .then((responseGet) => {
+                                    assert.equal(responseGet.status, 200)
+                                    assert.isNull(responseGet.data.err)
+                                    assert.equal(responseGet.data.data.pwd, data.pwd)
+                                    done()
+
+                                })
+                        })
+                })
+                .catch((modUser)=>{
+                    done()
                 })
         })
         it("put /API/Users/modifieduser/details", done => {
@@ -146,7 +174,9 @@ describe("Users router", function () {
         })
         it("put /API/Users/modifieduser/application", done => {
             let data = {
-                userApplication: {"ToDo": "Viewer"}
+                userApplication: {
+                    "ToDo": "Viewer"
+                }
             } // Object of applicationName:authorisation  (e.g "ToDo": "Viewer"`
             axios.request({
                     url: baseURL + '/API/Users/modifieduser/application',
