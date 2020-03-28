@@ -24,7 +24,9 @@
         :search="search"
         @click:row="handleClick"
         dense
+        :sort-by="['userApplication','login']"
       >
+      <!-- TODO custom sort by user Application -->
         <template v-slot:item.login="{item}">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -36,12 +38,20 @@
           </v-tooltip>
           {{ item.login.toUpperCase() }}
         </template>
+
+        <template v-slot:item.userApplication="{item}">
+          <v-chip
+            v-for="uApp in item.userApplication"
+            :key="uApp.id"
+            :class="Object.values(uApp)[0]"
+          >{{ Object.keys(uApp)[0] }}</v-chip>
+        </template>
       </v-data-table>
     </v-card>
 
     <v-btn color="success" @click="usersAddDialog()">Add User</v-btn>
 
-    <v-dialog v-model="userEditDialog">
+    <v-dialog v-model="userEditDialog" persistent @keyup.esc="Leave">
       <v-tabs v-model="tabs" color="primary" slider-color="primary">
         <v-tab :disabled="isDisabled">Application</v-tab>
         <v-tab :disabled="isDisabled">Details</v-tab>
@@ -57,15 +67,20 @@
             :appList="appList"
             :rightsList="rightsList"
             @change="updateApp"
+            @leave="userEditDialog=false;scan()"
           ></users-app>
         </v-tab-item>
 
         <v-tab-item>
-          <users-details :details="details" @change="updateDetails"></users-details>
+          <users-details
+            :details="details"
+            @change="updateDetails"
+            @leave="userEditDialog=false;scan()"
+          ></users-details>
         </v-tab-item>
 
         <v-tab-item>
-          <users-pwd :details="details" @change="updatePwd"></users-pwd>
+          <users-pwd :details="details" @change="updatePwd" @leave="userEditDialog=false;scan()"></users-pwd>
         </v-tab-item>
 
         <v-tab-item>
@@ -78,12 +93,6 @@
       </v-tabs-items>
     </v-dialog>
 
-    <v-card>
-      <!-- <v-btn color="success" @click="getAppList()">Get App List</v-btn> -->
-      {{appList}}
-      <!-- <v-btn color="success" @click="getRightsList()">Get Rights List</v-btn> -->
-      {{rightsList}}
-    </v-card>
   </div>
 </template>
 <script>
@@ -147,7 +156,7 @@ export default {
         });
     },
     usersAddDialog() {
-      this.isDisabled=true
+      this.isDisabled = true;
       this.tabs = 3;
       this.details = { login: null };
       this.userEditDialog = true;
@@ -156,7 +165,7 @@ export default {
 
     handleClick(value) {
       this.Value = value;
-      this.isDisabled=false
+      this.isDisabled = false;
       // this.$set(this.details,'login',value.login)
       this.details = {
         login: value.login,
@@ -251,5 +260,17 @@ export default {
 <style lang="scss" scoped>
 .bord {
   border-style: solid;
+}
+.Root {
+  color: red;
+}
+.Manager {
+  color: blue;
+}
+.Editor {
+  color: pink;
+}
+.Viewer {
+  color: green;
 }
 </style>

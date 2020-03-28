@@ -29,8 +29,9 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-btn rounded color="primary" dark @click="sendForm">Submit</v-btn>
-{{value}}
+    <v-btn rounded color="green" dark @click="Leave" @keyup.esc="Leave">
+      Leave
+    </v-btn>
   </div>
 </template>
 
@@ -44,39 +45,58 @@ export default {
       type: Object,
       default: function() {
         return {
-          userApplication:[{ Users: "Root" }, { Todo: "Viewer" }, { Expenses: "Manager" }],
-          login:"toto",
-          version:123
+          userApplication: [
+            { Users: "Root" },
+            { Todo: "Viewer" },
+            { Expenses: "Manager" }
+          ],
+          login: "toto",
+          version: 123
         };
       }
     }
   },
   data() {
     return {
-      rightsListSelection: null,
       appListSelection: null,
-      activeRow: false
+      rightsListSelection: "Viewer",
+      activeRow: false,
+      debug: ""
     };
   },
   methods: {
-    sendForm(){
-      // TODO 
+    Leave() {
+      this.$emit("leave")
+      // TODO
     },
     deletePrivilege(ItemApp) {
-      this.value = this.value.filter(x => {
+      let newupdateApp = this.value.userApplication.filter(x => {
         return Object.keys(x)[0] != Object.keys(ItemApp)[0];
       });
+
+      this.value.userApplication=newupdateApp
+       usersApi
+          .updateApplication({
+            login: this.value.login,
+            version: this.value.version,
+            userApplication: this.value.userApplication
+          })
+          .then(response => {
+            this.value.version += 1;
+            this.debug = response;
+          })
+          .catch(err => {
+            this.debug = err;
+          });
     },
     addPrivilege() {
-      let privlist = this.value.userApplication;
       let activeKeyList = this.value.userApplication.map(function(x) {
         return Object.keys(x)[0];
       });
       if (activeKeyList.lastIndexOf(this.appListSelection) < 0) {
         let newApp = {};
         newApp[this.appListSelection] = this.rightsListSelection;
-        privlist.push(newApp);
-        this.$set(this.value.userApplication, privlist);
+        this.value.userApplication.push(newApp);
         usersApi
           .updateApplication({
             login: this.value.login,
@@ -84,10 +104,11 @@ export default {
             userApplication: this.value.userApplication
           })
           .then(response => {
-            privlist = response;
+            this.value.version += 1;
+            this.debug = response;
           })
           .catch(err => {
-            privlist = err;
+            this.debug = err;
           });
       } else {
         // TODO message because the list of user is not accessible

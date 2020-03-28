@@ -1,11 +1,15 @@
-# TODO
+# BACKLOG
 
+## TODO https serveur
+
+# DONE
+
+## 2020-03-15
 - Configuration to minimise the build (WebPack)
 - Serveur Node JS
 - Axios
 - File Upload Component
 
-# DONE
 
 ## 2020-02-11
 
