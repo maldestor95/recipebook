@@ -8,19 +8,34 @@ const constants = require('../../lib/definition')
 
 
 describe("User", function () {
-    it("shall create one user", done => {
+    before(() => {
         let U = new User()
         U.createLogin('toto4', (err, data) => {
+            // U.print("create - ")
+        })
+    });
+    after(() => {
+        let U = new User()
+        U.deleteLogin('toto4', (err, data) => {})
+        U.deleteLogin('toto2', (err, data) => {})
+    });
+    it("shall create one user but fail creating it twice", done => {
+        let U = new User()
+        U.createLogin('toto2', (err, data) => {
             console.log(JSON.stringify(data))
-            assert.isNull(err, "[message]");
-            done()
+            assert.isNull(err, "creation successfull");
+            U.createLogin('toto2', (err, data) => {
+                console.log(JSON.stringify(data))
+                assert.equal(err.code, "ConditionalCheckFailedException", "creation successfull");
+                done()
+            })
         })
     })
     it("shall get one user", done => {
         let U = new User()
         U.getLogin('toto4', (err, data) => {
-            console.log(JSON.stringify(data))
-            console.log("U+" + JSON.stringify(U))
+            // console.log(JSON.stringify(data))
+            // console.log("U+" + JSON.stringify(U))
             assert.isNull(err, "[message]");
             done()
         })
@@ -29,24 +44,29 @@ describe("User", function () {
         let U = new User()
         U.deleteLogin('toto4', (err, data) => {
             console.log(JSON.stringify(data))
-            assert.isNull(err, "[message]");
-            done()
+            assert.isNull(err, "successfully delete existing user");
+            U.deleteLogin('none', (err, data) => {
+                console.log(JSON.stringify(data))
+                assert.equal(err.code, "ConditionalCheckFailedException", "deletion unsuccessful");
+                done()
+            })
         })
     })
     describe("update details", function () {
-        let V = new User()
-        beforeEach((done) => {
-            V.deleteLogin("update", (err, data) => {
-                V.createLogin("update", (err, data) => {
+        var V = new User()
+        before((done) => {
+            V.createLogin("update", (err, data) => {
+                if (err) {
+                    V.getLogin("update", (err, data) => {
+                        done()
+                    })
+                } else {
                     done()
-                })
+                }
             })
         });
         afterEach((done) => {
-            V.deleteLogin("update", (err, data) => {
-                // console.log(JSON.stringify(err),JSON.stringify(data))
-                done()
-            })
+            V.deleteLogin("update", null)
         });
         // describe("shall", function () {
         it("add all ", done => {
