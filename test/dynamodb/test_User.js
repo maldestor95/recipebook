@@ -58,7 +58,7 @@ describe("User", function () {
     })
     describe("update details", function () {
         var V = new User()
-        before((done) => {
+        beforeEach((done) => {
             V.createLogin("update", (err, data) => {
                 if (err) {
                     V.getLogin("update", (err, data) => {
@@ -74,13 +74,13 @@ describe("User", function () {
         });
         // describe("shall", function () {
         it("add all ", done => {
-            let newdetails = {
+            let newdetails = {details:{
                 phone: "123",
                 address: "ici",
                 email: "tre@tre.com"
-            }
+            }}
             assert.equal(V.login, "update", "[message]");
-            V.updateLoginDetails(newdetails, (err, data) => {
+            V.updateLoginDetails({details:newdetails,version:V.version}, (err, data) => {
                 assert.isNull(err, "[message]");
                 V.getLogin("update", (err, data) => {
                     assert.deepEqual(V.details.email, newdetails.email, "verification update");

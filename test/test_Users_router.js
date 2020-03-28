@@ -129,9 +129,9 @@ describe("Users router", function () {
             let data = {
                 pwd: "abc"
             }
-            axios.get(baseURL+'/API/Users/modifieduser') 
+            axios.get(baseURL + '/API/Users/modifieduser')
                 .then((modUser) => {
-                    data.version=modUser.data.data.version
+                    data.version = modUser.data.data.version
 
                     axios.request({
                             url: baseURL + '/API/Users/modifieduser/pwd',
@@ -139,7 +139,7 @@ describe("Users router", function () {
                             data: qs.stringify(data)
                         })
                         .then((response) => {
-                            axios.get(baseURL +'/API/Users/modifieduser')
+                            axios.get(baseURL + '/API/Users/modifieduser')
                                 .then((responseGet) => {
                                     assert.equal(responseGet.status, 200)
                                     assert.isNull(responseGet.data.err)
@@ -149,50 +149,58 @@ describe("Users router", function () {
                                 })
                         })
                 })
-                .catch((modUser)=>{
+                .catch((modUser) => {
                     done()
                 })
         })
         it("put /API/Users/modifieduser/details", done => {
             let data = {
                 details: {
-                    address: "ici",
-                    email: "no@where.com",
-                    phone: "013235468"
+                    "address": "ici",
+                    "email": "no@where.com",
+                    "phone": "013235468"
                 }
             }
-
-            axios.request({
-                    url: baseURL + '/API/Users/modifieduser/details',
-                    method: 'put',
-                    data: qs.stringify(data)
-                })
-                .then((response) => {
-                    assert.equal(response.data.data.login, modifiedUser.login, "[get /API/Users/modifieduser] not successful");
-                    done()
+            axios.get(baseURL + '/API/Users/modifieduser')
+                .then((modUser) => {
+                    data.version = modUser.data.data.version
+                    axios.request({
+                            url: baseURL + '/API/Users/modifieduser/details',
+                            method: 'put',
+                            data: qs.stringify(data)
+                        })
+                        .then((response) => {
+                            assert.equal(response.data.err, null)
+                            done()
+                        })
                 })
         })
+
         it("put /API/Users/modifieduser/application", done => {
             let data = {
-                userApplication: {
+                userApplication: [{
                     "ToDo": "Viewer"
-                }
+                }]
             } // Object of applicationName:authorisation  (e.g "ToDo": "Viewer"`
-            axios.request({
-                    url: baseURL + '/API/Users/modifieduser/application',
-                    method: 'put',
-                    data: qs.stringify(data)
-                })
-                .then((response) => {
-                    assert.equal(response.data.data.login, modifiedUser.login, "[get /API/Users/modifieduser] not successful");
-                    done()
+            axios.get(baseURL + '/API/Users/modifieduser')
+                .then((modUser) => {
+                    data.version = modUser.data.data.version
+                    axios.request({
+                            url: baseURL + '/API/Users/modifieduser/application',
+                            method: 'put',
+                            data: qs.stringify(data)
+                        })
+                        .then((response) => {
+                            assert.equal(response.data.err, null)
+                            done()
+                        })
                 })
         })
         it("delete /API/Users/userToDelete", done => {
             axios.delete(baseURL + '/API/Users/userToDelete')
                 .then((deleteResponse) => {
                     assert.equal(deleteResponse.status, 200);
-                    assert.isNull(deleteResponse.err);
+                    assert.isNull(deleteResponse.data.err);
                     done()
                 })
         })
