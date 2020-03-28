@@ -103,7 +103,7 @@ describe("User", function () {
         })
         it("add phone only ", done => {
             let newdetails = {
-                phone: "tre@tre.com"
+                phone: "1234"
             }
             assert.equal(V.login, "update", "[message]");
             V.updateLoginDetails(newdetails, (err, data) => {
