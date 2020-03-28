@@ -10,21 +10,25 @@ const constants = require('../../lib/definition')
 describe("User", function () {
     before(() => {
         let U = new User()
-        U.createLogin('toto4', (err, data) => {
-            // U.print("create - ")
-        })
+        U.createLogin('toto4', (err, data) => {})
+        U.createLogin('toto3', (err, data) => {})
+        U.createLogin('toto2', (err, data) => {})
+        U.createLogin('last', (err, data) => {})
     });
     after(() => {
         let U = new User()
-        U.deleteLogin('toto4', (err, data) => {})
+        // U.deleteLogin('toto4', (err, data) => {})
+        U.deleteLogin('toto3', (err, data) => {})
         U.deleteLogin('toto2', (err, data) => {})
+        U.deleteLogin('totocreate', (err, data) => {})
+        U.deleteLogin('last', (err, data) => {})
     });
     it("shall create one user but fail creating it twice", done => {
         let U = new User()
-        U.createLogin('toto2', (err, data) => {
+        U.createLogin('totocreate', (err, data) => {
             console.log(JSON.stringify(data))
             assert.isNull(err, "creation successfull");
-            U.createLogin('toto2', (err, data) => {
+            U.createLogin('totocreate', (err, data) => {
                 console.log(JSON.stringify(data))
                 assert.equal(err.code, "ConditionalCheckFailedException", "creation successfull");
                 done()
@@ -122,13 +126,18 @@ describe("User", function () {
                 address: "tre@tre.com"
             }
             assert.equal(V.login, "update", "[message]");
-            V.updateLoginDetails(newdetails, (err, data) => {
-                console.log("FINAL  :" + JSON.stringify(V))
-                assert.isNull(err, "[message]");
-                V.getLogin("update", (err, data) => {
+            V.getLogin(V.login, (e1, d1) => {
+                let initialversion = V.version
+                V.updateLoginDetails(newdetails, (err, data) => {
                     console.log("FINAL  :" + JSON.stringify(V))
-                    assert.deepEqual(V.details.address, newdetails.address, "verification update");
-                    done()
+                    assert.isNull(err, "[message]");
+                    V.getLogin("update", (err, data) => {
+                        console.log("FINAL  :" + JSON.stringify(V))
+                        assert.deepEqual(V.details.address, newdetails.address, "verification update");
+                        assert.equal(V.version, initialversion + 1, "Version updated");
+                        // console.log(V.version)
+                        done()
+                    })
                 })
             })
         })
@@ -139,15 +148,23 @@ describe("User", function () {
             let newpwd2 = "newpwd2"
 
             assert.equal(V.login, "update", "[message]");
-            V.updateLoginPwd(newpwd, (err, data) => {
-                assert.isNull(err, "[message]");
-                V.getLogin("update", (err, data) => {
-                    assert.deepEqual(V.pwd, newpwd, "verification pwd1");
-                    V.updateLoginPwd(newpwd2, (err, data) => {
-                        assert.isNull(err, "[message]");
-                        V.getLogin("update", (err, data) => {
-                            assert.deepEqual(V.pwd, newpwd2, "verification pwd2");
-                            done()
+
+            V.getLogin(V.login, (e1, d1) => {
+                let initialversion = V.version
+                V.updateLoginPwd(newpwd, (err, data) => {
+                    assert.isNull(err, "[message]");
+                    V.getLogin("update", (err, data) => {
+                        assert.deepEqual(V.pwd, newpwd, "verification pwd1");
+                        V.updateLoginPwd(newpwd2, (err, data) => {
+                            assert.isNull(err, "[message]");
+                            V.getLogin("update", (err, data) => {
+                                assert.deepEqual(V.pwd, newpwd2, "verification pwd2");
+                                assert.equal(V.version, initialversion + 2, "Version updated");
+                                console.log(V.version)
+        
+                                done()
+
+                            })
                         })
                     })
                 })
@@ -291,24 +308,45 @@ describe("User", function () {
             T.createLogin(EntryUser.login, (e1, r1) => {
                 if (e1) {
                     console.log(e1)
-                    console.log(e1, r1)
                 }
+                    assert.equal(T.version, 0, "Version shall be updated to 0");
+                    console.log(e1, r1)
                 T.updateLoginPwd(EntryUser.pwd, (e2, r2) => {
                     if (e2) {
                         console.log(e2, r2)
+                        assert.equal(T.version, 1, "Version shall be updated to 1");
                     } else {
                         T.updateApplicationList(EntryUser.userApplication, (err, data) => {
                             let V = new User()
+                            assert.equal(T.version, 2, "Version shall be updated to 2");
                             V.getLogin(EntryUser.login, (err, data) => {
                                 assert.deepEqual(EntryUser.login, data.Item.login, "[message]");
                                 assert.deepEqual(EntryUser.pwd, data.Item.pwd, "[message]");
                                 assert.deepEqual(EntryUser.userApplication, data.Item.userApplication, "[message]");
+                                assert.equal(V.version, 2, "Version shall be updated to 2");
                                 done()
                             })
                         })
 
                     }
                 })
+            })
+        })
+    })
+    describe("Scan Users", function () {
+        it("shall scan all", done => {
+          UTable.scanUsers(null,(err,data)=>{
+              console.log(data)
+              assert.isNull(err, "[message]");
+              done()
+            })
+            
+        })
+        it("shall scan from specific key", done => {
+            UTable.scanUsers('update',(err,data)=>{
+                console.log(data)
+                assert.isNull(err, "[message]");
+                done()
             })
         })
     })
