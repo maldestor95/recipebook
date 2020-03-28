@@ -7,6 +7,20 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "app.js",
+            "runtimeExecutable": "node",
+            "program": "${workspaceFolder}/app.js",
+            "restart": true,
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
             "name": "createUsersTable",
             "skipFiles": [
                 "<node_internals>/**"
