@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "createTable": "node lib/dynamodb/createTable.js",
-    "deleteTable": "node lib/dynamodb/deleteTable.js"
+    "deleteTable": "node lib/dynamodb/deleteTable.js",
+    "scanTable": "node lib/dynamodb/scanTable.js"
   },
   "author": "maldestor95",
   "license": "ISC",

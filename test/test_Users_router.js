@@ -1,8 +1,8 @@
 var assert = require("chai").assert;
 var axios = require("axios")
-
+var qs= require("qs")
 const baseURL = "http://localhost:3000"
-describe("test loop array", function () {
+describe("Tests Users router", function () {
     let looptest = [
 
         {
@@ -15,6 +15,10 @@ describe("test loop array", function () {
             description: 'new user',
             url: baseURL + "/API/Users/new",
             method: 'post',
+            data: {
+                a: 1,
+                b: 2
+            },
             valid: {
                 a: 1,
                 b: 2

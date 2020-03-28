@@ -8,5 +8,15 @@
             "type": "shell",
             "command": "cd J:\\dev\\dynamodb\\ ; ls ; powershell  ./LaunchDB.ps1"
         },
+        {
+            "type": "npm",
+            "script": "deleteTable",
+            "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "scanTable",
+            "problemMatcher": []
+        }
     ]
 }
