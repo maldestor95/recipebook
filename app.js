@@ -25,6 +25,7 @@ app.get("/tot", function (req, res) {
 });
 // app.use("/API/", require("./lib/expensesbdd_router"));
 app.use("/API", require("./lib/Users_router"));
+app.use("/API", require("./lib/Applications_router"));
 app.get("/", (req, res) => res.send("Hello toto!"));
 
 app.listen(process.env.PORT || port, () => {
