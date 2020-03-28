@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express();
+var bodyParser = require('body-parser')
 const port = 3000;
 const dev = process.env.NODE_ENV !== "production";
 
@@ -7,8 +7,16 @@ var myLogger = function (req, res, next) {
     console.log("LOGGED");
     next();
 };
+const app = express();
+
 app.disable("x-powered-by");
 app.use(myLogger);
+
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
 
 app.get("/tot", function (req, res) {
     res.send("Hello World!");
