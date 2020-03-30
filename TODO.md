@@ -1,6 +1,12 @@
 # BACKLOG
 
-## TODO https serveur
+FEATURE https serveur
+FEATURE Oauth2
+FEATURE Sessions
+FEATURE Cookies
+FEATURE webTesting - selenium, webdriver
+FEATURE continuous integration
+FEATURE deployment to production process
 
 # DONE
 
