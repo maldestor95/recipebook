@@ -12,10 +12,13 @@ var DynamoDBStore = require('connect-dynamodb')({
     session: session
 }); // more doc on https://www.npmjs.com/package/connect-dynamodb
 var DynamoDBStoreOptions = {
-    client: new AWS.DynamoDB({ endpoint: new AWS.Endpoint('http://localhost:8000')})
+    client: new AWS.DynamoDB({
+        endpoint: new AWS.Endpoint('http://localhost:8000'),
+        region: "eu-west-3",
+    })
     // AWSConfigPath:'.pathtoCredentials.json' //TODO add credentials when going to production
 }
-const User=require('./lib/dynamodb/User')
+const User = require('./lib/dynamodb/User')
 
 var bodyParser = require('body-parser')
 const port = 3000;
