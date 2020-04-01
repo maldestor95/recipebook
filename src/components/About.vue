@@ -1,12 +1,11 @@
 <template>
   <div>
-    <router-link to="/foo">Go to Foo</router-link>
-    <br />
-    <router-link to="/bar">Go to Bar</router-link>
-    <br />
+    <h1>About</h1>
+
     <router-link to="/Expenses">Go to Expenses</router-link>
     <br />
-    <router-link to="/SandBox">Go to Sandbox</router-link>
+    <router-link to="/users">Go to Users</router-link>
+
   </div>
 </template>
 

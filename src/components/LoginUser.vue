@@ -40,6 +40,7 @@
       <v-row no-gutters dense>
         <v-col align="center" cols="10" offset="1">
           <v-text-field
+            v-model="username"
             name="username"
             outlined
             label="Username or email address"
@@ -57,6 +58,7 @@
       <v-row dense no-gutters>
         <v-col align="center" cols="10" offset="1">
           <v-text-field
+          v-model="password"
             name="password"
             outlined
             label="password"
@@ -76,11 +78,11 @@
         </v-col>
       </v-row>
     </v-card>
-
     <!-- form new user -->
     <v-card>
-      <!-- TODO -->
-    </v-card>
+<v-btn color="success" @click="getSess()">debug</v-btn> 
+{{debug}}
+   </v-card>
   </v-dialog>
 </template>
 
@@ -96,21 +98,28 @@ export default {
   },
   data() {
     return {
+      username:"me",
+      password:"tt",
       storeState: store.state,
-      dialog: false
+      dialog: false,
+      debug:"none"
     };
   },
   methods: {
     logout() {
-      this.dialog = false;
       store.logout();
+      this.$router.push('about')
+      this.dialog = false;
     },
     login() {
+      store.login(this.username,this.password);
       this.dialog = false;
-      store.login();
     },
     escapeform() {
       this.dialog = false;
+    },
+    getSess(){
+      this.debug=store.getSessionID()
     }
   }
 };

@@ -20,11 +20,7 @@
         </v-list-item>
         <v-subheader>TOOLS</v-subheader>
         <v-list-item-group v-model="item">
-          <v-list-item
-            v-for="(item, i) in navlistfiltered"
-            :key="i"
-            @click="navigateTo(item)"
-          >
+          <v-list-item v-for="(item, i) in navlistfiltered" :key="i" @click="navigateTo(item)">
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -58,52 +54,56 @@ export default {
   data: () => ({
     Store: storey.state,
     navdrawer: null,
-    currentApp: "Current Application",
     item: 1,
     navlist: [
       {
         icon: "mdi-information-variant",
         text: "About",
-        link: "/About",
+        link: "about",
         logrequired: false
       },
       {
         icon: "mdi-alert-box",
         text: "Risks",
-        link: "/Risks",
+        link: "risks",
         logrequired: true
       },
       {
         icon: "mdi-cash-100",
         text: "Expenses",
-        link: "/Expenses",
+        link: "expenses",
         logrequired: true
       },
       {
         icon: "mdi-account-group",
         text: "Users",
-        link: "/Users",
-        logrequired: false
+        link: "users",
+        logrequired: true
       }
     ]
   }),
   methods: {
     navigateTo(it) {
-      this.$router.push(it.link);
-      this.currentApp = it.text;
-      return true;
+      if (it.link!=this.$route.path) {    this.$router.push(it.link).catch(()=>{});}
+      // return true;
     }
   },
   computed: {
     // filter navlist depending on user's right to access other menus
     navlistfiltered() {
       const res = this.navlist.filter(
-        nav => !nav.logrequired | this.Store.logged
+        nav => !nav.logrequired | storey.isAuthorised(nav.link)
       );
       return res;
     },
     currentroute() {
       return JSON.stringify(this.$route);
+    },
+    currentApp() {
+      let currentNav = this.navlist.filter(nav => {
+        return this.$route.name == nav.link;
+      });
+      return currentNav[0]?currentNav[0].text:"none"
     }
   }
 };

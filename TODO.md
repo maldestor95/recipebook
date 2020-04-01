@@ -1,12 +1,18 @@
 # BACKLOG
 
 FEATURE https serveur
-FEATURE Oauth2
-FEATURE Sessions
-FEATURE Cookies
 FEATURE webTesting - selenium, webdriver
 FEATURE continuous integration
 FEATURE deployment to production process
+
+## Limitations to analyse
+gestion des sessions ; comment l'utilisateur est reconnu
+envoyer les droits de l'utilisateurs après login et enregistrer coté client les privilèges
+
+# ONGOING
+## FEATURE Oauth2 -[PassportJS](http://www.passportjs.org/)
+*  Cookies
+*  Sessions
 
 # DONE
 

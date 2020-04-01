@@ -26,7 +26,7 @@
         dense
         :sort-by="['userApplication','login']"
       >
-      <!-- TODO custom sort by user Application -->
+        <!-- TODO custom sort by user Application -->
         <template v-slot:item.login="{item}">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -92,7 +92,6 @@
         </v-tab-item>
       </v-tabs-items>
     </v-dialog>
-
   </div>
 </template>
 <script>
@@ -142,7 +141,6 @@ export default {
   mounted: function() {
     this.scan();
     this.getAppList();
-    this.getRightsList();
   },
   methods: {
     scan() {
@@ -237,20 +235,11 @@ export default {
       usersApi
         .getApplicationList()
         .then(data => {
-          this.appList = data;
+          this.appList = data.application;
+          this.rightsList = data.role;
         })
         .catch(err => {
           this.appList = err;
-        });
-    },
-    getRightsList() {
-      usersApi
-        .getRightsList()
-        .then(data => {
-          this.rightsList = data;
-        })
-        .catch(err => {
-          this.rightsList = err;
         });
     }
   }
