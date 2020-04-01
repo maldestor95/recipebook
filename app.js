@@ -32,17 +32,17 @@ var myLogger = function (req, res, next) {
 };
 
 //Passport session management
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-  
-  passport.deserializeUser(function(login, done) {
-      //TODO
-      let U = new User()
-    U.getLogin(login, function(err, user) {
-      done(err, user);
+passport.serializeUser(function (user, done) {
+    done(null, user.login);
+});
+
+passport.deserializeUser(function (login, done) {
+    //TODO
+    let U = new User()
+    U.getLogin(login, function (err, user) {
+        done(err, user);
     });
-  });
+});
 
 
 //APP
@@ -51,12 +51,6 @@ const app = express();
 app.disable("x-powered-by");
 app.use(myLogger);
 
-app.use(session({
-    store: new DynamoDBStore(DynamoDBStoreOptions),
-    secret: 'keyboard cat',
-    resave: true,
-    saveUninitialized: false
-})); // more doc on https://www.npmjs.com/package/express-session
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
@@ -66,7 +60,14 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.use(passport.initialize())
-// app.use(passport.session())
+app.use(session({
+    store: new DynamoDBStore(DynamoDBStoreOptions),
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: false
+})); 
+// more doc on https://www.npmjs.com/package/express-session
+app.use(passport.session())
 
 app.get("/tot", function (req, res) {
     res.send("Hello World!");
