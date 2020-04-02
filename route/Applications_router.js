@@ -18,19 +18,29 @@
 "use strict"
 var express = require('express');
 var path = require('path');
+var def = require('../lib/definition')
 
 const validate = require("validate.js");
 
 
-var APIrouter = express.Router();
+var router = express.Router();
+const rootPath = '/Apps'
+
+let notImplementedYet = function (req, res) {
+    res.status(503).send(`${req.path} -- ${req.method}  not implemented yet`)
+}
 
 // middleware that is specific to this router
-APIrouter.use((req, res, next)=> {
-    console.log('-----Time: ', Date.now(), '\n OriginUrl', req.originalUrl, '=>Path:', req.path);
+router.use((req, res, next)=> {
+    console.log(rootPath + '-----Time: ', Date.now(), '\n OriginUrl', req.originalUrl, '=>Path:', req.path);
 
     next();
 });
-APIrouter.use("/USERS", require("./Users_router"));
-APIrouter.use("/APPS", require("./Applications_router"));
+router.get('/AvailableAppsList', (req, res) => {
+    res.send({err:null,data:Object.values(def._application)})
+})
+router.get('/AvailableRightsList', (req, res) => {
+    res.send({err:null,data:Object.values(def._role)})
 
-module.exports = APIrouter;
+})
+module.exports = router;

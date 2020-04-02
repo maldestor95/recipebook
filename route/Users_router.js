@@ -17,8 +17,8 @@
  */
 "use strict"
 var express = require('express');
-var BDDUser = require('./dynamodb/User').User
-var CUser = require('./dynamodb/User')
+var BDDUser = require('../lib/dynamodb/User').User
+var CUser = require('../lib/dynamodb/User')
 const validate = require("validate.js");
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
