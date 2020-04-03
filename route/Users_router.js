@@ -46,7 +46,7 @@ passport.use(new LocalStrategy(
     }))
 
 var router = express.Router();
-const rootPath = ''
+
 const validLogin = {
     login: {
         presence: true,
@@ -68,6 +68,7 @@ router.route('/login')
         res.send({
             Session: req.session,
             sessionID: req.sessionID,
+            applicationPrivilege:req.user.userApplication,
             msg: 'login  OK '
         })
     })
@@ -76,24 +77,14 @@ router.route('/logout')
         console.log('/logout  ' + req.sessionID)
         let sess = req.sessionID
         req.session.destroy()
-        res.clearCookie('connect.sid');
+        res.clearCookie('connect.sid');  //FIXME need to have the same path for connect.sid when clearing; doesn't work on edge 
+        //more details on https://expressjs.com/en/4x/api.html#res.clearCookie
         res.send({
             sessionID: sess,
             msg: 'logout OK '
         })
     })
-// router.route('/auth')
-//     // TODO management des session!
-//     .post(passport.authenticate('local', {
-//         session: false,
-//         failureRedirect: 'fail'
-//     }), (req, res) => {
-//         res.send({
-//             Session: req.session,
-//             sessionID: req.sessionID,
-//             msg: 'auth OK '
-//         })
-//     })
+
 router.get('/fail', (req, res) => {
     console.log(req.body)
     res.send("auth NOK")
@@ -108,7 +99,7 @@ router.route('/scan')
             res.send((err, data))
         })
     })
-router.route(rootPath + '/scan/:id')
+router.route('/scan/:id')
     /**
      * Scan Users Table from a specific login
      */
@@ -119,7 +110,7 @@ router.route(rootPath + '/scan/:id')
         })
     })
 
-router.route(rootPath + '/new')
+router.route('/new')
     /**
      * Create new user
      */
@@ -136,7 +127,7 @@ router.route(rootPath + '/new')
             res.send("bad login")
         }
     })
-router.route(rootPath + '/:login_id')
+router.route('/:login_id')
     /**
      * Modify a specific User
      */
@@ -169,7 +160,7 @@ router.route(rootPath + '/:login_id')
         })
     })
 
-router.route(rootPath + '/:login_id/:action')
+router.route('/:login_id/:action')
     /** 
      * update pwd, details or applications rights
      * @param {details} parameters to pass
@@ -212,7 +203,7 @@ router.route(rootPath + '/:login_id/:action')
                 break;
             default:
                 res.status(404).send({
-                    err: `unknown action on ${rootPath}/${req.params.login_id}`,
+                    err: `unknown action on ${req.params.login_id}`,
                     data: null
                 })
                 break;

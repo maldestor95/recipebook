@@ -31,16 +31,20 @@ let notImplementedYet = function (req, res) {
 }
 
 // middleware that is specific to this router
-router.use((req, res, next)=> {
+router.use((req, res, next) => {
     console.log(rootPath + '-----Time: ', Date.now(), '\n OriginUrl', req.originalUrl, '=>Path:', req.path);
 
     next();
 });
 router.get('/AvailableAppsList', (req, res) => {
-    res.send({err:null,data:Object.values(def._application)})
+    let AvailableOptions = {
+        application: Object.values(def._application),
+        role: Object.values(def._role)
+    }
+    res.send({
+        err: null,
+        data: AvailableOptions
+    })
 })
-router.get('/AvailableRightsList', (req, res) => {
-    res.send({err:null,data:Object.values(def._role)})
 
-})
 module.exports = router;
