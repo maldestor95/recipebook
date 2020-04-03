@@ -8,13 +8,19 @@
     <template v-slot:activator="{ on }">
       <v-btn dense v-on="on" class="small primary light">
         <v-icon small>{{
-          storeState.logged == true ? "mdi-logout" : "mdi-login"
+          storeState() ? "mdi-logout" : "mdi-login"
         }}</v-icon>
+          {{storeState() ? " logout" : " login"}}        
       </v-btn>
+
+
+
+
+      
     </template>
 
     <!-- logout -->
-    <v-card v-if="storeState.logged" raised shaped>
+    <v-card v-if="storeState()" raised shaped>
       <v-row no-gutters>
         <v-col md="12" align="center">
           <p>Are you sure you want to log out?</p>
@@ -31,7 +37,7 @@
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!storeState.logged" raised shaped>
+    <v-card v-if="!storeState()" raised shaped>
       <v-row no-gutters>
         <v-col align="center">
           <h1>Login</h1>
@@ -100,12 +106,16 @@ export default {
     return {
       username:"me",
       password:"tt",
-      storeState: store.state,
       dialog: false,
       debug:"none"
     };
   },
+  computed: {
+    },
   methods: {
+        storeState() {
+          return store.state.username 
+        },
     logout() {
       store.logout();
       this.$router.push('about')
