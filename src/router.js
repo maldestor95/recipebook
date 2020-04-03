@@ -33,7 +33,7 @@ const router = new VueRouter({
         {
             path: "/Users",
             name:"users",
-            component:  () => import( /* webpackChunkName: "Users" */ "@/components/Users.vue"),
+            component:  () => import( /* webpackChunkName: "Users" */ "@/views/Users.vue"),
             meta: {
                 requireAuth: true
             }

@@ -101,7 +101,7 @@ import usersDetails from "./UsersDetails";
 import usersPwd from "./UsersPwd";
 import usersApp from "./UsersApp";
 import usersAdmin from "./UsersAdmin";
-import usersApi from "./usersapi";
+import usersApi from "../components/usersapi";
 
 import qs from "qs";
 

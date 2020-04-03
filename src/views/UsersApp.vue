@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import usersApi from "./usersapi";
+import usersApi from "../components/usersapi";
 export default {
   props: {
     appList: { type: Array },
