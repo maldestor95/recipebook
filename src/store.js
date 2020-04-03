@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export default {
+export const store ={
     state: {
         numbers: [1, 2, 3],
         logged: false,

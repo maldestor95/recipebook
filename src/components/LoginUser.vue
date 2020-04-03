@@ -8,9 +8,9 @@
     <template v-slot:activator="{ on }">
       <v-btn dense v-on="on" class="small primary light">
         <v-icon small>{{
-          storeState() ? "mdi-logout" : "mdi-login"
+          storeState.username? "mdi-logout" : "mdi-login"
         }}</v-icon>
-          {{storeState() ? " logout" : " login"}}        
+          {{storeState.username ? " logout" : " login"}}        
       </v-btn>
 
 
@@ -20,7 +20,7 @@
     </template>
 
     <!-- logout -->
-    <v-card v-if="storeState()" raised shaped>
+    <v-card v-if="storeState.username" raised shaped>
       <v-row no-gutters>
         <v-col md="12" align="center">
           <p>Are you sure you want to log out?</p>
@@ -37,7 +37,7 @@
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!storeState()" raised shaped>
+    <v-card v-if="!storeState.username" raised shaped>
       <v-row no-gutters>
         <v-col align="center">
           <h1>Login</h1>
@@ -83,17 +83,13 @@
           >
         </v-col>
       </v-row>
+      <v-row>Session: {{storeState.sessionID}}</v-row>
     </v-card>
-    <!-- form new user -->
-    <v-card>
-<v-btn color="success" @click="getSess()">debug</v-btn> 
-{{debug}}
-   </v-card>
   </v-dialog>
 </template>
 
 <script>
-import store from "../store.js";
+import { store } from "../store.js";
 
 export default {
   props: {
@@ -104,32 +100,26 @@ export default {
   },
   data() {
     return {
-      username:"me",
-      password:"tt",
+      storeState: store.state,
+      username: "me",
+      password: "tt",
       dialog: false,
-      debug:"none"
+      debug: "none"
     };
   },
-  computed: {
-    },
+  computed: {},
   methods: {
-        storeState() {
-          return store.state.username 
-        },
     logout() {
       store.logout();
-      this.$router.push('about')
+      this.$router.push("about");
       this.dialog = false;
     },
     login() {
-      store.login(this.username,this.password);
+      store.login(this.username, this.password);
       this.dialog = false;
     },
     escapeform() {
       this.dialog = false;
-    },
-    getSess(){
-      this.debug=store.getSessionID()
     }
   }
 };

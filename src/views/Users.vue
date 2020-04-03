@@ -95,7 +95,7 @@
   </div>
 </template>
 <script>
-import store from "../store.js";
+import {store} from "../store.js";
 import axios from "axios";
 import usersDetails from "./UsersDetails";
 import usersPwd from "./UsersPwd";

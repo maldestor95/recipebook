@@ -44,7 +44,7 @@
 
 <script>
 import LoginUser from "./components/LoginUser.vue";
-import storey from "./store.js";
+import {store} from "./store.js";
 
 export default {
   name: "App",
@@ -52,7 +52,7 @@ export default {
     LoginUser
   },
   data: () => ({
-    Store: storey.state,
+    storeState: store.state,
     navdrawer: null,
     item: 1,
     navlist: [
@@ -92,7 +92,7 @@ export default {
     // filter navlist depending on user's right to access other menus
     navlistfiltered() {
       const res = this.navlist.filter(
-        nav => !nav.logrequired | storey.isAuthorised(nav.link)
+        nav => !nav.logrequired | store.isAuthorised(nav.link)
       );
       return res;
     },

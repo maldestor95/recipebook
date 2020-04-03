@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import store from "../store.js";
+import {store} from "../store.js";
 import DatePickerMenu from "@/components/DatePickerMenu";
 import SeedE from "../seedExpenses.js";
 export default {

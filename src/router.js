@@ -4,7 +4,7 @@ import VueRouter from "vue-router";
 // import Expenses from "./components/Expenses.vue";
 // import Users from "./components/Users.vue";
 import About from "./components/About.vue";
-import store from "./store";
+import {store} from "./store";
 
 const router = new VueRouter({
     mode: "history",
