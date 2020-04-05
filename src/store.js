@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const store ={
+export const store = {
     state: {
         numbers: [1, 2, 3],
         logged: false,
@@ -49,9 +49,20 @@ export const store ={
     isAuthorised(routeName) {
         if (this.state.username == null) return false
         else {
-            return this.state.applicationPrivilege.map(x=>{return Object.keys(x)[0].toLowerCase()}).includes(routeName)
+            return this.state.applicationPrivilege.map(x => {
+                return Object.keys(x)[0].toLowerCase()
+            }).includes(routeName)
+        }
+    },
+    getApplicationAccess(ApplicationName) {
+        let t = this.state.applicationPrivilege.filter(x => {
+            return Object.keys(x) == ApplicationName
+        })
+        if (t.length == 0) {
+            return null
+        } else {
+            return t[0][ApplicationName]
         }
     }
-
 
 }

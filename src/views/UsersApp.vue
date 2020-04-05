@@ -29,9 +29,6 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-btn rounded color="green" dark @click="Leave" @keyup.esc="Leave">
-      Leave
-    </v-btn>
   </div>
 </template>
 

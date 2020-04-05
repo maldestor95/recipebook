@@ -24,6 +24,7 @@
         :search="search"
         @click:row="handleClick"
         dense
+        :show-select="isRoot()"
         :sort-by="['userApplication','login']"
       >
         <!-- TODO custom sort by user Application -->
@@ -49,69 +50,58 @@
       </v-data-table>
     </v-card>
 
-    <v-btn color="success" @click="usersAddDialog()">Add User</v-btn>
+    <div v-if="!EditUserForm">
+      <v-btn color="success" @click="usersAddDialog()">Add User</v-btn>
+      <v-dialog
+        v-model="confirmDialog"
+        persistent
+        max-width="400"
+        v-if="isRoot()&&selected.length!=0"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn color="primary" dark v-on="on">Delete selected Users</v-btn>
+        </template>
+        <v-card>
+          <v-card-title class="headline">Confirmation required!</v-card-title>
+          <v-card-text>Are you sure you want to delete the selected users?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="confirmDialog = false">Disagree</v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="DeleteSelectedUsers() ; confirmDialog = false; selected=[]"
+            >Confirm Delete Selected Users</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+    <div v-if="EditUserForm">
+            <v-btn color="success" @click="EditUserForm=false">Cancel</v-btn>
+    </div>
 
-    <v-dialog v-model="userEditDialog" persistent @keyup.esc="Leave">
-      <v-tabs v-model="tabs" color="primary" slider-color="primary">
-        <v-tab :disabled="isDisabled">Application</v-tab>
-        <v-tab :disabled="isDisabled">Details</v-tab>
-        <v-tab :disabled="isDisabled">Pwd</v-tab>
-        <v-tab>Administration</v-tab>
-      </v-tabs>
-
-      <v-tabs-items v-model="tabs">
-        <v-tab-item>
-          <!-- TODO  updateApplication-->
-          <users-app
-            v-model="details"
-            :appList="appList"
-            :rightsList="rightsList"
-            @change="updateApp"
-            @leave="userEditDialog=false;scan()"
-          ></users-app>
-        </v-tab-item>
-
-        <v-tab-item>
-          <users-details
-            :details="details"
-            @change="updateDetails"
-            @leave="userEditDialog=false;scan()"
-          ></users-details>
-        </v-tab-item>
-
-        <v-tab-item>
-          <users-pwd :details="details" @change="updatePwd" @leave="userEditDialog=false;scan()"></users-pwd>
-        </v-tab-item>
-
-        <v-tab-item>
-          <users-admin
-            :details="details"
-            :toDelete="itemToDelete"
-            @leave="userEditDialog=false;scan()"
-          ></users-admin>
-        </v-tab-item>
-      </v-tabs-items>
-    </v-dialog>
+    <user-edit
+      :details="details"
+      v-if="EditUserForm"
+      @leave="EditUserForm=false;scan()"
+      :appList="appList"
+      :rightsList="rightsList"
+      v-model="activeTab"
+    ></user-edit>
   </div>
 </template>
 <script>
-import {store} from "../store.js";
+import { store } from "../store.js";
 import axios from "axios";
-import usersDetails from "./UsersDetails";
-import usersPwd from "./UsersPwd";
-import usersApp from "./UsersApp";
-import usersAdmin from "./UsersAdmin";
 import usersApi from "../components/usersapi";
-
-import qs from "qs";
+import userEdit from "./UsersEdit";
 
 export default {
   name: "User",
-  components: { usersDetails, usersPwd, usersApp, usersAdmin },
+  components: { userEdit },
+
   data() {
     return {
-      tabs: "",
-      itemToDelete: false,
       userEditDialog: false,
       search: "",
       singleSelect: false,
@@ -135,7 +125,10 @@ export default {
       },
       appList: [],
       rightsList: [],
-      isDisabled: true
+      EditUserForm: false,
+      debug: "none",
+      confirmDialog: false,
+      activeTab: 3
     };
   },
   mounted: function() {
@@ -154,16 +147,18 @@ export default {
         });
     },
     usersAddDialog() {
-      this.isDisabled = true;
-      this.tabs = 3;
+      this.EditUserForm = true;
       this.details = { login: null };
       this.userEditDialog = true;
+      this.activeTab = 3;
       this.itemToDelete = false;
     },
 
     handleClick(value) {
       this.Value = value;
-      this.isDisabled = false;
+      this.EditUserForm = true;
+      this.activeTab = 0;
+
       // this.$set(this.details,'login',value.login)
       this.details = {
         login: value.login,
@@ -176,60 +171,6 @@ export default {
       };
       this.itemToDelete = true;
     },
-    updateDetails() {
-      const user = this.details.login;
-      let data = {
-        details: {
-          address: this.details.address,
-          email: this.details.email,
-          phone: this.details.phone
-        },
-        version: this.details.version
-      };
-      axios
-        .put(`/API/users/${user}/details`, qs.stringify(data))
-        .then(res => {
-          if (res) {
-            this.msg = JSON.stringify(`Update details of ${user}`);
-            this.showMsg = true;
-            this.scan();
-          }
-        })
-        .catch(err => {
-          if (err) {
-            this.msg = JSON.stringify(err);
-            this.showMsg = true;
-          }
-        });
-    },
-    updatePwd() {
-      const user = this.details.login;
-      let data = {
-        details: {
-          address: this.details.address,
-          email: this.details.email,
-          phone: this.details.phone
-        },
-        version: this.details.version
-      };
-      axios
-        .put(`/API/users/${user}/details`, qs.stringify(data))
-        .then(res => {
-          if (res) {
-            this.msg = JSON.stringify(`Update details of ${user}`);
-            this.showMsg = true;
-            this.scan();
-          }
-        })
-        .catch(err => {
-          if (err) {
-            this.msg = JSON.stringify(err);
-            this.showMsg = true;
-          }
-        });
-    },
-    updateApp() {},
-
     // methods used to initiate the Applist
     getAppList() {
       usersApi
@@ -241,8 +182,44 @@ export default {
         .catch(err => {
           this.appList = err;
         });
+    },
+    isRoot() {
+      let t = store.getApplicationAccess("Users");
+      return t == "Root" ? true : false;
+    },
+    DeleteSelectedUsers() {
+      let listOfUserToDelete = this.selected.map(x => {
+        return x.login;
+      });
+      let vscan = this.scan;
+      let PromiseTable = listOfUserToDelete.map(x => this.UserToDel(x));
+      Promise.all(PromiseTable)
+        .then(function() {
+          vscan();
+        })
+        .catch(err => {
+          this.debug = JSON.stringify(err);
+          vscan();
+        });
+    },
+    UserToDel(user) {
+      return new Promise(function(resolve, reject) {
+        axios
+          .delete(`/API/users/${user}`)
+          .then(res => {
+            if (res.data.err) {
+              reject(JSON.stringify(res.data.err.message));
+            } else {
+              resolve("succesfully Delete User :" + user);
+            }
+          })
+          .catch(err => {
+            reject("unable to connect to server " + JSON.stringify(err));
+          });
+      });
     }
-  }
+  },
+  computed: {}
 };
 </script>
 

@@ -5,6 +5,7 @@
       <v-spacer></v-spacer>
       <h1>{{ currentApp }}</h1>
       <v-spacer></v-spacer>
+      <v-chip label color="primary" text-color="black">{{storeState.username}}</v-chip>
       <login-user color="info"></login-user>
     </v-app-bar>
 
@@ -32,7 +33,6 @@
 
         <v-subheader>Info</v-subheader>
         <p>{{ currentroute.path }}</p>
-        <login-user color="info"></login-user>
       </v-list>
     </v-navigation-drawer>
 
@@ -44,7 +44,7 @@
 
 <script>
 import LoginUser from "./components/LoginUser.vue";
-import {store} from "./store.js";
+import { store } from "./store.js";
 
 export default {
   name: "App",
@@ -84,7 +84,9 @@ export default {
   }),
   methods: {
     navigateTo(it) {
-      if (it.link!=this.$route.path) {    this.$router.push(it.link).catch(()=>{});}
+      if (it.link != this.$route.path) {
+        this.$router.push(it.link).catch(() => {});
+      }
       // return true;
     }
   },
@@ -103,7 +105,7 @@ export default {
       let currentNav = this.navlist.filter(nav => {
         return this.$route.name == nav.link;
       });
-      return currentNav[0]?currentNav[0].text:"none"
+      return currentNav[0] ? currentNav[0].text : "none";
     }
   }
 };

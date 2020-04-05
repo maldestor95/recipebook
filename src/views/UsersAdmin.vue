@@ -10,10 +10,10 @@
       color="primary"
       dark
       @click="deleteUser"
-      v-if="toDelete&&!(errmsg==null&msg!=null)"
+      v-if="details.login"
     >Delete User {{details.login}}</v-btn>
 
-    <v-btn rounded color="primary" dark @click="createUser" v-if="!toDelete&&!(errmsg==null&msg!=null)">Create User</v-btn>
+    <v-btn rounded color="primary" dark @click="createUser" v-if="!(errmsg==null&msg!=null)">Create User</v-btn>
 
     <v-btn rounded color="green" dark @click="Leave" @keyup.esc="Leave">
       <div v-if="errmsg==null&msg!=null">Leave</div>
@@ -29,7 +29,7 @@ import qs from "qs";
 export default {
   props: {
     details: { type: Object },
-    toDelete: { type: Boolean, default: true }
+    value: { type: Object },
   },
   data() {
     return {
