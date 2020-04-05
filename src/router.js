@@ -31,6 +31,11 @@ const router = new VueRouter({
             }
         },
         {
+            path: "/scoreboard",
+            name:"scoreboard",
+            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/scoreBoard/scoreBoard.vue"),
+        },
+        {
             path: "/Users",
             name:"users",
             component:  () => import( /* webpackChunkName: "Users" */ "@/views/Users.vue"),
