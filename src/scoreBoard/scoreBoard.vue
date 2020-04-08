@@ -1,34 +1,57 @@
 <template>
   <div>
-    <v-card >
+    <v-card>
       <v-container>
         <v-row no-gutters>
           <v-col v-for="item in players" :key="item.name" class="pa-0 ma-0">
-            <score :name="item.name" @change="updateRound" v-model="players"></score>
+            <score :name="item.name" v-model="players" :edit='configureBoard'></score>
             <v-row justify="center">{{scoreTotal(item.name)}}</v-row>
+            <v-chip color="primary" @click="removePlayer(item.name)" v-if="configureBoard">-</v-chip>
           </v-col>
         </v-row>
-        <v-btn color="success" @click="AddRound()">Add Round</v-btn>
-        <v-btn color="success" @click="refreshScore()">refresh Score</v-btn>
-        <v-btn color="primary" @click="resetScore()">reset Score</v-btn>
-        <h2>Vtable avec tous les round</h2>
-        <v-data-table
-          dense
-          :headers="playerList"
-          :items="playerScores"
-          class="elevation-5"
-          pagination.sync="pagination"
-        ></v-data-table>
-        <v-row>{{scoreB}}</v-row>
-        <v-row>{{round}}</v-row>
+        <v-row justify="center">
+          <v-col cols="3">
+            <v-btn color="success" @click="AddRound()">Add Round</v-btn>
+          </v-col>
+          <v-col cols="3">
+            <v-btn color="primary" @click="resetScore()">reset Score</v-btn>
+          </v-col>
+          <v-col cols="3">
+            <v-btn color="primary" @click="configureBoard=!configureBoard">configure Board</v-btn>
+          </v-col>
+
+          <v-col cols="3">
+            <v-btn color="primary" @click="refresh()">refresh</v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-if="configureBoard">
+            <v-text-field name="newName" label="new name" v-model="newName"></v-text-field>
+            <v-chip color="primary" @click="addPlayer(newName)">+</v-chip>
+        </v-row>
+        <v-row justify="center" class="pt-5">
+          <v-col cols="12">
+            <v-data-table
+              dense
+              :headers="playerList"
+              :items="playerScores"
+              class="elevation-5"
+              pagination.sync="pagination"
+            ></v-data-table>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card>
+    players {{players}}
+    <br />
+    playerScores{{playerScores}}
+    <br />
+    round {{round}}
   </div>
 </template>
 
 <script>
 import score from "./score";
-import { scoreStore } from "./scoreStore";
+import { scoreStore } from "./scoreStore.js";
 
 export default {
   components: {
@@ -36,64 +59,63 @@ export default {
   },
   data() {
     return {
-      scoreB: scoreStore.state.board,
-      players: [
-        { name: "ceri", currentScore: 0 },
-        { name: "ludo", currentScore: 0 }
-      ],
-      playerList: [
-        { text: "round", value: "round" },
-        { text: "ceri", value: "ceri" },
-        { text: "ludo", value: "ludo" }
-      ],
-      playerScores: [
-        { round: 1, ceri: 0, ludo: 5 },
-        { round: 2, ceri: 5, ludo: 5 },
-        { round: 3, ceri: 10, ludo: 0 }
-      ],
-      round: {},
-      initScore: 0,
-      startValue: 0
+      configureBoard:false,
+      scoreStoreState: scoreStore.State,
+      players: scoreStore.state.players,
+      playerList: scoreStore.state.playerList,
+      playerScores: scoreStore.state.playerScores,
+      round: scoreStore.state.round,
+      newName: "new"
     };
   },
   mounted() {
-    let t = scoreStore.getScoreBoardCookie();
-    if (t) {
-      this.scoreB = { ...t };
-    }
+    //FIXME
+    scoreStore.initFromCookies();
+    this.refresh();
   },
-  computed: {},
   methods: {
     scoreTotal(name) {
       let t = this.playerScores.map(x => {
         return x[name];
       });
-      return t.reduce((a, b) => {
-        return a + b;
-      });
-    },
-    refreshScore() {
-      this.scoreB = scoreStore.getScoreBoardCookie();
+      t = t.filter(x => typeof x != "undefined");
+      if (t.length == 0) {
+        return 0;
+      } else {
+        return t.reduce((a, b) => {
+          return a + b;
+        });
+      }
     },
     resetScore() {
       scoreStore.resetScore();
-    },
-    updateRound: function(evt) {
-      let listOfPlayers = this.players.map(x => x.name);
-      let currentRound = Object.keys(this.round);
-      let ommittedValue = listOfPlayers.filter(x => !currentRound.includes(x));
-      ommittedValue.forEach(element => {
-        this.round[element] = 0;
-      });
-
-      this.round[evt.name] = evt.score;
+      this.playerScores = scoreStore.getPlayerScores();
+      this.refresh()
     },
     AddRound() {
-      let RoundNumber = Math.max(...this.playerScores.map(x => x.round)) + 1;
-      this.playerScores.push({ ...{ round: RoundNumber }, ...this.round });
-      this.players.forEach(x => (x.currentScore = 0));
-      Object.keys(this.round).forEach(x => (this.round[x] = 0));
-      this.startValue = 10;
+      scoreStore.AddRound();
+
+      this.playerScores = scoreStore.getPlayerScores();
+      this.players = scoreStore.getPlayers();
+      this.refresh();
+    },
+    refresh() {
+      this.players = scoreStore.getPlayers();
+      this.playerScores = scoreStore.getPlayerScores();
+      this.playerList = scoreStore.getPlayerList();
+      this.round = scoreStore.getRound();
+    },
+    addPlayer(name) {
+      let pList=this.players.map(x=>x.name)
+      if (!pList.includes(name)){
+
+        scoreStore.addPlayer(name);
+      this.refresh();
+      }
+    },
+    removePlayer(name) {
+      scoreStore.removePlayer(name);
+      this.refresh();
     }
   }
 };
