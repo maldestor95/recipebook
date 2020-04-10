@@ -1,13 +1,18 @@
 <template>
-  <v-app>
-    <v-app-bar dense app color="primary" dark>
-      <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon>
-      <v-spacer></v-spacer>
-      <h1>{{ currentApp }}</h1>
-      <v-spacer></v-spacer>
-      <v-chip label color="primary" text-color="black">{{storeState.username}}</v-chip>
-      <login-user color="info"></login-user>
+  <v-app class="AppClass">
+    <v-app-bar dense app color="primary" dark class="AppBar">
+      <v-icon id="menu" @click="navdrawer = !navdrawer">mdi-menu</v-icon>
+        <v-spacer></v-spacer>
+        <h1>{{ currentApp }}</h1>
+        <v-spacer></v-spacer>
+        <v-chip label color="primary" text-color="black">{{storeState.username}}</v-chip>
+        <login-user color="info"></login-user>
     </v-app-bar>
+
+    <v-btn fab small class="menuMobile" @click="navdrawer = !navdrawer">
+      <!-- <v-btn class="mx-2" fab dark small color="primary"> -->
+    <v-icon  >mdi-menu</v-icon>
+      </v-btn>
 
     <v-navigation-drawer temporary v-model="navdrawer" class="NavMenu">
       <v-list dense>
@@ -33,11 +38,13 @@
 
         <v-subheader>Info</v-subheader>
         <p>{{ currentroute.path }}</p>
+                <login-user color="info"></login-user>
+
       </v-list>
     </v-navigation-drawer>
 
-    <v-content>
-      <router-view></router-view>
+    <v-content >
+      <router-view class="AppContent"></router-view>
     </v-content>
   </v-app>
 </template>
@@ -111,8 +118,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-#routerview {
-  border-style: solid;
+
+.AppClass {
+  width: 100%;
 }
 .NavMenu {
   position: absolute;
@@ -122,5 +130,25 @@ export default {
   height: 100%;
   z-index: 10;
   background-color: rgba(0, 0, 0, 0.5); /*dim the background*/
+}
+.AppContent {
+    position: fixed;
+    top: 48px;
+  }
+@media screen and (max-width: 400px) {
+  .AppBar {
+    display: none;
+  }
+
+.menuMobile{
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+}
+  .AppContent {
+    position: fixed;
+    top: 0;
+  }
 }
 </style>
