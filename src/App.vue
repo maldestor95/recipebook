@@ -8,11 +8,8 @@
         <v-chip label color="primary" text-color="black">{{storeState.username}}</v-chip>
         <login-user color="info"></login-user>
     </v-app-bar>
-
-    <v-btn fab small class="menuMobile" @click="navdrawer = !navdrawer">
-      <!-- <v-btn class="mx-2" fab dark small color="primary"> -->
-    <v-icon  >mdi-menu</v-icon>
-      </v-btn>
+    
+    <v-icon  class="menuMobile" @click="navdrawer = !navdrawer">mdi-menu</v-icon>
 
     <v-navigation-drawer temporary v-model="navdrawer" class="NavMenu">
       <v-list dense>
@@ -43,7 +40,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content >
+    <v-content style="padding:0px">
       <router-view class="AppContent"></router-view>
     </v-content>
   </v-app>
@@ -118,7 +115,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
+.v-content{
+  padding:0px;
+}
 .AppClass {
   width: 100%;
 }
@@ -131,10 +130,7 @@ export default {
   z-index: 10;
   background-color: rgba(0, 0, 0, 0.5); /*dim the background*/
 }
-.AppContent {
-    position: fixed;
-    top: 48px;
-  }
+
 @media screen and (max-width: 400px) {
   .AppBar {
     display: none;
@@ -143,12 +139,10 @@ export default {
 .menuMobile{
   position: fixed;
   top: 10px;
-  right: 10px;
+  left: 10px;
+  height: 10px;
   z-index: 4;
 }
-  .AppContent {
-    position: fixed;
-    top: 0;
-  }
+
 }
 </style>
