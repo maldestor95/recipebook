@@ -1,33 +1,21 @@
 <template>
   <div>
-    <v-card >
+    <v-card>
       <v-container style="padding-top:0px">
-        <v-row justify="center">
-          <v-col>
-            <v-row v-if="edit">
-            <v-icon @click="enterNewName=true">mdi-pen</v-icon>
-            </v-row>
-<v-row v-if="enterNewName">
-
-            <v-text-field
-              name="new Name"
-              label="new Name"
-              v-model="newName"
-            ></v-text-field>
-            <v-btn color="success" @click="renamePlayer(name,newName)">done</v-btn>
-</v-row>
-          </v-col>
+        <v-row justify="center"></v-row>
+        <v-row justify="center" class="btnScore">
+          <v-btn large outlined rounded color="success" @click="updateScore(10)">+10</v-btn>
+          <v-btn large outlined rounded color="success" @click="updateScore(5)">+5</v-btn>
+          <v-btn large outlined rounded color="success" @click="updateScore(1)">+1</v-btn>
         </v-row>
-        <v-row justify="center">
-          <v-btn small outlined rounded color="success" @click="updateScore(10)">+10</v-btn>
-          <v-btn small outlined rounded color="success" @click="updateScore(5)">+5</v-btn>
-          <v-btn small outlined rounded color="success" @click="updateScore(1)">+1</v-btn>
-        </v-row>
-        <v-row justify="center">{{value.filter(x=>x.name==name)[0].currentScore}}</v-row>
-        <v-row justify="center">
-          <v-btn small outlined rounded color="error" @click="updateScore(-10)">-10</v-btn>
-          <v-btn small outlined rounded color="error" @click="updateScore(-5)">-5</v-btn>
-          <v-btn small outlined rounded color="error" @click="updateScore(-1)">-1</v-btn>
+        <v-row
+          justify="center"
+          :class="[currentScore()>0?'positive':'negative','score']"
+        >{{value.filter(x=>x.name==name)[0].currentScore}}</v-row>
+        <v-row justify="center" class="btnScore">
+          <v-btn large outlined rounded color="error" @click="updateScore(-10)">-10</v-btn>
+          <v-btn large outlined rounded color="error" @click="updateScore(-5)">-5</v-btn>
+          <v-btn large outlined rounded color="error" @click="updateScore(-1)">-1</v-btn>
         </v-row>
       </v-container>
     </v-card>
@@ -42,31 +30,30 @@ export default {
       type: String,
       default: "test"
     },
-    edit: { type: Boolean, default: false },
-    value: { type: Array ,default:()=>{return [{name:'test',currentScore:0}]}},
+    // edit: { type: Boolean, default: false },
+    value: {
+      type: Array,
+      default: () => {
+        return [{ name: "test", currentScore: 0 }];
+      }
+    }
   },
   data() {
     return {
-      newName: "",
-      enterNewName: false
+      // newName: "",
+      // enterNewName: false
     };
   },
-  computed: {
-    },
+  computed: {},
   methods: {
-        currentScore() {
-          let t = this.value.filter(x => x.name == this.name)[0].currentScore
-          return t
-          },
+    currentScore() {
+      let t = this.value.filter(x => x.name == this.name)[0].currentScore;
+      return t;
+    },
 
     updateScore(newValue = 0) {
       scoreStore.updateRound({ score: newValue, name: this.name });
       // this.value=scoreStore.getPlayer()
-    },
-    renamePlayer(OldName, newName) {
-      // TODO validation of NewName
-      scoreStore.renamePlayer(OldName, newName);
-      this.enterNewName = false;
     }
   }
 };
@@ -80,27 +67,54 @@ export default {
   border-color: lightgreen;
   background-color: lightgreen;
 }
-.score{
-
-  font-weight: 700;
+.btnScore {
+  padding-top: 10px;
+  @media only screen and (max-width: 600px)  {
+    padding-left: 0px;
+    padding-right: 0px;
+  .v-btn {
+    margin: 0px;
+    padding: 0px;
+  }
+  }
+  @media screen and (max-width:740px) and (orientation:landscape ){
+    padding-top:0px;
+    padding-left: 0px;
+    padding-right: 0px;
+  .v-btn {
+    margin: 0px;
+    padding: 0px;
+  }
+  }
+}
+.container {
+  @media screen and (max-width:740px) and (orientation:landscape ){
+  padding-bottom: 0px;
+  }
+}
+.score {
+  font-weight: bold;
+  font-size: x-large;
+  @media only screen and (max-width: 600px) {
+    font-size: large;
+  }
 }
 .negative {
   color: red;
 }
 .positive {
   color: green;
-  
 }
 
 h1 {
   font-size: 100%;
   align-content: center;
-
-}
-@media only screen and (max-width: 600px) {
-  h1 {
-    font-size: 80%;
-    
+  @media only screen and (max-width: 600px) {
+    h1 {
+      font-size: 80%;
+    }
   }
 }
+
+
 </style>

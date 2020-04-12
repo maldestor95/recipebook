@@ -131,18 +131,38 @@ export default {
   background-color: rgba(0, 0, 0, 0.5); /*dim the background*/
 }
 
-@media screen and (max-width: 400px) {
   .AppBar {
+    @media screen and (max-width: 400px),
+      screen and (max-width: 740px) and (orientation: landscape)
+ {
     display: none;
+    }
   }
 
+.AppContent {
+  padding-top: 20px;
+  @media screen and (max-width: 400px) {
+    padding-top: 0px;
+  }
+}
 .menuMobile{
+  @media screen and (max-width: 400px)
+   {
   position: fixed;
   top: 10px;
   left: 10px;
   height: 10px;
   z-index: 4;
+  }
+
+  @media screen and (max-width: 740px) and (orientation: landscape) {
+  position: fixed;
+  top: 0px;
+  left: 10px;
+  height: 10px;
+  z-index: 4;
+  }
 }
 
-}
+
 </style>
