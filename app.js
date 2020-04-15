@@ -1,7 +1,7 @@
 const express = require("express");
 var bodyParser = require('body-parser')
 const port = 3000;
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV?process.env.NODE_ENV:"production";
 
 var myLogger = function (req, res, next) {
     console.log("LOGGED");
@@ -31,5 +31,5 @@ app.get("/", (req, res) => res.send("Hello toto!"));
 app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
     console.log(`App listening on port ${port} since ${d}!`)
-    console.log(`Server started in ${dev?"Development":"Production"} mode`)
+    console.log(`Server started in ${dev} mode`)
 });
