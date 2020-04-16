@@ -24,7 +24,7 @@ app.get("/tot", function (req, res) {
     res.send("Hello World!");
 });
 // app.use("/API/", require("./lib/expensesbdd_router"));
-app.use("/API", require("./lib/Users_router"));
+app.use(require("./lib/Users_router"));
 app.use("/API", require("./lib/Applications_router"));
 app.get("/", (req, res) => res.send("Hello toto!"));
 

@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "lodash": "^4.17.15",
     "qs": "^6.9.1",
+    "uuid": "^7.0.3",
     "validate.js": "^0.13.1"
   },
   "devDependencies": {

@@ -1,14 +1,16 @@
 var assert = require("chai").assert;
 var axios = require("axios")
 var qs = require("qs")
+var uuid = require('uuid').v4
+
 const baseURL = "http://localhost:3000"
 describe("Users router", function () {
     describe("scanusers", function () {
-        it('/API/Users/scan', done => {
+        it('/users', done => {
             data = null
             axios.request({
                     method: "get",
-                    url: baseURL + '/API/Users/scan',
+                    url: baseURL + '/users',
                     data: qs.stringify(data)
                 })
                 .then((response) => {
@@ -18,11 +20,13 @@ describe("Users router", function () {
                     done()
                 })
         })
-        it("/API/Users/scan/login", done => {
-            data = null
+        it("/users get after admin", done => {
+            data = {
+                login: "admin"
+            }
             axios.request({
-                    method: "get",
-                    url: baseURL + '/API/Users/scan/login',
+                    method: "post",
+                    url: baseURL + '/users',
                     data: qs.stringify(data)
                 })
                 .then((response) => {
@@ -34,16 +38,33 @@ describe("Users router", function () {
         })
 
     })
-
+    describe("get user", function () {
+        it("/users/user_id get", done => {
+            let url = baseURL + '/users/datalogin'
+            axios.request({
+                    method: "get",
+                    url: url
+                })
+                .then((response) => {
+                    assert.equal(response.status, 200)
+                    assert.equal(response.data.err, null, "login properly created");
+                    done()
+                })
+                .catch((err) => {
+                    assert.equal(err.response.statusText, "Not Found", "not found")
+                    done()
+                })
+        })
+    }) 
     describe("add users", function () {
-        it("/API/Users/new", done => {
+        it("/users/user_id  post", done => {
             let t = new Date()
-            data = {
-                login: "logininput-" + t.toJSON()
+            let data = {
+                login: uuid()
             }
             axios.request({
                     method: "post",
-                    url: baseURL + '/API/Users/new',
+                    url: baseURL + '/users/' + data.login,
                     data: qs.stringify(data)
                 })
                 .then((response) => {
@@ -51,12 +72,16 @@ describe("Users router", function () {
                     assert.equal(response.data.err, null, "login properly created");
                     done()
                 })
+                .catch((err) => {
+                    assert.equal(err.response.statusText, "Not Found", "not found")
+                    done()
+                })
         })
-        it("/API/Users/new with null data", done => {
+        it("/users/new with null data", done => {
             data = null
             axios.request({
                     method: "post",
-                    url: baseURL + '/API/Users/new',
+                    url: baseURL + '/users/'+uuid(),
                     data: qs.stringify(data)
                 })
                 .then((response) => {
@@ -64,8 +89,12 @@ describe("Users router", function () {
                     assert.equal(response.data, "bad login", "[message]");
                     done()
                 })
+                .catch((err) => {
+                    assert.equal(err.response.statusText, "Not Found", "not found")
+                    done()
+                })
         })
-    })
+    }) 
     describe("modify user", function () {
         let modifiedUser = {
             login: "modifieduser",
@@ -78,7 +107,7 @@ describe("Users router", function () {
         beforeEach((done) => {
             axios.request({
                     method: "post",
-                    url: baseURL + '/API/Users/new',
+                    url: baseURL + '/users/new',
                     data: qs.stringify(modifiedUser)
                 })
                 .then((response) => {
@@ -86,7 +115,7 @@ describe("Users router", function () {
                 })
             axios.request({
                     method: "post",
-                    url: baseURL + '/API/Users/new',
+                    url: baseURL + '/users/new',
                     data: qs.stringify({
                         "login": "userToDelete"
                     })
@@ -104,15 +133,15 @@ describe("Users router", function () {
             //         done()
             //     })
         })
-        it(" get /API/Users/modifieduser", done => {
-            axios.get(baseURL + '/API/Users/modifieduser')
+        it(" get /users/modifieduser", done => {
+            axios.get(baseURL + '/users/modifieduser')
                 .then((response) => {
                     assert.equal(response.data.data.login, modifiedUser.login, "[get /API/Users/modifieduser] not successful");
                     done()
                 })
         })
-        it(" get /API/Users/unknownuser", done => {
-            axios.get(baseURL + '/API/Users/unknownuser')
+        it(" get /users/unknownuser", done => {
+            axios.get(baseURL + '/users/unknownuser')
                 .then((response) => {
                     done()
                 })
