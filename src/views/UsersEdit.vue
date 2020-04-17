@@ -90,7 +90,7 @@ export default {
         version: this.details.version
       };
       axios
-        .put(`/API/users/${user}/details`, qs.stringify(data))
+        .put(`/users/${user}/details`, qs.stringify(data))
         .then(res => {
           if (res) {
             this.msg = JSON.stringify(`Update details of ${user}`);
@@ -116,7 +116,7 @@ export default {
         version: this.details.version
       };
       axios
-        .put(`/API/users/${user}/details`, qs.stringify(data))
+        .put(`/users/${user}/details`, qs.stringify(data))
         .then(res => {
           if (res) {
             this.msg = JSON.stringify(`Update details of ${user}`);
