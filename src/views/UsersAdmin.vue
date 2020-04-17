@@ -41,7 +41,7 @@ export default {
     deleteUser() {
       const user = this.details.login;
       axios
-        .delete(`/API/users/${user}`)
+        .delete(`/users/${user}`)
         .then(res => {
           if (res.data.err) {
             this.errmsg = JSON.stringify(res.data.err.message);
@@ -63,7 +63,7 @@ export default {
         login: user
       };
       axios
-        .post(`/API/users/new`, qs.stringify(data))
+        .post(`/users`, qs.stringify(data))
         .then(res => {
           if (res.data.err) {
             this.errmsg = JSON.stringify(res.data.err.message);

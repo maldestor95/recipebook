@@ -33,7 +33,7 @@ export default {
         version: this.details.version
       };
       axios
-        .put(`/API/users/${user}/pwd`, qs.stringify(data))
+        .put(`/users/${user}/pwd`, qs.stringify(data))
         .then(res => {
           if (res.data.err) {
             this.msg = JSON.stringify(res.data.err.message);
