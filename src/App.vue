@@ -10,7 +10,7 @@
     >
       <v-icon id="menu" @click="navdrawer = !navdrawer" color="white">mdi-menu</v-icon>
 
-      <span class="text-uppercase white--text">Maldestor 95</span>
+      <span class="text-uppercase white--text" style="font-family:CoffeeHouse;font-size: x-large;">Maldestor 95</span>
       <v-spacer></v-spacer>
       <v-chip
         label
@@ -50,11 +50,12 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content style="position:absolute; top:0px;left 20px">
+<!-- style="position:absolute; top:0px;left 20px" -->
+    <v-content  id="vcontent" style="position:absolute; top:0px;left 20px">
       <router-view></router-view>
     </v-content>
 
-    <v-btn absolute top left fab color="blue lighten-3" class="mt-8 hidden-md-and-up">
+    <v-btn absolute top left fab color="blue lighten-3" id="menumobile" class="mt-8 hidden-md-and-up">
       <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon>
     </v-btn>
 
@@ -129,6 +130,18 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+@font-face {
+  font-family: SaucerBB;
+  src: url("./assets/fonts/saucer/SaucerBB.ttf") format('truetype');
+}
+@font-face {
+  font-family: CoffeeHouse;
+  src: url("./assets/fonts/coffee-house/CoffeeHouse.ttf") format('truetype');
+  font-weight: bold;
+  font-size: xx-large;
+}
+</style>
 <style lang="scss" scoped>
 // .v-content{
 //   padding:0px;
@@ -178,4 +191,29 @@ export default {
 //   z-index: 4;
 //   }
 // }
+
+
+@page {
+  margin: 1cm;
+  border:solid;
+  border-color:black;
+  size: A4 landscape;
+
+}
+@media print {
+  .v-app-bar{display:none;
+  height:0px;}
+
+.v-content {
+
+position:absolute;
+top:-96px;
+  // padding: 0px;
+  // color:red;
+  }
+
+  #menumobile {display:none}
+  
+
+}
 </style>

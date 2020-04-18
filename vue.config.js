@@ -8,7 +8,14 @@ module.exports = {
   runtimeCompiler: true, //https: //cli.vuejs.org/config/#runtimecompiler
   configureWebpack: {
     plugins: [new BundleAnalyzerPlugin()],
-      devtool: 'source-map'
+      devtool: 'source-map',
+      module: {
+        rules: [{
+          test: /\.(woff|woff2|eot|ttf|otf)$/,
+          use: [
+            'file-loader',
+          ],
+        }]}
   },
   devServer: {
     proxy:  'http://localhost:3000/'
@@ -19,5 +26,6 @@ module.exports = {
         prependData: `@import "@/styles/_variables.scss";`
       }
     }
-  }
+  },
+  
 }
