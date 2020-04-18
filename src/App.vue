@@ -22,7 +22,7 @@
       <login-user></login-user>
     </v-app-bar>
 
-    <v-navigation-drawer temporary v-model="navdrawer" >
+    <v-navigation-drawer temporary app v-model="navdrawer" >
       <v-list dense>
         <v-list-item @click="navdrawer = !navdrawer">
           <v-list-item-icon>
