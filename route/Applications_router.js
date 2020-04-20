@@ -18,7 +18,7 @@
 "use strict"
 var express = require('express');
 var path = require('path');
-var def = require('./definition')
+var def = require('../lib/definition')
 
 const validate = require("validate.js");
 
@@ -31,16 +31,20 @@ let notImplementedYet = function (req, res) {
 }
 
 // middleware that is specific to this router
-router.use(function timeLog(req, res, next) {
+router.use((req, res, next) => {
     console.log(rootPath + '-----Time: ', Date.now(), '\n OriginUrl', req.originalUrl, '=>Path:', req.path);
 
     next();
 });
-router.get(rootPath + '/AvailableAppsList', (req, res) => {
-    res.send({err:null,data:Object.values(def._application)})
+router.get('/AvailableAppsList', (req, res) => {
+    let AvailableOptions = {
+        application: Object.values(def._application),
+        role: Object.values(def._role)
+    }
+    res.send({
+        err: null,
+        data: AvailableOptions
+    })
 })
-router.get(rootPath + '/AvailableRightsList', (req, res) => {
-    res.send({err:null,data:Object.values(def._role)})
 
-})
 module.exports = router;
