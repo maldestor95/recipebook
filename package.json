@@ -4,6 +4,7 @@
   "description": "nodejs server",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "createTable": "node lib/dynamodb/createTable.js",
