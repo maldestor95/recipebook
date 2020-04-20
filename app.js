@@ -18,11 +18,14 @@ var DynamoDBStoreOptions = {
     })
     // AWSConfigPath:'.pathtoCredentials.json' //TODO add credentials when going to production
 }
+if (process.env.NODE_ENV=="developmentLocal") {
+    DynamoDBStoreOptions.client.config.update({endpoint: "http://localhost:8000"})
+}
 const User = require('./lib/dynamodb/User')
 
 var bodyParser = require('body-parser')
 const port = 3000;
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV?process.env.NODE_ENV:"production";
 
 
 // Logger Function
@@ -80,5 +83,5 @@ app.get("/", (req, res) => res.send("Hello toto!"));
 app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
     console.log(`App listening on port ${port} since ${d}!`)
-    console.log(`Server started in ${dev?"Development":"Production"} mode`)
+    console.log(`Server started in ${dev} mode`)
 });
