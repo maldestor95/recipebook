@@ -79,6 +79,9 @@ app.get("/tot", function (req, res) {
 app.use(require("./route/Users_router"));
 app.use("/API", require("./route/Applications_router"));
 app.get("/", (req, res) => res.send("Hello toto!"));
+app.use('/vue', express.static('distvue'))
+app.use('/css', express.static('distvue/css'))
+app.use('/js', express.static('distvue/js'))
 
 app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
