@@ -5,5 +5,9 @@ node_modules
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 .env
+
 #jsdoc
 out
+
+#editor
+.vscode
