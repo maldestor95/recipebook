@@ -4,6 +4,14 @@
 
 # developpement
 
+## tree
+Le répertoire `src` est composés de composants pour le server expressJS ou pour le client VueJS
+* src
+    * server  
+    * client
+    * common
+
+
 ## lancement du serveur depuis la console
 
 * `npm run start` démarre le serveur express en production
