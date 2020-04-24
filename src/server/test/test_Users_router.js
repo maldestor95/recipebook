@@ -55,9 +55,22 @@ describe("Users router", function () {
                     done()
                 })
         })
-    }) 
+        it(" get /users/unknownuser", done => {
+            axios.get(baseURL + '/users/unknownuser')
+                .then((response) => {
+                    done()
+                })
+                .catch((response) => {
+                    console.log(response)
+                    assert.equal(response.response.status, 404)
+                    assert.equal(response.response.data, "/users/unknownuser not found")
+                    done()
+
+                })
+        })
+    })
     describe("add users", function () {
-        it("/users/user_id  post", done => {
+        it("/users/user_id  post and delete", done => {
             let t = new Date()
             let data = {
                 login: uuid()
@@ -70,18 +83,25 @@ describe("Users router", function () {
                 .then((response) => {
                     assert.equal(response.status, 200)
                     assert.equal(response.data.err, null, "login properly created");
-                    done()
+                })
+                .then((next) => {
+                    axios.delete(baseURL + '/users/' + data.login)
+                        .then((deleteResponse) => {
+                            assert.equal(deleteResponse.status, 200);
+                            assert.isNull(deleteResponse.data.err);
+                            done()
+                        })
                 })
                 .catch((err) => {
                     assert.equal(err.response.statusText, "Not Found", "not found")
                     done()
                 })
         })
-        it("/users/new with null data", done => {
+        it("/users/new post with null data", done => {
             data = null
             axios.request({
                     method: "post",
-                    url: baseURL + '/users/'+uuid(),
+                    url: baseURL + '/users/' + uuid(),
                     data: qs.stringify(data)
                 })
                 .then((response) => {
@@ -93,6 +113,19 @@ describe("Users router", function () {
                     assert.equal(err.response.statusText, "Not Found", "not found")
                     done()
                 })
+        })
+        it("/users/unknownUserToDelete delete", done => {
+            axios.delete(baseURL + '/users/unknownUserToDelete')
+                .then((deleteResponse) => {
+                    assert.isNotNull(deleteResponse.err, "[unknownUserToDelete] shall fail");
+                    assert.equal(deleteResponse.status, 200);
+                            done()
+                })
+                .catch((err) => {
+                        console.log(err)
+                        done()
+                    }
+                )
         })
     }) 
     describe("modify user", function () {
@@ -110,65 +143,44 @@ describe("Users router", function () {
                     url: baseURL + '/users/new',
                     data: qs.stringify(modifiedUser)
                 })
-                .then((response) => {
-                    done()
-                })
-            axios.request({
-                    method: "post",
-                    url: baseURL + '/users/new',
-                    data: qs.stringify({
-                        "login": "userToDelete"
+                .then(
+                    axios.request({
+                        method: "post",
+                        url: baseURL + '/users/new',
+                        data: qs.stringify({
+                            "login": "userToDelete"
+                        })
                     })
-                })
-                .then((response) => {
-                    done()
-                })
+                    .then((response) => {
+                        done()
+                    })
+
+                )
         });
         afterEach((done) => {
-            // axios.request({
-            //         method: "delete",
-            //         url: baseURL + '/API/Users/modifieduser',
-            //     })
-            //     .then((response) => {
-            //         done()
-            //     })
-        })
-        it(" get /users/modifieduser", done => {
-            axios.get(baseURL + '/users/modifieduser')
-                .then((response) => {
-                    assert.equal(response.data.data.login, modifiedUser.login, "[get /API/Users/modifieduser] not successful");
-                    done()
+            axios.request({
+                    method: "delete",
+                    url: baseURL + '/users/modifieduser',
                 })
-        })
-        it(" get /users/unknownuser", done => {
-            axios.get(baseURL + '/users/unknownuser')
                 .then((response) => {
                     done()
                 })
-                .catch((response) => {
-                    console.log(response)
-                    assert.equal(response.response.status, 404)
-                    assert.equal(response.response.data, "/API/Users/unknownuser not found")
-                    done()
-
-                })
         })
-
-        it("put /API/Users/modifieduser/pwd", done => {
+        it("/users/modifieduser/pwd  put", done => {
             let data = {
                 pwd: "abc"
             }
-            axios.get(baseURL + '/API/Users/modifieduser')
+            axios.get(baseURL + '/users/modifieduser')
                 .then((modUser) => {
                     data.version = modUser.data.data.version
 
                     axios.request({
-                            url: baseURL + '/API/Users/modifieduser/pwd',
+                            url: baseURL + '/users/modifieduser/pwd',
                             method: 'put',
                             data: qs.stringify(data)
                         })
                         .then((response) => {
-                            axios.get(baseURL + '/API/Users/modifieduser')
+                            axios.get(baseURL + '/users/modifieduser')
                                 .then((responseGet) => {
                                     assert.equal(responseGet.status, 200)
                                     assert.isNull(responseGet.data.err)
@@ -179,10 +191,11 @@ describe("Users router", function () {
                         })
                 })
                 .catch((modUser) => {
+                    console.log(modUser)
                     done()
                 })
         })
-        it("put /API/Users/modifieduser/details", done => {
+        it("/users/modifieduser/details put", done => {
             let data = {
                 details: {
                     "address": "ici",
@@ -190,11 +203,11 @@ describe("Users router", function () {
                     "phone": "013235468"
                 }
             }
-            axios.get(baseURL + '/API/Users/modifieduser')
+            axios.get(baseURL + '/users/modifieduser')
                 .then((modUser) => {
                     data.version = modUser.data.data.version
                     axios.request({
-                            url: baseURL + '/API/Users/modifieduser/details',
+                            url: baseURL + '/users/modifieduser/details',
                             method: 'put',
                             data: qs.stringify(data)
                         })
@@ -205,46 +218,31 @@ describe("Users router", function () {
                 })
         })
 
-        it("put /API/Users/modifieduser/application", done => {
+        it("/users/modifieduser/application put", done => {
             let data = {
                 userApplication: [{
                     "ToDo": "Viewer"
                 }]
             } // Object of applicationName:authorisation  (e.g "ToDo": "Viewer"`
-            axios.get(baseURL + '/API/Users/modifieduser')
+            axios.get(baseURL + '/users/modifieduser')
                 .then((modUser) => {
                     data.version = modUser.data.data.version
                     axios.request({
-                            url: baseURL + '/API/Users/modifieduser/application',
+                            url: baseURL + '/users/modifieduser/application',
                             method: 'put',
                             data: qs.stringify(data)
                         })
                         .then((response) => {
                             assert.equal(response.data.err, null)
-                            done()
-                        })
+                            axios.get(baseURL + '/users/modifieduser')
+                            .then((response) => {
+                                assert.equal(response.data.data.userApplication[0].ToDo, data.userApplication[0].ToDo, "[get /users/modifieduser] not successful");
+                                done()
+                            })                        })
                 })
         })
-        it("delete /API/Users/userToDelete", done => {
-            axios.delete(baseURL + '/API/Users/userToDelete')
-                .then((deleteResponse) => {
-                    assert.equal(deleteResponse.status, 200);
-                    assert.isNull(deleteResponse.data.err);
-                    done()
-                })
-        })
-        it("delete /API/Users/unknownUserToDelete", done => {
-            axios.delete(baseURL + '/API/Users/unknownUserToDelete')
-                .then((deleteResponse) => {
-                    assert.isNotNull(deleteResponse.err, "[unknownUserToDelete] shall fail");
-                    assert.equal(deleteResponse.status, 200);
-                    axios.get(baseURL + '/API/Users/scan')
-                        .then((scanResponse) => {
-                            assert.equal(scanResponse.status, 200);
-                            done()
-                        })
-                })
-        })
+
+
     })
 })
 

@@ -152,7 +152,7 @@ class User {
             Item: {
                 "login": login,
                 "details": {},
-                "userApplication": [],
+                "userApplication": {},
                 "version": 0
             },
             ConditionExpression: "attribute_not_exists(#u)",
@@ -197,7 +197,8 @@ class User {
             console.log(post)
         }
     }
-    updateLoginPwd(newPwd = null, callback) {
+    updateLoginPwd(data = null, callback) {
+        //data={pwd:newpwd,version:version}!
         if (this.login == null) {
             callback("missing login", null)
         } else {
@@ -215,25 +216,25 @@ class User {
                     "#u": "login",
                 },
                 ExpressionAttributeValues: {
-                    ":mypwd": newPwd.pwd,
-                    ":version": Number(newPwd.version),
-                    ":newvers": Number(newPwd.version) + 1,
+                    ":mypwd": data.pwd,
+                    ":version": Number(data.version),
+                    ":newvers": Number(data.version) + 1,
                 }
             }
             documentDB.update(params, (err, data) => {
                 if (!err) {
-                    this.version = Number(newPwd.version) + 1
+                    this.version = Number(data.version) + 1
                 }
                 callback(err, data)
             })
         }
 
     }
-    updateLoginDetails(details = null, callback) {
+    updateLoginDetails(data = null, callback) {
         if (this.login == null) {
             callback("missing login", null)
         }
-        if (details == null) {
+        if (data == null) {
             callback("missing details", null)
         } else {
             let documentDB = new AWS.DynamoDB.DocumentClient()
@@ -243,40 +244,38 @@ class User {
                     "login": this.login
                 },
                 ConditionExpression: "attribute_exists(#u) and #v = :version",
-                UpdateExpression: "set #Details.#Address = :address, #Details.#Phone=:phone , #Details.#Email=:email, #UserApplication =:userApplication, #v =:newversion",
+                UpdateExpression: "set #Details.#Address = :address, #Details.#Phone=:phone , #Details.#Email=:email, #v =:newversion",
                 ExpressionAttributeNames: {
                     '#Address': "address",
                     '#Phone': "phone",
                     '#Details': "details",
                     '#Email': "email",
-                    '#UserApplication': "userApplication",
                     "#u": "login",
                     "#v": "version",
                 },
                 ExpressionAttributeValues: {
-                    ':address': details.details.address ? details.details.address : this.details.address ? this.details.address : null,
-                    ':phone': details.details.phone ? details.details.phone : this.details.phone ? this.details.phone : null,
-                    ':email': details.details.email ? details.details.email : this.details.email ? this.details.email : null,
-                    ":userApplication": [],
-                    ":version": Number(details.version),
-                    ":newversion": Number(details.version) + 1
+                    ':address': data.details.address ? data.details.address :  this.details.address,
+                    ':phone':   data.details.phone   ? data.details.phone :  this.details.phone,
+                    ':email':   data.details.email   ? data.details.email :  this.details.email,
+                    ":version": Number(data.version),
+                    ":newversion": Number(data.version) + 1
                 },
                 ReturnConsumedCapacity: "TOTAL",
                 ReturnItemCollectionMetrics: "SIZE",
                 ReturnValues: "ALL_OLD"
             }
             documentDB.update(params, (err, res) => {
-                if (details.address) {
-                    this.details.address = details.address
+                if (data.details.address) {
+                    this.details.address = data.details.address
                 }
-                if (details.phone) {
-                    this.details.phone = details.phone
+                if (data.details.phone) {
+                    this.details.phone = data.details.phone
                 }
-                if (details.email) {
-                    this.details.email = details.email
+                if (data.details.email) {
+                    this.details.email = data.details.email
                 }
                 if (!err) {
-                    this.version = Number(details.version) + 1
+                    this.version = Number(data.version) + 1
                 }
                 callback(err, res)
             })
@@ -293,7 +292,7 @@ class User {
      * //updateApplication{applicationName:"ToDo", authorisation: "Viewer", operation:"ADD"}, (err,data)=>{console.log(err)}
      */
     updateApplication({
-        version = null,
+
         applicationName = null,
         authorisation = constants._role.Viewer,
         operation = null
@@ -301,7 +300,7 @@ class User {
 
         let app = new GroupRole(Object.values(constants._application))
         let auth = new GroupRole(Object.values(constants._role))
-        if ((!app.isvalid(applicationName)) || (!auth.isvalid(authorisation))) {
+        if ((!app.isvalid(applicationName)) || (!auth.isvalid(authorisation))||!(['DEL','ADD'].includes(operation))) {
             callback(constants._errorMessage.InvalidParam, null)
         } else {
             auth.add(authorisation)
@@ -338,15 +337,16 @@ class User {
                 },
                 ExpressionAttributeValues: {
                     ':userApplication': tempUserApplication,
-                    ":newvers": Number(version) + 1,
+                    ":newvers": Number(this.version) + 1,
+                    // ":version": Number(this.version)
                 }
 
             }
 
 
             documentDB.update(params, (err, res) => {
-                this.version = Number(version) + 1
-                this.userApplication = tempUserApplication
+                this.version +=1
+                this.userApplication[applicationName] = authorisation
                 callback(err, res);
             })
         };
