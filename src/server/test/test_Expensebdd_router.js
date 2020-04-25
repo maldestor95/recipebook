@@ -4,7 +4,7 @@ const axios = require("axios");
 
 let expenseBddData = [{}];
 var assert = require("chai").assert;
-describe("ExpenseBddRouter - tests REST API", function () {
+describe.skip("ExpenseBddRouter - tests REST API", function () {
     before(() => {
             rootpath = "http://localhost:3000";
         }),

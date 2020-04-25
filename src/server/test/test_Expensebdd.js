@@ -5,7 +5,7 @@ var assert = require("chai").assert;
 
 const tempdatabasepath = "temp/testbddExpense.json";
 
-describe("ExpenseBdd", function() {
+describe.skip("ExpenseBdd", function() {
   beforeEach(done => {
     fs.copyFile("temp/testbddExpenseOrig.json", tempdatabasepath, err => {
       if (err) throw err;

@@ -4,6 +4,8 @@
 
 # developpement
 
+ Gestion des tickets avec [JIRA](https://maldestor95.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=NODE)
+ 
 ## tree
 Le répertoire `src` est composés de composants pour le server expressJS ou pour le client VueJS
 * src

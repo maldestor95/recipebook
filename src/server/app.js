@@ -13,7 +13,7 @@ var DynamoDBStore = require('connect-dynamodb')({
 }); // more doc on https://www.npmjs.com/package/connect-dynamodb
 var DynamoDBStoreOptions = {
     client: new AWS.DynamoDB({
-        endpoint: new AWS.Endpoint('http://localhost:8000'),
+        endpoint: process.env.NODE_ENV=="developmentLocal"?new AWS.Endpoint('http://localhost:8000'):null,
         region: "eu-west-3",
     })
     // AWSConfigPath:'.pathtoCredentials.json' //TODO add credentials when going to production
@@ -79,9 +79,9 @@ app.get("/tot", function (req, res) {
 app.use(require("./route/Users_router"));
 app.use("/API", require("./route/Applications_router"));
 app.get("/", (req, res) => res.send("Hello toto!"));
-app.use('/vue', express.static('distvue'))
-app.use('/css', express.static('distvue/css'))
-app.use('/js', express.static('distvue/js'))
+app.use('/vue', express.static('J:/dev/nodejs/dist'))
+app.use('/css', express.static('J:/dev/nodejs/dist/css'))
+app.use('/js', express.static('J:/dev/nodejs/dist/js'))
 
 app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
