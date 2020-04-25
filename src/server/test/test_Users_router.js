@@ -61,7 +61,7 @@ describe("Users router", function () {
                     done()
                 })
                 .catch((response) => {
-                    console.log(response)
+                    // console.log(response)
                     assert.equal(response.response.status, 404)
                     assert.equal(response.response.data, "/users/unknownuser not found")
                     done()

@@ -6,25 +6,34 @@
 
  Gestion des tickets avec [JIRA](https://maldestor95.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=NODE)
  
-## tree
-Le répertoire `src` est composés de composants pour le server expressJS ou pour le client VueJS
+## Arborescence
+Le répertoire `src` est composé de composants pour le server expressJS ou pour le client VueJS
 * src
     * server  
     * client
     * common
 
 
-## lancement du serveur depuis la console
 
+## *production*
 * `npm run start` démarre le serveur express en production
+
+## *developpement*
+* `npm run dev` 
+
+### lancements des tests unitaires
+* pour le projet `src/server` il faut lancer le serveur en mode développement avec `npm run dev` 
 * `npm run test` `démarre le serveur en mode de test  (base de donnée dynmoDB en local)
-* `npm run dev` `set NODE_ENV=development &nodemon",
+
 
 ## Installation
 
 ### Faire les étapes suivantes si besoin
     
-* [nodejs](https://nodejs.org/en/) et [npm](https://www.npmjs.com/) installés 
+* Installation générale
+  * [nodejs](https://nodejs.org/en/)
+  * [npm](https://www.npmjs.com/) 
+  * [gulp](https://gulpjs.com/)
 * une fois le repo copié, executer en ligne de commande `npm install`
 * [installer dynamoDB en local](https://docs.aws.amazon.com/fr_fr/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
     * copier les credentials IAM (amazon) donnés par l'admin
