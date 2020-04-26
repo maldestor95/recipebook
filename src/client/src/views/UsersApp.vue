@@ -70,20 +70,21 @@ export default {
       let newupdateApp = this.value.userApplication.filter(x => {
         return Object.keys(x)[0] != Object.keys(ItemApp)[0];
       });
-
-      this.value.userApplication=newupdateApp
+let _this=this
        usersApi
           .updateApplication({
             login: this.value.login,
             version: this.value.version,
-            userApplication: this.value.userApplication
+            userApplication: newupdateApp
           })
           .then(response => {
-            this.value.version += 1;
-            this.debug = response;
+            _this.value.version += 1;
+            _this.debug = response;
+            // _this.value.userApplication=newupdateApp
+
           })
           .catch(err => {
-            this.debug = err;
+            _this.debug = err;
           });
     },
     addPrivilege() {
@@ -93,19 +94,22 @@ export default {
       if (activeKeyList.lastIndexOf(this.appListSelection) < 0) {
         let newApp = {};
         newApp[this.appListSelection] = this.rightsListSelection;
-        this.value.userApplication.push(newApp);
+        let _this=this
+        let newAppList=this.value.userApplication
+        newAppList.push(newApp);
         usersApi
           .updateApplication({
             login: this.value.login,
             version: this.value.version,
-            userApplication: this.value.userApplication
+            userApplication: newAppList
           })
           .then(response => {
-            this.value.version += 1;
-            this.debug = response;
+            _this.value.version += 1;
+            _this.debug = response;
+            
           })
           .catch(err => {
-            this.debug = err;
+            _this.debug = err;
           });
       } else {
         // TODO message because the list of user is not accessible
@@ -113,6 +117,7 @@ export default {
     }
   }
 };
+// BUG list not updated when a privilege is deleted
 </script>
 
 <style lang="scss" scoped>

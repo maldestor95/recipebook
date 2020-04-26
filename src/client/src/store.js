@@ -11,7 +11,7 @@ export const store = {
     },
     debug: "",
     login(name, pwd) {
-        axios.post('API/USERS/login', {
+        axios.post('/login', {
                 username: name,
                 password: pwd
             })
@@ -28,7 +28,7 @@ export const store = {
             })
     },
     logout() {
-        axios.post('API/USERS/logout')
+        axios.post('/logout')
             .then(res => {
                 this.state.logged = false
                 this.debug = res

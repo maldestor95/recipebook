@@ -1,4 +1,3 @@
-import VueCookies from 'vue-cookies'
 export const scoreStore = {
     state: {
         players: [{
@@ -84,8 +83,7 @@ export const scoreStore = {
         });
         this.state.players.forEach(x => (x.currentScore = 0));
         Object.keys(this.state.round).forEach(x => (this.state.round[x] = 0));
-        //FIXME cookies
-        VueCookies.set('scoreBoard', JSON.stringify(this.state), "2h")
+        localStorage.scoreBoard= JSON.stringify(this.state)
     },
     updateRound: function (evt) {
 
@@ -96,7 +94,7 @@ export const scoreStore = {
     },
 
     initFromCookies() {
-        let t = VueCookies.get('scoreBoard')
+        let t = JSON.parse(localStorage.scoreBoard)
         if (t) {
 
             this.state = t
@@ -115,7 +113,6 @@ export const scoreStore = {
 
     },
     resetScore() {
-        VueCookies.remove('scoreBoard')
         let pList = this.state.players.map(x => {
             return x.name
         })
@@ -124,6 +121,7 @@ export const scoreStore = {
         }
         pList.forEach(x => round0[x] = 0)
         this.state.playerScores = [round0]
+        localStorage.scoreBoard= JSON.stringify(this.state)
     },
     getPlayerScores() {
         return this.state.playerScores
@@ -186,7 +184,7 @@ export const scoreStore = {
         this.resetScore()
         this.initRound()
     },
-    removePlayer(name) { //TODO remove Player
+    removePlayer(name) { 
         this.state.players = this.state.players.filter(x => x.name != name)
         this.state.playerList = this.state.playerList.filter(x => x.text != name)
         delete this.state.round[name]

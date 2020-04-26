@@ -138,7 +138,7 @@ export default {
   methods: {
     scan() {
       axios
-        .get("/API/users/scan", null)
+        .get("/users", null)
         .then(res => {
           this.Users = res.data.Items;
         })
@@ -173,14 +173,15 @@ export default {
     },
     // methods used to initiate the Applist
     getAppList() {
+      let _this=this
       usersApi
         .getApplicationList()
         .then(data => {
-          this.appList = data.application;
-          this.rightsList = data.role;
+          _this.appList = data.application;
+          _this.rightsList = data.role;
         })
         .catch(err => {
-          this.appList = err;
+          _this.appList = err;
         });
     },
     isRoot() {
@@ -205,7 +206,7 @@ export default {
     UserToDel(user) {
       return new Promise(function(resolve, reject) {
         axios
-          .delete(`/API/users/${user}`)
+          .delete(`/users/${user}`)
           .then(res => {
             if (res.data.err) {
               reject(JSON.stringify(res.data.err.message));

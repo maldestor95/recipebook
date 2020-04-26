@@ -1,18 +1,57 @@
 <template>
-  <!-- <div> -->
   <v-card class="ScoreBoard">
-    <v-container fluid style="padding-top:36px">
+    <v-container class='pa-0'>
       <v-row no-gutters>
         <v-col v-for="item in players" :key="item.name" class="pa-0 ma-0">
-            <h3 >{{item.name.toUpperCase()}} <p>{{scoreTotal(item.name)}}</p></h3>
-          <v-chip color="primary" @click="removePlayer(item.name)" v-if="configureBoard">-</v-chip>
+          <v-card class outlined>
+            <v-card-title class="py-0" id="playerName">
+              <v-container class="pa-0">
+                <v-row>
+
+                
+              <v-col cols="1" class="pa-0">
+              <v-icon
+                @click="configureBoard='edit'; name=item.name"
+                v-if="configureBoard!='configure'" 
+              >mdi-pen</v-icon>
+              </v-col>
+
+               <v-col cols="10" class="pa-0">
+                 <v-row justify="center" class="pa-0">
+
+              {{item.name.toUpperCase()}}
+                 </v-row>
+              </v-col>
+              
+              <v-col cols="1" class="pa-0" >
+              <v-icon @click="removePlayer(item.name)" v-if="configureBoard!='configure'" >mdi-delete</v-icon>
+              </v-col>
+                </v-row>
+              
+              </v-container>
+            </v-card-title>
+            <v-card-text class="display-2">
+              <v-row justify="center">{{scoreTotal(item.name)}}</v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row v-if="configureBoard=='add' | configureBoard=='edit'">
+        <v-col cols="10">
+          <v-text-field name="new Name" label="new Name" v-model="newName"></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-btn
+            color="success"
+            @click="renamePlayer(name,newName)"
+            v-if="configureBoard=='edit'"
+          >Rename</v-btn>
+          <v-btn color="success" @click="addPlayer(newName)" v-if="configureBoard=='add'">Add</v-btn>
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col v-for="item in players" :key="item.name" class="pa-0 ma-0">
-          
-          <score :name="item.name" v-model="players" :edit="configureBoard" ></score>
-
+        <v-col v-for="item in players" :key="item.name">
+          <score :name="item.name" v-model="players"></score>
         </v-col>
       </v-row>
       <v-row justify="center">
@@ -22,21 +61,22 @@
           </v-btn>
         </v-col>
         <v-col cols="4">
-          <v-btn block color="primary" @click="resetScore()">
+          <v-btn block color="primary" @click="resetScore()" v-if="configureBoard!= 'configure'">
             <v-icon>mdi-restart</v-icon>
           </v-btn>
         </v-col>
         <v-col cols="4">
-          <v-btn block color="primary" @click="configureBoard=!configureBoard">
+          <v-btn
+            block
+            color="primary"
+            @click=" newName=''; configureBoard=configureBoard=='add'?'configure':'add'"
+          >
             <v-icon>mdi-account-supervisor</v-icon>
           </v-btn>
         </v-col>
       </v-row>
-      <v-row v-if="configureBoard">
-        <v-text-field name="newName" label="new name" v-model="newName"></v-text-field>
-        <v-chip color="primary" @click="addPlayer(newName)">+</v-chip>
-      </v-row>
-      <v-row justify="center" class="pt-5">
+
+      <v-row justify="center" class="pt-5 hidden-md-and-down" >
         <v-col cols="12">
           <v-data-table
             dense
@@ -45,14 +85,15 @@
             class="elevation-5"
             pagination.sync="pagination"
             sort-by="round"
-            sort-desc=true
+            :sort-desc="true"
+            
           ></v-data-table>
         </v-col>
       </v-row>
     </v-container>
   </v-card>
 
-  <!-- </div> -->
+
 </template>
 
 <script>
@@ -65,32 +106,31 @@ export default {
   },
   data() {
     return {
-      configureBoard: false,
+      configureBoard: 'configure', // 'configure' or 'add' or 'edit'
       scoreStoreState: scoreStore.State,
       players: scoreStore.state.players,
       playerList: scoreStore.state.playerList,
       playerScores: scoreStore.state.playerScores,
       round: scoreStore.state.round,
+      name: "",
       newName: "new"
     };
   },
   mounted() {
-    //FIXME
     scoreStore.initFromCookies();
     this.refresh();
   },
   methods: {
     scoreTotal(name) {
-      let t = this.playerScores.map(x => {
-        return x[name];
-      });
-      t = t.filter(x => typeof x != "undefined");
-      if (t.length == 0) {
-        return 0;
-      } else {
+      if (this.hasOwnProperty("playerScores")) {
+        let t = this.playerScores.map(x => {
+          return x[name];
+        });
         return t.reduce((a, b) => {
           return a + b;
         });
+      } else {
+        return 0;
       }
     },
     resetScore() {
@@ -117,39 +157,55 @@ export default {
         scoreStore.addPlayer(name);
         this.refresh();
       }
+      this.configureBoard = "configure";
     },
     removePlayer(name) {
       scoreStore.removePlayer(name);
       this.refresh();
+    },
+    renamePlayer(OldName, newName) {
+      // TODO validation of NewName
+      scoreStore.renamePlayer(OldName, newName);
+      this.configureBoard = "configure";
     }
   }
 };
 </script>
 <style lang="scss">
-
 </style>
 <style lang="scss" scoped>
+.negative {
+  color: red;
+}
+.positive {
+  color: green;
+}
 .ScoreTotal {
-font-weight: bold;
-margin-top: 20px;
-color: $info;
-}
-h3 , h3 p {
-  text-align:center
-}
-@media screen and (max-width: 400px) {
-  .ScoreBoard {
-    width: 100%;
+  font-weight: bold;
+  margin-top: 20px;
+  color: $info;
+  @media screen and (max-width:600px) and (orientation:landscape ){
+    font-weight:normal;
+    
   }
 }
-@media screen and (max-width: 800px) and (min-width: 401px) {
-  .ScoreBoard {
-    width: 100%;
+@media screen and (max-width:740px) and (orientation:landscape ){
+.v-card__text {
+  padding-bottom: 0px;
+  .row {
+  font-size: 30px;
+  align-content: center;
+  height: 34px;
+
   }
 }
-@media screen and (min-width: 801px) {
-  .ScoreBoard {
-    width: 100%;
-  }
 }
+@media screen and (max-width:740px) and (orientation:landscape ){
+.container-fluid {
+  padding-top: 0px;
+}
+}
+
+
+
 </style>
