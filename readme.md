@@ -30,6 +30,14 @@ Ce package est principalement constitués de packages vuejs. Les commandes sont:
     * après avoir fait un build, il peut être utile de tester localement avec `serve -s dist`    
 * le projet Vue peut être aussi revu/mise à jour avec la GUI de Vue  `vue ui`
 
+## Déploiement
+A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. Parmi elles:
+* `gulp clean`  nettoyage du répertoire dist
+* `gulp build` préparation du répertoire dist
+* `gulp test`  test du build; on démarre un serveur local
+* `gulp zip`  Création du ZIP prêt à être déposé sur Elastic Beanstalk
+
+
 ## Installation
 
 ### Faire les étapes suivantes si besoin

@@ -19,6 +19,8 @@
   "devDependencies": {
     "del": "^5.1.0",
     "gulp": "^4.0.2",
-    "gulp-clean": "^0.4.0"
+    "gulp-clean": "^0.4.0",
+    "gulp-run": "^1.7.1",
+    "gulp-zip": "^5.0.1"
   }
 }
