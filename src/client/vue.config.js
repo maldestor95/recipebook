@@ -5,6 +5,7 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
+  outputDir:'../../dist/client',
   runtimeCompiler: true, //https: //cli.vuejs.org/config/#runtimecompiler
   configureWebpack: {
     // plugins: [new BundleAnalyzerPlugin()],
