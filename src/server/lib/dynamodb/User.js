@@ -370,7 +370,7 @@ class User {
                     '#V': "version"
                 },
                 ExpressionAttributeValues: {
-                    ':userApplication': applicationList.userApplication,
+                    ':userApplication': applicationList.userApplication?applicationList.userApplication:{},
                     ":newvers": Number(applicationList.version) + 1,
                 }
 

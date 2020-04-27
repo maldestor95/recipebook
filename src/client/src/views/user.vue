@@ -26,7 +26,7 @@ export default {
   methods: {
     login() {
       this.storeState.username = this.username;
-      this.$router.push("/expenses");
+      this.$router.push("/about");
     }
   },
   computed: {

@@ -49,19 +49,19 @@ export const store = {
     isAuthorised(routeName) {
         if (this.state.username == null) return false
         else {
-            return this.state.applicationPrivilege.map(x => {
-                return Object.keys(x)[0].toLowerCase()
+            return Object.keys(this.state.applicationPrivilege).map(x => {
+                return x.toLowerCase()
             }).includes(routeName)
         }
     },
     getApplicationAccess(ApplicationName) {
-        let t = this.state.applicationPrivilege.filter(x => {
-            return Object.keys(x) == ApplicationName
+        let t = Object.keys(this.state.applicationPrivilege).filter(x => {
+            return x== ApplicationName
         })
         if (t.length == 0) {
             return null
         } else {
-            return t[0][ApplicationName]
+            return this.state.applicationPrivilege[t[0]]
         }
     }
 

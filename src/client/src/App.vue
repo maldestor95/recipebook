@@ -51,7 +51,7 @@
     </v-navigation-drawer>
 
 <!-- style="position:absolute; top:0px;left 20px" -->
-    <v-content  id="vcontent" style="position:absolute; top:0px;left 20px">
+    <v-content  id="vcontent" >
       <router-view></router-view>
     </v-content>
 

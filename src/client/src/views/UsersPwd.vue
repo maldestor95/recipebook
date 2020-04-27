@@ -1,53 +1,47 @@
 <template>
   <div>
-    <h1>User Pwd</h1>
-    <v-alert type="primary" dense>{{msg}}</v-alert>
+
+    
     <v-form>
-      <h3>Old Password: {{oldpwd}}</h3>
-      <v-text-field filled label="New Password" v-model="details.pwd"></v-text-field>
-      <v-btn rounded color="primary" dark @click="updatePwd">Change Password</v-btn>
+      <h3>Old Password: {{oldPwd}}</h3>
+      <v-text-field filled label="New Password" v-model="pwd"></v-text-field>
+      <v-btn rounded color="primary"  @click="changePwd" :disabled="disableChangeBtn">Change Password</v-btn>
     </v-form>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import qs from "qs";
+
+import {userstore} from './userstore'
 
 export default {
   props: {
-    details: { type: Object }
+    value: {  type: Object ,
+                default(){return {'login':'none',"pwd":null}}
+    }
   },
   data() {
     return {
-      Ddetails: this.details,
-      oldpwd: this.details.pwd,
-      msg:"debug message"
+      oldPwd:this.value.pwd,
+      pwd:""
     };
   },
+  watch: {
+    value(newValue) {
+      this.oldPwd=newValue.pwd
+    }
+  },
+  computed: {
+    disableChangeBtn(){
+      return Boolean((this.pwd=='') | (this.pwd==this.oldPwd))
+    }
+  },
   methods: {
-    updatePwd() {
-      const user = this.details.login;
-      let data = {
-          pwd: this.details.pwd,
-        version: this.details.version
-      };
-      axios
-        .put(`/users/${user}/pwd`, qs.stringify(data))
-        .then(res => {
-          if (res.data.err) {
-            this.msg = JSON.stringify(res.data.err.message);
-          }
-          else
-          {
-              this.msg="succesfuly Pwd update of "+user+" " 
-          }
-        })
-        .catch(err => {
-            if (err) {
-            this.msg = "unable to connect to server "+ JSON.stringify(err);
-          }
-        });
+    changePwd() {
+      userstore.updatePwd(this.value.login,this.pwd)
+      this.oldPwd=this.pwd
+      
+      
     }
   }
 };

@@ -40,7 +40,7 @@ describe("Users router", function () {
     })
     describe("get user", function () {
         it("/users/user_id get", done => {
-            let url = baseURL + '/users/datalogin'
+            let url = baseURL + '/users/dummy'
             axios.request({
                     method: "get",
                     url: url
@@ -119,15 +119,14 @@ describe("Users router", function () {
                 .then((deleteResponse) => {
                     assert.isNotNull(deleteResponse.err, "[unknownUserToDelete] shall fail");
                     assert.equal(deleteResponse.status, 200);
-                            done()
+                    done()
                 })
                 .catch((err) => {
-                        console.log(err)
-                        done()
-                    }
-                )
+                    console.log(err)
+                    done()
+                })
         })
-    }) 
+    })
     describe("modify user", function () {
         let modifiedUser = {
             login: "modifieduser",
@@ -235,10 +234,11 @@ describe("Users router", function () {
                         .then((response) => {
                             assert.equal(response.data.err, null)
                             axios.get(baseURL + '/users/modifieduser')
-                            .then((response) => {
-                                assert.equal(response.data.data.userApplication[0].ToDo, data.userApplication[0].ToDo, "[get /users/modifieduser] not successful");
-                                done()
-                            })                        })
+                                .then((response) => {
+                                    assert.equal(response.data.data.userApplication[0].ToDo, data.userApplication[0].ToDo, "[get /users/modifieduser] not successful");
+                                    done()
+                                })
+                        })
                 })
         })
 
