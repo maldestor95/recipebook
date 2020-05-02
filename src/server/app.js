@@ -2,6 +2,7 @@
  * Required libraries 
  */
 const express = require("express");
+const path=require('path')
 
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
@@ -21,8 +22,8 @@ var DynamoDBStoreOptions = {
 if (process.env.NODE_ENV=="developmentLocal") {
     DynamoDBStoreOptions.client.config.update({endpoint: "http://localhost:8000"})
 }
-const User = require('./lib/dynamodb/User')
-
+const User = require(path.resolve('./lib/dynamodb/User'))
+var history = require('connect-history-api-fallback');
 var bodyParser = require('body-parser')
 const port = 3000;
 const dev = process.env.NODE_ENV?process.env.NODE_ENV:"production";
@@ -53,7 +54,7 @@ const app = express();
 
 app.disable("x-powered-by");
 app.use(myLogger);
-
+app.use(history());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
@@ -78,10 +79,12 @@ app.get("/tot", function (req, res) {
 // app.use("/API/", require("./lib/expensesbdd_router"));
 app.use(require("./route/Users_router"));
 app.use('/apps',require("./route/Applications_router"));
-app.get("/", (req, res) => res.send("Hello toto!"));
+// app.get("/", (req, res) => res.send("Hello toto!"));
+app.use('/', express.static('J:/dev/nodejs/dist/client'))
 app.use('/vue', express.static('J:/dev/nodejs/dist/client'))
 app.use('/css', express.static('J:/dev/nodejs/dist/client/css'))
 app.use('/js', express.static('J:/dev/nodejs/dist/client/js'))
+app.use('/fonts', express.static('J:/dev/nodejs/dist/client/fonts'))
 
 app.listen(process.env.PORT || port, () => {
     let d = Date().toLocaleString()
