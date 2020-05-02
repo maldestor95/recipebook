@@ -1,26 +1,21 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    persistent
-    max-width="400"
-    @keydown.esc="dialog = false"
-  >
+  <v-dialog v-model="dialog" persistent max-width="600" @keydown.esc="dialog = false">
     <template v-slot:activator="{ on }">
-      <v-btn dense v-on="on" class="small primary light">
-        <v-icon small>{{
-          storeState.username? "mdi-logout" : "mdi-login"
-        }}</v-icon>
-          {{storeState.username ? " logout" : " login"}}        
+      <v-btn v-on="on" class="blue lighten-1 white--text">
+        <span>
+          <v-icon small>
+            {{
+            storeState.username? "mdi-logout" : "mdi-login"
+            }}
+          </v-icon>
+        </span>
+        <v-spacer></v-spacer>
+        <span color="white">{{storeState.username ? " logout" : " login"}}</span>
       </v-btn>
-
-
-
-
-      
     </template>
 
     <!-- logout -->
-    <v-card v-if="storeState.username" raised shaped>
+    <v-card v-if="storeState.username" raised>
       <v-row no-gutters>
         <v-col md="12" align="center">
           <p>Are you sure you want to log out?</p>
@@ -37,53 +32,22 @@
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!storeState.username" raised shaped>
-      <v-row no-gutters>
-        <v-col align="center">
-          <h1>Login</h1>
-        </v-col>
-      </v-row>
-      <v-row no-gutters dense>
-        <v-col align="center" cols="10" offset="1">
-          <v-text-field
-            v-model="username"
-            name="username"
-            outlined
-            label="Username or email address"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col align="center" md="4">
-          <p>forgot password?</p>
-        </v-col>
-        <v-col offset-md="2" md="4">
-          <v-btn md-4 color="success">create new user</v-btn>
-        </v-col>
-      </v-row>
-      <v-row dense no-gutters>
-        <v-col align="center" cols="10" offset="1">
-          <v-text-field
-          v-model="password"
-            name="password"
-            outlined
-            label="password"
-          ></v-text-field>
-        </v-col>
-      </v-row>
+    <v-card v-if="!storeState.username" raised>
+      <v-container>
+        <h1 class="text-center"> Malestor95 </h1>
+      <p class="text-center">Login</p>
 
-      <v-row no-gutters dense>
-        <v-col align="center">
-          <v-btn raised rounded md3 color="primary" @click="login">Login</v-btn>
-        </v-col>
-        <v-col></v-col>
-        <v-col>
-          <v-btn raised rounded md3 color="primary" @click="dialog = false"
-            >Cancel</v-btn
-          >
-        </v-col>
-      </v-row>
-      <v-row>Session: {{storeState.sessionID}}</v-row>
+      <v-text-field v-model="username" name="username" outlined label="Username or email address"></v-text-field>
+      <v-text-field v-model="password" name="password" outlined label="password"></v-text-field>
+
+        <v-row>
+          <v-spacer></v-spacer>
+          <v-btn rounded color="primary" @click="login" class="d-flex-inline justify-start">Sign in</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn raised rounded color="primary" @click="dialog = false">Cancel</v-btn>
+          <v-spacer></v-spacer>
+        </v-row>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>

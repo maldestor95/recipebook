@@ -77,7 +77,7 @@ app.get("/tot", function (req, res) {
 });
 // app.use("/API/", require("./lib/expensesbdd_router"));
 app.use(require("./route/Users_router"));
-app.use("/API", require("./route/Applications_router"));
+app.use('/apps',require("./route/Applications_router"));
 app.get("/", (req, res) => res.send("Hello toto!"));
 app.use('/vue', express.static('J:/dev/nodejs/dist/client'))
 app.use('/css', express.static('J:/dev/nodejs/dist/client/css'))

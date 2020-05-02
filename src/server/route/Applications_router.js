@@ -24,7 +24,6 @@ const validate = require("validate.js");
 
 
 var router = express.Router();
-const rootPath = '/Apps'
 
 let notImplementedYet = function (req, res) {
     res.status(503).send(`${req.path} -- ${req.method}  not implemented yet`)
@@ -32,11 +31,11 @@ let notImplementedYet = function (req, res) {
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
-    console.log(rootPath + '-----Time: ', Date.now(), '\n OriginUrl', req.originalUrl, '=>Path:', req.path);
+    console.log( '-----Time: ', Date.now(), '\n OriginUrl', req.originalUrl, '=>Path:', req.path);
 
     next();
 });
-router.get('/AvailableAppsList', (req, res) => {
+router.get('/availableappslist', (req, res) => {
     let AvailableOptions = {
         application: Object.values(def._application),
         role: Object.values(def._role)

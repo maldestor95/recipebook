@@ -1,17 +1,28 @@
 <template>
-  <v-app class="AppClass">
-    <v-app-bar dense app color="primary" dark class="AppBar">
-      <v-icon id="menu" @click="navdrawer = !navdrawer">mdi-menu</v-icon>
-        <v-spacer></v-spacer>
-        <h1>{{ currentApp }}</h1>
-        <v-spacer></v-spacer>
-        <v-chip label color="primary" text-color="black">{{storeState.username}}</v-chip>
-        <login-user color="info"></login-user>
-    </v-app-bar>
-    
-    <v-icon  class="menuMobile" @click="navdrawer = !navdrawer">mdi-menu</v-icon>
+  <v-app >
+    <v-app-bar
+      dense
+      app
+      hide-on-scroll
+      class="hidden-sm-and-down"
+      color="blue lighten-1"
+      text-color="white"
+    >
+      <v-icon id="menu" @click="navdrawer = !navdrawer" color="white">mdi-menu</v-icon>
 
-    <v-navigation-drawer temporary v-model="navdrawer" class="NavMenu">
+      <span class="text-uppercase white--text" style="font-family:CoffeeHouse;font-size: x-large;">Maldestor 95</span>
+      <v-spacer></v-spacer>
+      <v-chip
+        label
+        color="blue ligthen-1"
+        text-color="white"
+        v-if="storeState.username"
+      >User Connected: {{storeState.username}}</v-chip>
+      <v-spacer></v-spacer>
+      <login-user></login-user>
+    </v-app-bar>
+
+    <v-navigation-drawer temporary app v-model="navdrawer" >
       <v-list dense>
         <v-list-item @click="navdrawer = !navdrawer">
           <v-list-item-icon>
@@ -35,14 +46,19 @@
 
         <v-subheader>Info</v-subheader>
         <p>{{ currentroute.path }}</p>
-                <login-user color="info"></login-user>
-
+        <login-user color="info"></login-user>
       </v-list>
     </v-navigation-drawer>
 
-    <v-content style="padding:0px">
-      <router-view class="AppContent"></router-view>
+<!-- style="position:absolute; top:0px;left 20px" -->
+    <v-content  id="vcontent" >
+      <router-view></router-view>
     </v-content>
+
+    <v-btn absolute top left fab color="blue lighten-3" id="menumobile" class="mt-8 hidden-md-and-up">
+      <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon>
+    </v-btn>
+
   </v-app>
 </template>
 
@@ -114,35 +130,90 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+@font-face {
+  font-family: SaucerBB;
+  src: url("./assets/fonts/saucer/SaucerBB.ttf") format('truetype');
+}
+@font-face {
+  font-family: CoffeeHouse;
+  src: url("./assets/fonts/coffee-house/CoffeeHouse.ttf") format('truetype');
+  font-weight: bold;
+  font-size: xx-large;
+}
+</style>
 <style lang="scss" scoped>
-.v-content{
-  padding:0px;
-}
-.AppClass {
-  width: 100%;
-}
-.NavMenu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.5); /*dim the background*/
-}
+// .v-content{
+//   padding:0px;
+// }
+// .AppClass {
+//   width: 100%;
+// }
+// .NavMenu {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   z-index: 10;
+//   background-color: rgba(0, 0, 0, 0.5); /*dim the background*/
+// }
 
-@media screen and (max-width: 400px) {
-  .AppBar {
-    display: none;
+//   .AppBar {
+//     @media screen and (max-width: 400px),
+//       screen and (max-width: 740px) and (orientation: landscape)
+//  {
+//     display: none;
+//     }
+//   }
+
+// .AppContent {
+//   padding-top: 20px;
+//   @media screen and (max-width: 400px) {
+//     padding-top: 0px;
+//   }
+// }
+// .menuMobile{
+//   @media screen and (max-width: 400px)
+//    {
+//   position: fixed;
+//   top: 10px;
+//   left: 10px;
+//   height: 10px;
+//   z-index: 4;
+//   }
+
+//   @media screen and (max-width: 740px) and (orientation: landscape) {
+//   position: fixed;
+//   top: 0px;
+//   left: 10px;
+//   height: 10px;
+//   z-index: 4;
+//   }
+// }
+
+
+@page {
+  margin: 1cm;
+  border:solid;
+  border-color:black;
+  size: A4 landscape;
+
+}
+@media print {
+  .v-app-bar{display:none;
+  height:0px;}
+
+.v-content {
+
+position:absolute;
+top:-96px;
+  // padding: 0px;
+  // color:red;
   }
 
-.menuMobile{
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  height: 10px;
-  z-index: 4;
-}
+  #menumobile {display:none}
+  
 
 }
 </style>

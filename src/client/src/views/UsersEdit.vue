@@ -1,18 +1,20 @@
 <template>
-  <div>
+  <v-container class="white scroll-y" style="height: 450px">
+    <v-row class="grey lighten-5" justify="center">
+      <h1>Update of <span class="blue--text">{{value.login}}</span></h1>
+    </v-row>
+
     <v-tabs v-model="
-    value" color="primary" slider-color="primary">
+    activeTabs" color="primary" slider-color="primary">
       <v-tab :createUser="isDisabled">Application</v-tab>
       <v-tab :createUser="isDisabled">Details</v-tab>
       <v-tab :createUser="isDisabled">Pwd</v-tab>
-      <v-tab>Administration</v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="value">
+    <v-tabs-items v-model="activeTabs">
       <v-tab-item>
-        <!-- TODO  updateApplication-->
         <users-app
-          v-model="details"
+          v-model="value"
           :appList="appList"
           :rightsList="rightsList"
           @change="updateApp"
@@ -21,30 +23,24 @@
       </v-tab-item>
 
       <v-tab-item>
-        <users-details :details="details" @change="updateDetails" @leave="leave" ></users-details>
+        <users-details v-model="value" @leave="leave"></users-details>
       </v-tab-item>
-
       <v-tab-item>
-        <users-pwd :details="details" @change="updatePwd" @leave="leave" ></users-pwd>
-      </v-tab-item>
-
-      <v-tab-item>
-        <users-admin :details="details" @leave="leave" ></users-admin>
+        <users-pwd v-model="value" @leave="leave"></users-pwd>
       </v-tab-item>
     </v-tabs-items>
-  </div>
+  </v-container>
 </template>
 
 <script>
 import usersDetails from "./UsersDetails";
 import usersPwd from "./UsersPwd";
 import usersApp from "./UsersApp";
-import usersAdmin from "./UsersAdmin";
-import axios from "axios";
-import qs from "qs";
+
+import { userstore } from "./userstore";
 
 export default {
-  components: { usersDetails, usersPwd, usersApp, usersAdmin },
+  components: { usersDetails, usersPwd, usersApp },
   props: {
     userEditDialog: {
       type: Boolean,
@@ -69,70 +65,28 @@ export default {
       type: Boolean,
       default: false
     },
-    value: { type: Number, default: 0 }
+    value: {
+      type: Object,
+      default() {
+        return { login: null };
+      }
+    },
+    edit: { type: Boolean, default: false }
   },
   data() {
     return {
       isDisabled: false,
-      activeTabs: ""
+      activeTabs: this.value,
+      errmsg: null,
+      statusmsg: null,
+      userStoreState: userstore.state
     };
   },
   methods: {
-    updateDetails() {
-      const user = this.details.login;
-
-      let data = {
-        details: {
-          address: this.details.address,
-          email: this.details.email,
-          phone: this.details.phone
-        },
-        version: this.details.version
-      };
-      axios
-        .put(`/API/users/${user}/details`, qs.stringify(data))
-        .then(res => {
-          if (res) {
-            this.msg = JSON.stringify(`Update details of ${user}`);
-            this.showMsg = true;
-            this.scan();
-          }
-        })
-        .catch(err => {
-          if (err) {
-            this.msg = JSON.stringify(err);
-            this.showMsg = true;
-          }
-        });
-    },
-    updatePwd() {
-      const user = this.details.login;
-      let data = {
-        details: {
-          address: this.details.address,
-          email: this.details.email,
-          phone: this.details.phone
-        },
-        version: this.details.version
-      };
-      axios
-        .put(`/API/users/${user}/details`, qs.stringify(data))
-        .then(res => {
-          if (res) {
-            this.msg = JSON.stringify(`Update details of ${user}`);
-            this.showMsg = true;
-            this.scan();
-          }
-        })
-        .catch(err => {
-          if (err) {
-            this.msg = JSON.stringify(err);
-            this.showMsg = true;
-          }
-        });
-    },
     updateApp() {},
-    leave() {
+    leave(event) {
+      this.errmsg = event.errmsg;
+      this.statusmsg = event.statusmsg;
       this.$emit("leave");
     }
   }

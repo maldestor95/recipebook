@@ -288,7 +288,19 @@ describe("User", function () {
                                             assert.deepEqual(V.userApplication, {
                                                 "Todo": "Editor"
                                             })
-                                            V.deleteLogin(MochaREmoveTest,done)
+                                            V.updateApplication({
+                                                applicationName: constants._application.Todo,
+                                                authorisation: constants._role.Editor,
+                                                operation: "DEL"
+                                            }, (err, data) => {
+                                                assert.equal(err, null, "valid application");
+                                                // V.print("Initial3 :")
+                                                V.getLogin(V.login, (err, data) => {
+                                                    // V.print("Final3 :")
+                                                    assert.deepEqual(V.userApplication, {})
+                                                    V.deleteLogin(MochaREmoveTest,done)
+                                                })
+                                            })
                                         })
                                     })
                                 })

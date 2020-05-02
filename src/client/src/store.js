@@ -11,7 +11,7 @@ export const store = {
     },
     debug: "",
     login(name, pwd) {
-        axios.post('API/USERS/login', {
+        axios.post('/login', {
                 username: name,
                 password: pwd
             })
@@ -28,7 +28,7 @@ export const store = {
             })
     },
     logout() {
-        axios.post('API/USERS/logout')
+        axios.post('/logout')
             .then(res => {
                 this.state.logged = false
                 this.debug = res
@@ -49,19 +49,19 @@ export const store = {
     isAuthorised(routeName) {
         if (this.state.username == null) return false
         else {
-            return this.state.applicationPrivilege.map(x => {
-                return Object.keys(x)[0].toLowerCase()
+            return Object.keys(this.state.applicationPrivilege).map(x => {
+                return x.toLowerCase()
             }).includes(routeName)
         }
     },
     getApplicationAccess(ApplicationName) {
-        let t = this.state.applicationPrivilege.filter(x => {
-            return Object.keys(x) == ApplicationName
+        let t = Object.keys(this.state.applicationPrivilege).filter(x => {
+            return x== ApplicationName
         })
         if (t.length == 0) {
             return null
         } else {
-            return t[0][ApplicationName]
+            return this.state.applicationPrivilege[t[0]]
         }
     }
 
