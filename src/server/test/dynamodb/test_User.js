@@ -1,6 +1,6 @@
 var assert = require("chai").assert;
-let User = require('../../lib/dynamodb/User').User
-let UTable = require('../../lib/dynamodb/User')
+let User = require('../../lib/dynamodb/user').User
+let UTable = require('../../lib/dynamodb/user')
 const constants = require('../../lib/definition')
 
 

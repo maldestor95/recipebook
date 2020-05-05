@@ -77,6 +77,7 @@ function  TestServer(cb) {
 
 exports.default = consoleDefault;
 exports.clean = clean;
-exports.build = series(clean,parallel(buildClient,copyServer1,copyServer2));
+exports.build = series(clean,parallel(buildClient));
+// exports.build = series(clean,parallel(buildClient,copyServer1,copyServer2));
 exports.test=series(prepareTest,installTestServer,TestServer)
 exports.zip=series(makeZip)

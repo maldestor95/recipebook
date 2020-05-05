@@ -1,4 +1,4 @@
-let User = require('../../lib/dynamodb/User').User
+let User = require('../../lib/dynamodb/user').User
 
 let defaultTable = [{
         login: "aze",

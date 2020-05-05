@@ -5,7 +5,7 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  outputDir:'../../dist/client',
+  outputDir:'../server/static',
   runtimeCompiler: true, //https: //cli.vuejs.org/config/#runtimecompiler
   configureWebpack: {
     // plugins: [new BundleAnalyzerPlugin()],
@@ -19,7 +19,8 @@ module.exports = {
       //   }]}
   },
   devServer: {
-    proxy:  'http://localhost:3000/'
+    proxy:  'http://localhost:3000/',
+
   },
   css: {
     loaderOptions: {
@@ -28,6 +29,5 @@ module.exports = {
       }
     }
   },
-  // publicPath:'./'
-  
+  publicPath:'/'
 }

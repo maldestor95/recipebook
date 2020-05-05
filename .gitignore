@@ -1,8 +1,9 @@
 node_modules
-/dist
+
 /test
 /zip
 /src/client/dist
+/dist
 
 
 # Elastic Beanstalk Files
@@ -12,6 +13,7 @@ node_modules
 
 #editor
 .vscode
+.ssh
 
 # local env files
 .env.local

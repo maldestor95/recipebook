@@ -2,9 +2,9 @@
     "name": "ludoserver",
     "version": "0.0.1",
     "description": "nodejs server",
-    "main": "app.js",
+    "main": "app",
     "scripts": {
-        "start": "node app.js",
+        "start": "node ./bin/www",
         "test": "mocha",
         "dev": "set NODE_ENV=development &nodemon",
         "createTable": "node lib/dynamodb/createTable.js",

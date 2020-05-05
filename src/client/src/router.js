@@ -7,7 +7,7 @@ import About from "./components/About.vue";
 import {store} from "./store";
 
 const router = new VueRouter({
-    mode: "history",
+    // mode: "history",
     base: __dirname,
     routes: [{
             path: "/about",

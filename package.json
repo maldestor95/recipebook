@@ -1,26 +1,43 @@
 {
-  "name": "nodejs",
-  "version": "1.0.0",
-  "description": "- [ExpressJS](https://expressjs.com/) server Maldestor95 Application",
-  "main": "gulp.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maldestor95/nodejs.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/maldestor95/nodejs/issues"
-  },
-  "homepage": "https://github.com/maldestor95/nodejs#readme",
-  "devDependencies": {
-    "del": "^5.1.0",
-    "gulp": "^4.0.2",
-    "gulp-clean": "^0.4.0",
-    "gulp-run": "^1.7.1",
-    "gulp-zip": "^5.0.1"
-  }
+    "name": "nodejs",
+    "version": "1.0.0",
+    "description": "- [ExpressJS](https://expressjs.com/) server Maldestor95 Application",
+    "main": "gulp.js",
+    "scripts": {
+        "start": "node ./src/server/bin/www",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/maldestor95/nodejs.git"
+    },
+    "author": "maldestor95",
+    "license": "ISC",
+    "dependencies": {
+        "del": "^5.1.0",
+        "gulp": "^4.0.2",
+        "gulp-clean": "^0.4.0",
+        "gulp-run": "^1.7.1",
+        "gulp-zip": "^5.0.1",
+        "aws-sdk": "^2.632.0",
+        "axios": "^0.19.2",
+        "dotenv": "^8.2.0",
+        "nodemon": "^2.0.2",
+        "body-parser": "^1.19.0",
+        "chai": "^4.2.0",
+        "connect-dynamodb": "^2.0.4",
+        "connect-history-api-fallback": "^1.6.0",
+        "express": "^4.17.1",
+        "express-session": "^1.17.0",
+        "lodash": "^4.17.15",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0",
+        "qs": "^6.9.1",
+        "uuid": "^7.0.3",
+        "validate.js": "^0.13.1"
+    },
+    "bugs": {
+        "url": "https://github.com/maldestor95/nodejs/issues"
+    },
+    "homepage": "https://github.com/maldestor95/nodejs#readme"
 }
