@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node ./bin/www",
         "test": "mocha",
-        "dev": "set NODE_ENV=development &nodemon",
+        "dev": "set NODE_ENV=development &nodemon ./bin/www",
         "createTable": "node lib/dynamodb/createTable.js",
         "deleteTable": "node lib/dynamodb/deleteTable.js",
         "scanTable": "node lib/dynamodb/scanTable.js"

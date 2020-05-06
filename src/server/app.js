@@ -6,6 +6,7 @@ const path=require('path')
 
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
+let auth= require('./route/auth')
 
 var session = require("express-session")
 var AWS = require("aws-sdk");
@@ -42,7 +43,7 @@ var myLogger = function (req, res, next) {
 
 //Passport session management
 passport.serializeUser(function (user, done) {
-    done(null, user.login);
+    done(null, {login:user.login,userApplication:user.userApplication});
 });
 
 passport.deserializeUser(function (login, done) {
@@ -60,9 +61,6 @@ const app = express();
 app.disable("x-powered-by");
 app.use(myLogger);
 
-// app.use('/vue',history());
-
-// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
     extended: false
 }))
@@ -81,18 +79,21 @@ app.use(session({
 // more doc on https://www.npmjs.com/package/express-session
 app.use(passport.session())
 
+
 app.get("/tot", function (req, res) {
     res.send("Hello World!");
 });
-// app.use("/API/", require("./lib/expensesbdd_router"));
+app.get('/lok',(req,res,next)=>{auth.checkAuth(req,res,next,'Users')},function(req,res){
+    res.send('success')
+})
 
 app.use(require("./route/Users_router"));
+app.use(require("./route/login"));
+app.use(require("./route/auth").router);
 app.use('/apps',require("./route/Applications_router"));
-// app.get("/", (req, res) => res.send("Hello toto!"));
 app.use('/', express.static(__dirname+'/static'))
 app.use('/tt', (req,res)=>res.sendFile(__dirname+'/static'))
 
-// app.use( express.static(path.resolve('./static')))
 
 
 module.exports=app
