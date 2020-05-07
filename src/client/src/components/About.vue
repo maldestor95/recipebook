@@ -11,13 +11,9 @@
       <router-link to="scoreboard">ScoreBoard</router-link>
     </p>
     <p>
-      {{sess}}
-      <br>{{username}}
-
-      <br>{{applicationPrivilege}}
-      <br>
-      <v-btn color="success" @click="getSess">getSess</v-btn>
+      <router-link to="recette">Recettes</router-link>
     </p>
+      
   </div>
 </template>
 
