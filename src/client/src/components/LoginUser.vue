@@ -5,17 +5,17 @@
         <span>
           <v-icon small>
             {{
-            storeState.username? "mdi-logout" : "mdi-login"
+            value? "mdi-logout" : "mdi-login"
             }}
           </v-icon>
         </span>
         <v-spacer></v-spacer>
-        <span color="white">{{storeState.username ? " logout" : " login"}}</span>
+        <span color="white">{{value ? " logout" : " login"}}</span>
       </v-btn>
     </template>
 
     <!-- logout -->
-    <v-card v-if="storeState.username" raised>
+    <v-card v-if="value" raised>
       <v-row no-gutters>
         <v-col md="12" align="center">
           <p>Are you sure you want to log out?</p>
@@ -32,7 +32,7 @@
     </v-card>
 
     <!-- login -->
-    <v-card v-if="!storeState.username" raised>
+    <v-card v-if="!value" raised>
       <v-container>
         <h1 class="text-center"> Malestor95 </h1>
       <p class="text-center">Login</p>
@@ -60,6 +60,10 @@ export default {
     logged: {
       type: Boolean,
       default: true
+    },
+    value:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -67,7 +71,7 @@ export default {
       storeState: store.state,
       username: "me",
       password: "tt",
-      dialog: false,
+      dialog: this.value,
       debug: "none"
     };
   },
@@ -77,10 +81,12 @@ export default {
       store.logout();
       this.$router.push("about");
       this.dialog = false;
+      this.$emit('input',false)
     },
     login() {
       store.login(this.username, this.password);
       this.dialog = false;
+      this.$emit('input',true)
     },
     escapeform() {
       this.dialog = false;
