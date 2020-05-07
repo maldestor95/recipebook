@@ -16,6 +16,7 @@
         ></v-text-field>
         <!-- </v-card-title> -->
       </v-row>
+      <!-- {{userStoreState.users.length}} -->
       <v-row>
         <v-data-table
           :headers="headers"
@@ -27,6 +28,7 @@
           
           :show-select="allowDeleteUser"
           :sort-by="['userApplication','login']"
+          :class="{loading:userStoreState.users.length==0}"
         >
           <!-- TODO custom sort by user Application -->
           <template v-slot:item.login="{item}">
@@ -221,5 +223,19 @@ export default {
 }
 .Viewer {
   color: green;
+}
+.loading {
+  color: transparent;
+  background: linear-gradient(100deg, #eceff1 30%, #f6f7f8 50%, #eceff1 70%);
+  background-size: 400%;
+  animation: loading 1.2s ease-in-out infinite;
+}
+@keyframes loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 100 50%;
+  }
 }
 </style>
