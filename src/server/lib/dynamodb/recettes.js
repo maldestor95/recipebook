@@ -122,7 +122,9 @@ function putRecette(recette) {
                 "categorie": "recette",
                 "nom": recette.nom,
                 "ingredients": recette.ingredients,
-                "version": 0
+                "nbPersonnes": recette.nbPersonnes,
+                "temps": recette.temps,
+                "processDescription": recette.processDescription
             },
             ReturnConsumedCapacity: "TOTAL",
             ReturnItemCollectionMetrics: "SIZE",

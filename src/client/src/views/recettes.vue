@@ -3,15 +3,24 @@
     <v-icon color="error" large v-if="!saved">mdi-content-save-alert</v-icon>
     <v-icon color="success" large v-if="saved">mdi-content-save</v-icon>
     <v-switch label="Edit" v-model="editable" @change="saved=false; editable=true" v-if="saved"></v-switch>
-    <v-btn color="info" @click="saved=true;editable=false" v-if="!saved">Save</v-btn> 
-    <!-- // TODO fuction save to implement -->
-<p>
+    <v-btn color="info" @click="saved=true;editable=false" v-if="!saved">Save</v-btn>
 
-    Recettes
-    Titre: {{recette.titre}}
-    Temps: {{recette.temps}}
-    nombre de personnes : {{recette.nbPersonnes}}
-</p>
+    <v-card>
+      <v-text-field
+        v-model="recette.id"
+        label="id"
+        id="id"
+      ></v-text-field>
+      <v-btn color="success" @click="getRecette(recette.id)">get recette</v-btn>
+      <v-btn color="success" @click="updateRecette()" v-if="!saved">update recette</v-btn>
+    </v-card>
+    <!-- // TODO fuction save to implement -->
+    <p>
+      Recettes
+      Titre: {{recette.nom}}
+      Temps: {{recette.temps}}
+      nombre de personnes : {{recette.nbPersonnes}}
+    </p>
     <v-data-table
       id="ingredients"
       :headers="ingredientsHeaders"
@@ -38,6 +47,11 @@
       </template>
       <template v-slot:footer>
         <v-btn color="success" @click="addIngredient()" v-if="editable">Add</v-btn>
+        <v-card v-if="editable">
+          <v-text-field v-model="newKeyIngredient" label="newKeyIngredient" id="id"></v-text-field>
+          <v-btn color="success" @click="addKeyIngredient()">Addname</v-btn>
+          {{definitions.ingredients}}
+        </v-card>
       </template>
     </v-data-table>
     <h1>préparation</h1>
@@ -58,11 +72,14 @@
         </v-col>
       </v-row>
     </v-container>
+    {{debug}}
   </div>
 </template>
 
 <script>
 import marked from "marked";
+import axios from "axios";
+import qs from 'qs';
 export default {
   components: {},
   data() {
@@ -74,9 +91,9 @@ export default {
         { text: "quantité", value: "qty" }
       ],
       recette: {
-        id: "1",
+        id: "5512af64-2f2c-4680-9768-3d8d36e051a3",
         nbPersonnes: 2,
-        titre: "ratatouille",
+        nom: "ratatouille",
         temps: "60min",
         processDescription: "# T1",
         ingredients: [
@@ -86,22 +103,57 @@ export default {
         ]
       },
       definitions: {
-        ingredients: [
-          "tomates",
-          "champignons",
-          "ail",
-          "poivrons",
-          "oeuf",
-          "paprika"
-        ]
+        ingredients: ["tomates", "champignons", "ail"]
       },
       newIngredients: {
         nom: "",
         qty: 0
-      }
+      },
+      newKeyIngredient: "",
+      debug: ""
     };
   },
+  mounted() {
+    axios
+      .get("/ingredients")
+      .then(data => {
+        this.definitions.ingredients = data.data;
+      })
+      .catch(err => {
+        this.debug = err;
+      });
+  },
   methods: {
+    addKeyIngredient() {
+      axios
+        .put("/ingredients", { ingredient: this.newKeyIngredient })
+        .then(() => {
+          this.definitions.ingredients.push(this.newKeyIngredient);
+        })
+        .catch(err => {
+          this.debug = err;
+        });
+    },
+    getRecette(recetteId){
+axios
+        .get("/recette/"+recetteId)
+        .then((data) => {
+          this.recette=data.data
+        })
+        .catch(err => {
+          this.debug = err;
+        });
+    },
+    updateRecette(){
+      axios
+        .put("/recette/"+this.recette.id, qs.stringify(this.recette))
+        .then((data) => {
+          this.debug=data
+        })
+        .catch(err => {
+          this.debug = err;
+        });
+    },
     addIngredient() {
       this.recette.ingredients.push({ nom: "", qty: 0 });
     },

@@ -28,6 +28,7 @@ var recettes = require('../lib/dynamodb/recettes')
 
 router.route('/recettes')
     .get((req, res) => {})
+
 router.route('/ingredients')
     .put((req, res) => {
         console.log(req.body)
@@ -45,9 +46,28 @@ router.route('/ingredients')
         )
     })
 
-router.route('/recettes/:recette_id')
-    .put((req, res) => {})
-    .get((req, res) => {})
-    .post((req, res) => {})
+router.route('/recette/:recette_id')
+    .put((req, res) => { //TODO
+        console.log(req.body)
+        let newRecette = qs.parse(req.body)
+        recettes.putRecette(newRecette)
+        .then(data=>res.send(data))
+        .catch(err=>res.send(err))
+    })
+    .get((req, res) => {//TODO
+        console.log(req.body)
+         recettes.getRecette(req.params.recette_id)
+        .then(data=>
+            res.send(data)
+            )
+        .catch(err=>res.send(err))
+    })
+    .post((req, res) => {//TODO
+        console.log(req.body)
+        let newRecette = qs.parse(req.body).recette
+        recettes.postRecette(newRecette)
+        .then()
+        .catch()
+    })
 
 module.exports = router;
