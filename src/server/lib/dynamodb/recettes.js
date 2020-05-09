@@ -19,6 +19,7 @@
 var constants = require('../definition')
 var dynamo_error_msg = require('./definition_dynamodb').error_msg
 var AWS = require("aws-sdk");
+var uuid = require('node-uuid');
 
 AWS.config.update({
     region: "eu-west-3",
@@ -40,7 +41,7 @@ function putIngredients(ingredientString) {
     return new Promise(function (resolve, reject) {
         getIngredients().then(ingredients => {
                 let documentDB = new AWS.DynamoDB.DocumentClient()
-                let updatedIngredients=[...ingredients.filter(x=>x!=ingredientString), ingredientString]
+                let updatedIngredients = [...ingredients.filter(x => x != ingredientString), ingredientString]
                 let params = {
                     "TableName": "definitions",
                     "Key": {
@@ -68,6 +69,7 @@ function putIngredients(ingredientString) {
             })
     })
 }
+
 function getIngredients() {
     return new Promise(function (resolve, reject) {
         let documentDB = new AWS.DynamoDB.DocumentClient()
@@ -86,28 +88,109 @@ function getIngredients() {
     })
 }
 
-// function getRecettes() {
-//     return new Promise(function (resolve, reject) {
+function getRecettes() {
+    return new Promise(function (resolve, reject) {
+        let params = {
+            TableName: "document",
+            FilterExpression: "#cat = :val",
+            ExpressionAttributeNames: {
+                "#cat": "categorie"
+            },
+            ExpressionAttributeValues: {
+                ":val": {
+                    "S": "recette"
+                },
+            }
+        }
+        dynamodb.scan(params, (err, data) => {
+            if (err) {
+                reject(err.stack)
+            } else {
+                resolve(data)
+            }
+        });
+    })
+}
 
-//     })
-// }
-// function putRecette(recetteId) {
-//     return new Promise(function (resolve, reject) {
+function putRecette(recette) {
+    return new Promise(function (resolve, reject) {
+        let documentDB = new AWS.DynamoDB.DocumentClient()
+        let params = {
+            "TableName": "document",
+            Item: {
+                "id": recette.id,
+                "categorie": "recette",
+                "nom": recette.nom,
+                "ingredients": recette.ingredients,
+                "version": 0
+            },
+            ReturnConsumedCapacity: "TOTAL",
+            ReturnItemCollectionMetrics: "SIZE",
+            ReturnValues: "ALL_OLD"
+        }
+        documentDB.put(params, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(data)
+            }
+        })
+    })
+}
 
-//     })
-// }
-// function getRecette(recetteId) {
-//     return new Promise(function (resolve, reject) {
+function getRecette(recetteId) {
+    return new Promise(function (resolve, reject) {
+        let documentDB = new AWS.DynamoDB.DocumentClient()
+        let params = {
+            "TableName": "document",
+            "Key": {
+                "id": recetteId
+            }
+        }
+        documentDB.get(params, (err, data) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(data.Item)
+        })
+    })
+}
 
-//     })
-// }
-// function postRecette(recetteId) {
-//     return new Promise(function (resolve, reject) {
-
-//     })
-// }
+function postRecette(recette) {
+    return new Promise(function (resolve, reject) {
+        let documentDB = new AWS.DynamoDB.DocumentClient()
+        let params = {
+            "TableName": "document",
+            Item: {
+                "id": uuid.v4(),
+                "categorie": "recette",
+                "nom": recette.nom,
+                "ingredients": recette.ingredients,
+                "version": 0
+            },
+            ConditionExpression: "attribute_not_exists(#u)",
+            ExpressionAttributeNames: {
+                "#u": "id"
+            },
+            ReturnConsumedCapacity: "TOTAL",
+            ReturnItemCollectionMetrics: "SIZE",
+            ReturnValues: "ALL_OLD"
+        }
+        documentDB.put(params, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(err)
+            }
+        })
+    })
+}
 
 var self = (module.exports = {
     getIngredients,
-    putIngredients
+    putIngredients,
+    getRecettes,
+    getRecette,
+    postRecette,
+    putRecette
 })
