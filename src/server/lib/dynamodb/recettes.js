@@ -106,7 +106,8 @@ function getRecettes() {
             if (err) {
                 reject(err.stack)
             } else {
-                resolve(data)
+                let result=data.Items.map(x=> {return {"nom":x.nom.S,"id":x.id.S} })
+                resolve(result)
             }
         });
     })

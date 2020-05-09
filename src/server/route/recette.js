@@ -27,7 +27,11 @@ var recettes = require('../lib/dynamodb/recettes')
 // router.use('/recettes',(req, res, next)=> { auth.checkAuth(req,res,next,'recettes') });
 
 router.route('/recettes')
-    .get((req, res) => {})
+    .get((req, res) => {
+        recettes.getRecettes()
+        .then(data=>res.send(data))
+        .catch(err=>res.send(err))
+    })
 
 router.route('/ingredients')
     .put((req, res) => {

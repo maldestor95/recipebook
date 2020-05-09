@@ -1,26 +1,45 @@
 <template>
   <div>
-    <v-icon color="error" large v-if="!saved">mdi-content-save-alert</v-icon>
-    <v-icon color="success" large v-if="saved">mdi-content-save</v-icon>
-    <v-switch label="Edit" v-model="editable" @change="saved=false; editable=true" v-if="saved"></v-switch>
-    <v-btn color="info" @click="saved=true;editable=false" v-if="!saved">Save</v-btn>
+    <v-container grid-list-xs>
+      <v-row>
+        <v-icon color="error" large v-if="!saved">mdi-content-save-alert</v-icon>
+        <v-icon color="success" large v-if="saved">mdi-content-save</v-icon>
+        <v-switch label="Edit" v-model="editable" @change="saved=false; editable=true" v-if="saved"></v-switch>
+        <v-btn color="info" @click="saved=true;editable=false" v-if="!saved">Save</v-btn>
+        <v-btn color="success" @click="newRecette()">Nouvelle recette</v-btn>
+        {{recette.id}}}
+        <v-btn color="success" @click="updateRecette()" v-if="!saved">update recette</v-btn>
+      </v-row>
+      <v-row>
+        <v-autocomplete
+          :items="recetteListNames"
+          color="white"
+          item-text="name"
+          v-model="selectedRecette"
+          @keydown.enter="getRecette(selectedRecette)"
+          @change="getRecette(selectedRecette)"
+        ></v-autocomplete>
+        <v-btn color="success" @click="getRecette(selectedRecette)">get recette</v-btn>
+      </v-row>
+    </v-container>
 
-    <v-card>
-      <v-text-field
-        v-model="recette.id"
-        label="id"
-        id="id"
-      ></v-text-field>
-      <v-btn color="success" @click="getRecette(recette.id)">get recette</v-btn>
-      <v-btn color="success" @click="updateRecette()" v-if="!saved">update recette</v-btn>
-    </v-card>
     <!-- // TODO fuction save to implement -->
-    <p>
-      Recettes
-      Titre: {{recette.nom}}
-      Temps: {{recette.temps}}
-      nombre de personnes : {{recette.nbPersonnes}}
-    </p>
+    <v-row >
+      <v-col cols="8">
+        <v-text-field label="Nom" id="id" v-model="recette.nom" :rules="[rules.required]"></v-text-field>
+      </v-col>
+      <v-col cols="1">
+        <v-text-field label="Temps" id="id" v-model="recette.temps" :rules="[rules.required]"></v-text-field>
+      </v-col>
+      <v-col cols="1">
+        <v-text-field
+          label="nombre de personnes"
+          id="id"
+          v-model="recette.nbPersonnes"
+          :rules="[rules.number]"
+        ></v-text-field>
+      </v-col>
+    </v-row>
     <v-data-table
       id="ingredients"
       :headers="ingredientsHeaders"
@@ -50,7 +69,6 @@
         <v-card v-if="editable">
           <v-text-field v-model="newKeyIngredient" label="newKeyIngredient" id="id"></v-text-field>
           <v-btn color="success" @click="addKeyIngredient()">Addname</v-btn>
-          {{definitions.ingredients}}
         </v-card>
       </template>
     </v-data-table>
@@ -79,7 +97,8 @@
 <script>
 import marked from "marked";
 import axios from "axios";
-import qs from 'qs';
+import uuid from "uuid";
+import qs from "qs";
 export default {
   components: {},
   data() {
@@ -110,7 +129,13 @@ export default {
         qty: 0
       },
       newKeyIngredient: "",
-      debug: ""
+      debug: "",
+      recetteList: [{"nom":"ratatouille","id":"5512af64-2f2c-4680-9768-3d8d36e051a3"}],
+      selectedRecette: "ratatouille",
+      rules: {
+        required: value => value.length > 0 || "Required.",
+        number: value => value > 0 || "Minimum 1 pers"
+      }
     };
   },
   mounted() {
@@ -122,8 +147,18 @@ export default {
       .catch(err => {
         this.debug = err;
       });
+    axios.get('/recettes')
+        .then(data => {
+          this.recetteList=data.data;
+        })
+        .catch(err => {
+          this.debug = err;
+        });
+
+  
   },
   methods: {
+
     addKeyIngredient() {
       axios
         .put("/ingredients", { ingredient: this.newKeyIngredient })
@@ -134,25 +169,40 @@ export default {
           this.debug = err;
         });
     },
-    getRecette(recetteId){
-axios
-        .get("/recette/"+recetteId)
-        .then((data) => {
-          this.recette=data.data
+    getRecette(recette) {
+      let recetteId=this.recetteList.filter(x=>x.nom==recette)[0].id
+      axios
+        .get("/recette/" + recetteId)
+        .then(data => {
+          this.recette = data.data;
         })
         .catch(err => {
           this.debug = err;
         });
     },
-    updateRecette(){
+    updateRecette() {
+      let _this=this
       axios
-        .put("/recette/"+this.recette.id, qs.stringify(this.recette))
-        .then((data) => {
+        .put("/recette/" + this.recette.id, qs.stringify(this.recette))
+        .then(data => {
           this.debug=data
+          if (_this.recetteList.map(x=>x.id==_this.recette.id).length==0){
+            _this.recetteList.push([{"nom":_this.recetteList.nom,"id":_this.recette.id}])
+          }
         })
         .catch(err => {
           this.debug = err;
         });
+    },
+    newRecette() {
+      this.recette = {
+        id: uuid.v4(),
+        nbPersonnes: 1,
+        nom: "",
+        temps: "",
+        processDescription: "",
+        ingredients: []
+      };
     },
     addIngredient() {
       this.recette.ingredients.push({ nom: "", qty: 0 });
@@ -164,6 +214,9 @@ axios
     }
   },
   computed: {
+    recetteListNames(){
+      return this.recetteList.map(x=>x.nom)
+    },
     processDescriptionMarked() {
       return marked(this.recette.processDescription);
     },
