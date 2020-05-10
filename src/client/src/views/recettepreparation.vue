@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card outlined >
     <v-container>
       <v-row>
         <v-col cols="4" v-if="editable">
@@ -12,7 +12,7 @@
             @keydown="$emit('input',processDescription)"
           ></v-textarea>
         </v-col>
-        <v-col :cols="4">
+        <v-col >
           <span v-html="processDescriptionMarked"></span>
         </v-col>
       </v-row>

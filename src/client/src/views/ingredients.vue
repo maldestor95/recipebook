@@ -1,9 +1,8 @@
 <template>
-  <div>
-    {{debug}}
-    <table>
-      <tr v-for="t in ingredients" :key="t.nom">
-        <td>
+  <v-card outlined >
+    <v-container>
+      <v-row v-for="t in ingredients" :key="t.nom" dense>
+        <v-col class="py-0 my-0">
           <v-combobox
             :items="[...ingredientList]"
             color="white"
@@ -11,11 +10,12 @@
             v-model="t.nom"
             :readonly="!editable"
             solo
-            flat
+            :flat="!editable"
             dense
             @keydown.shift.enter="addIngredient()"
             :search-input.sync="t.search"
             v-if="editable"
+            class="pa-0 ma-0"
           >
             <template slot="prepend">
               <v-icon v-if="editable" @click="removeIngredient(t.nom)">mdi-delete-circle</v-icon>
@@ -28,21 +28,23 @@
             </template>
           </v-combobox>
           <p v-else>{{t.nom}}</p>
-        </td>
-        <td>
+        </v-col>
+        <v-col class="py-0 ma-0">
           <v-text-field
             v-model="t.qty"
             :solo="!editable"
             :flat="!editable"
             :readonly="!editable"
             dense
+            v-if="editable"
           ></v-text-field>
-        </td>
-      </tr>
-    </table>
+          <p v-else>{{t.qty}}</p>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-btn color="success" @click="addIngredient()" v-if="editable">Add</v-btn>
 
-  </div>
+  </v-card >
 </template>
 
 <script>
@@ -123,4 +125,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+p {height: 8px;
+}
 </style>

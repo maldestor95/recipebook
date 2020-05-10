@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card :loading="loading">
     <v-text-field
       name="searchRecipe"
       v-model="searchRecipe"
@@ -12,8 +12,9 @@
       v-for="recette in selectionList"
       :key="recette.id"
       @click="$emit('getRecipe',recette)"
+      
     >{{ recette }}</v-card>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -30,6 +31,11 @@ export default {
     value: {
       type: String,
       default: ""
+    
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

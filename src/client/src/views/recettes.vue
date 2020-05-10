@@ -1,85 +1,38 @@
 <template>
   <div>
-    <recetteindex :recettelist="recetteList" @getRecipe="getRecette($event)"></recetteindex>
+    <v-card max-width="1200">
+      <v-btn color="success" @click="newRecette() " v-if="!editable" >Nouvelle recette</v-btn>
+      <v-btn color="success" @click="updateRecette()" v-if="editable" :loading="updateLoading" >update recette</v-btn>
+      <v-btn color="success" @click="editable=false" v-if="editable">cancel</v-btn>
+    </v-card>
+    <v-card max-width="500">
+      <recetteindex :recettelist="recetteList" @getRecipe="getRecette($event)" :loading="getLoading"></recetteindex>
+    </v-card>
 
-    <v-container grid-list-xs>
-      <v-card max-width="1200">
-        <!-- <v-icon color="error" large v-if="!saved">mdi-content-save-alert</v-icon>
-        <v-icon color="success" large v-if="saved">mdi-content-save</v-icon> -->
-        <v-switch label="Edit" v-model="editable" ></v-switch>
-        <!-- <v-btn color="info" @click="saved=true;editable=false" v-if="!saved">Save</v-btn> -->
-        <v-btn color="success" @click="newRecette() " v-if="!editable">Nouvelle recette</v-btn>
-        {{recette.id}}}
-        <v-btn color="success" @click="updateRecette()" v-if="editable" >update recette</v-btn>
-      </v-card>
-      <v-card max-width="500">
-        <v-container>
-          <v-row>
-            <v-autocomplete
-              :items="recetteListNames"
-              color="white"
-              item-text="name"
-              v-model="selectedRecette"
-              @keydown.enter="getRecette(selectedRecette)"
-              @change="getRecette(selectedRecette)"
-            >
-              <template slot="prepend">
-                <v-icon>mdi-file-document</v-icon>
-              </template>
-              <template slot="append">
-                <v-btn color="success" @click="getRecette(selectedRecette)">voir</v-btn>
-              </template>
-            </v-autocomplete>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                :flat="!editable"
-                :solo="!editable"
-                :outlined="editable"
-                :dense="!editable"
-                label="Temps"
-                id="id"
-                v-model="recette.temps"
-                :rules="[rules.required]"
-              >
-                <template slot="prepend">
-                  <v-icon>mdi-clock-outline</v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field
-                :flat="!editable"
-                :solo="!editable"
-                :outlined="editable"
-                :dense="!editable"
-                label="nombre de personnes"
-                id="id"
-                v-model="recette.nbPersonnes"
-                :rules="[rules.number]"
-              >
-                <template slot="prepend">
-                  <v-icon>mdi-account-group-outline</v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
+    <v-container fluid class="px-1">
+      <v-row justify="center" align="end">
+        <v-col cols="12">
+          <recette-header :editable="editable" v-model="recette" @edit="editable=true"></recette-header>
+        </v-col>
+      </v-row>
+      <v-row class="mx-0" >
+
+        <!-- <v-flex xs12 md6 lg3 wrap> -->
+        <v-col >
+          <h1 class="d-flex justify-center">INGREDIENTS</h1>
+          <ingredients
+            v-model="recette.ingredients"
+            :editable="editable"
+            @updateIngredientList="updateIngredientList($event)"
+          ></ingredients>
+        </v-col>
+        <v-col  class="px-0">
+          <h1 class="d-flex justify-center">PREPARATION</h1>
+          <preparation v-model="recette.processDescription" :editable="editable"></preparation>
+        </v-col>
+        <!-- </v-flex> -->
+      </v-row>
     </v-container>
-    <h1>
-        ingredients
-      </h1>
-<ingredients  v-model="recette.ingredients" :editable="editable" @updateIngredientList="updateIngredientList($event)"></ingredients>
-    <h1>
-      Préparation
-    </h1>
-<preparation v-model="recette.processDescription" :editable="editable" ></preparation>
-        
-    {{debug}}
-    <v-spacer></v-spacer>
-  
   </div>
 </template>
 
@@ -87,11 +40,12 @@
 import uuid from "uuid";
 import axios from "axios";
 import qs from "qs";
-import ingredients from './ingredients'
-import recetteindex from './recettelist'
-import preparation from './recettepreparation'
+import ingredients from "./ingredients";
+import recetteindex from "./recettelist";
+import preparation from "./recettepreparation";
+import recetteHeader from "./recettesheader";
 export default {
-  components: {ingredients,recetteindex ,preparation},
+  components: { ingredients, recetteindex, preparation, recetteHeader },
   data() {
     return {
       saved: false,
@@ -125,15 +79,13 @@ export default {
         { nom: "ratatouille", id: "5512af64-2f2c-4680-9768-3d8d36e051a3" }
       ],
       selectedRecette: "ratatouille",
-      rules: {
-        required: value => value.length > 0 || "Required.",
-        number: value => value > 0 || "Minimum 1 pers"
-      },
-      searchRecipe:""
+
+      searchRecipe: "",
+      updateLoading:false,
+      getLoading:false
     };
   },
   mounted() {
-
     axios
       .get("/recettes")
       .then(data => {
@@ -144,20 +96,24 @@ export default {
       });
   },
   methods: {
-    
     getRecette(recette) {
+      this.getLoading=true
       let recetteId = this.recetteList.filter(x => x.nom == recette)[0].id;
       axios
         .get("/recette/" + recetteId)
         .then(data => {
           this.recette = data.data;
+          this.getLoading=false
         })
         .catch(err => {
           this.debug = err;
+          this.getLoading=false
         });
     },
     updateRecette() {
       let _this = this;
+            this.updateLoading=true
+
       axios
         .put("/recette/" + this.recette.id, qs.stringify(this.recette))
         .then(data => {
@@ -169,9 +125,14 @@ export default {
               { nom: _this.recetteList.nom, id: _this.recette.id }
             ]);
           }
+                    this.updateLoading=false
+                    this.editable=false
+
         })
         .catch(err => {
           this.debug = err;
+                    this.updateLoading=false
+
         });
     },
     newRecette() {
@@ -183,12 +144,12 @@ export default {
         processDescription: "",
         ingredients: []
       };
+      this.editable = true;
     },
-    updateIngredientList(event){
-      this.debug=event
-      this.$set(this.recette,'ingredients',event)
+    updateIngredientList(event) {
+      this.debug = event;
+      this.$set(this.recette, "ingredients", event);
     }
-
   },
   computed: {
     recetteListNames() {
@@ -196,8 +157,7 @@ export default {
     },
     alreadyChoosen() {
       return this.recette.ingredients.map(x => x.nom);
-    },
-    
+    }
   }
 };
 </script>
