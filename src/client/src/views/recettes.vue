@@ -1,6 +1,7 @@
 <template>
   <div>
     <recetteindex :recettelist="recetteList" @getRecipe="getRecette($event)"></recetteindex>
+
     <v-container grid-list-xs>
       <v-card max-width="1200">
         <!-- <v-icon color="error" large v-if="!saved">mdi-content-save-alert</v-icon>
@@ -70,23 +71,12 @@
     <h1>
         ingredients
       </h1>
-<ingredients  v-model="this.recette.ingredients" :editable="editable" @updateIngredientList="updateIngredientList($event)"></ingredients>
+<ingredients  v-model="recette.ingredients" :editable="editable" @updateIngredientList="updateIngredientList($event)"></ingredients>
     <h1>
       Préparation
-
     </h1>
-        <v-col cols="4" v-if="editable">
-          <v-textarea
-            outlined
-            filled
-            auto-grow
-            :value="recette.processDescription"
-            v-model="recette.processDescription"
-          ></v-textarea>
-        </v-col>
-        <v-col :cols="editable?4:8">
-          <span v-html="processDescriptionMarked"></span>
-        </v-col>
+<preparation v-model="recette.processDescription" :editable="editable" ></preparation>
+        
     {{debug}}
     <v-spacer></v-spacer>
   
@@ -94,14 +84,14 @@
 </template>
 
 <script>
-import marked from "marked";
 import uuid from "uuid";
 import axios from "axios";
 import qs from "qs";
 import ingredients from './ingredients'
 import recetteindex from './recettelist'
+import preparation from './recettepreparation'
 export default {
-  components: {ingredients,recetteindex },
+  components: {ingredients,recetteindex ,preparation},
   data() {
     return {
       saved: false,
@@ -203,9 +193,6 @@ export default {
   computed: {
     recetteListNames() {
       return this.recetteList.map(x => x.nom);
-    },
-    processDescriptionMarked() {
-      return marked(this.recette.processDescription);
     },
     alreadyChoosen() {
       return this.recette.ingredients.map(x => x.nom);
