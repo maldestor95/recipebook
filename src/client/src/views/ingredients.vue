@@ -1,0 +1,126 @@
+<template>
+  <div>
+    {{debug}}
+    <table>
+      <tr v-for="t in ingredients" :key="t.nom">
+        <td>
+          <v-combobox
+            :items="[...ingredientList]"
+            color="white"
+            item-text="name"
+            v-model="t.nom"
+            :readonly="!editable"
+            solo
+            flat
+            dense
+            @keydown.shift.enter="addIngredient()"
+            :search-input.sync="t.search"
+            v-if="editable"
+          >
+            <template slot="prepend">
+              <v-icon v-if="editable" @click="removeIngredient(t.nom)">mdi-delete-circle</v-icon>
+            </template>
+            <template v-slot:no-data>
+              <v-list-item @click="addKeyIngredient(t.search)">
+                <span class="subheading">Create</span>
+                <v-chip :color="`grey lighten-3`" label small>{{ t.search }}</v-chip>
+              </v-list-item>
+            </template>
+          </v-combobox>
+          <p v-else>{{t.nom}}</p>
+        </td>
+        <td>
+          <v-text-field
+            v-model="t.qty"
+            :solo="!editable"
+            :flat="!editable"
+            :readonly="!editable"
+            dense
+          ></v-text-field>
+        </td>
+      </tr>
+    </table>
+    <v-btn color="success" @click="addIngredient()" v-if="editable">Add</v-btn>
+
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+// import qs from "qs";
+
+export default {
+  props: {
+    value: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    },
+    editable: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      debug: "",
+      newKeyIngredient: "",
+      definitions: {
+        ingredients: ["tomates", "champignons", "ail"]
+      },
+      ingredients: this.value.map(x => {
+        return { ...x, search: null };
+      }),
+      search: null
+    };
+  },
+  watch: {
+    value(newValue) {
+      this.ingredients = newValue;
+    }
+  },
+  methods: {
+    removeIngredient(nom) {
+      this.ingredients = this.ingredients.filter(x => x.nom != nom);
+    },
+
+    addKeyIngredient(newIngredient) {
+      axios
+        .put("/ingredients", { ingredient: newIngredient })
+        .then(() => {
+          this.definitions.ingredients.push(newIngredient);
+        })
+        .catch(err => {
+          this.debug = err;
+        });
+    },
+    addIngredient() {
+      this.ingredients.push({ nom: "", qty: 0 });
+    }
+
+  },
+  computed: {
+    ingredientList() {
+      let a = this.value.map(x => x.nom);
+      let t = this.definitions.ingredients.filter(i => {
+        return !a.includes(i);
+      });
+      return t;
+    }
+  },
+  mounted() {
+    axios
+      .get("/ingredients")
+      .then(data => {
+        this.definitions.ingredients = data.data;
+      })
+      .catch(err => {
+        this.debug = err;
+      });
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+</style>
