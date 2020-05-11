@@ -110,6 +110,12 @@ export default {
         text: "Users",
         link: "users",
         logrequired: true
+      },
+      {
+        icon: "mdi-notebook-outline",
+        text: "Recettes",
+        link: "recettes",
+        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
       }
     ]
   }),
