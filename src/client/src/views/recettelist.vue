@@ -1,19 +1,23 @@
 <template>
-  <v-card :loading="loading">
+  <v-card :loading="loading" width="320">
+    
     <v-text-field
       name="searchRecipe"
       v-model="searchRecipe"
       clearable
-      outlined
+      dense
       label="saisir le nom d'une recette"
+      @focus="selectionVisible=true"
     ></v-text-field>
 
-    <v-card
-      v-for="recette in selectionList"
-      :key="recette.id"
-      @click="$emit('getRecipe',recette)"
-      
-    >{{ recette }}</v-card>
+    <div v-if="selectionVisible">
+      <v-card
+        v-for="recette in selectionList"
+        :key="recette.id"
+        @click="$emit('getRecipe',recette); searchRecipe=recette; selectionVisible=false"
+      >{{ recette }}
+      </v-card>
+    </div>
   </v-card>
 </template>
 
@@ -31,7 +35,6 @@ export default {
     value: {
       type: String,
       default: ""
-    
     },
     loading: {
       type: Boolean,
@@ -40,12 +43,13 @@ export default {
   },
   data() {
     return {
-      searchRecipe: ""
+      searchRecipe: "",
+      selectionVisible: false
     };
   },
   computed: {
     selectionList() {
-      let mapList = this.recettelist.map(x => x.nom);
+      let mapList = this.recettelist.map(x => x.nom).sort();
       if (this.searchRecipe) {
         let r = this.searchRecipe
           .split("")
@@ -54,10 +58,8 @@ export default {
         const regex = new RegExp(r);
         let ff = mapList.filter(m => regex.test(m.toUpperCase()));
         return ff;
-      }
-      else
-      {
-      return mapList
+      } else {
+        return mapList;
       }
     }
   }

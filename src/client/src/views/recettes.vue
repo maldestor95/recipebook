@@ -1,15 +1,15 @@
 <template>
   <div>
-    <v-card max-width="1200">
+    <v-container fluid  >
+      <v-row>
+
       <v-btn color="success" @click="newRecette() " v-if="!editable" >Nouvelle recette</v-btn>
       <v-btn color="success" @click="updateRecette()" v-if="editable" :loading="updateLoading" >update recette</v-btn>
       <v-btn color="success" @click="editable=false" v-if="editable">cancel</v-btn>
-    </v-card>
-    <v-card max-width="500">
-      <recetteindex :recettelist="recetteList" @getRecipe="getRecette($event)" :loading="getLoading"></recetteindex>
-    </v-card>
 
-    <v-container fluid class="px-1">
+      <recetteindex :recettelist="recetteList" @getRecipe="getRecette($event)" :loading="getLoading"></recetteindex>
+      </v-row>
+
       <v-row justify="center" align="end">
         <v-col cols="12">
           <recette-header :editable="editable" v-model="recette" @edit="editable=true"></recette-header>
@@ -17,7 +17,6 @@
       </v-row>
       <v-row class="mx-0" >
 
-        <!-- <v-flex xs12 md6 lg3 wrap> -->
         <v-col >
           <h1 class="d-flex justify-center">INGREDIENTS</h1>
           <ingredients
@@ -30,7 +29,6 @@
           <h1 class="d-flex justify-center">PREPARATION</h1>
           <preparation v-model="recette.processDescription" :editable="editable"></preparation>
         </v-col>
-        <!-- </v-flex> -->
       </v-row>
     </v-container>
   </div>
@@ -163,4 +161,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#recette {
+color: red;
+border: red;
+border-style: solid;
+}
 </style>

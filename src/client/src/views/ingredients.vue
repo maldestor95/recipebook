@@ -1,50 +1,57 @@
 <template>
-  <v-card outlined >
+  <v-card outlined>
     <v-container>
       <v-row v-for="t in ingredients" :key="t.nom" dense>
-        <v-col class="py-0 my-0">
-          <v-combobox
-            :items="[...ingredientList]"
-            color="white"
-            item-text="name"
-            v-model="t.nom"
-            :readonly="!editable"
-            solo
-            :flat="!editable"
-            dense
-            @keydown.shift.enter="addIngredient()"
-            :search-input.sync="t.search"
-            v-if="editable"
-            class="pa-0 ma-0"
-          >
-            <template slot="prepend">
-              <v-icon v-if="editable" @click="removeIngredient(t.nom)">mdi-delete-circle</v-icon>
-            </template>
-            <template v-slot:no-data>
-              <v-list-item @click="addKeyIngredient(t.search)">
-                <span class="subheading">Create</span>
-                <v-chip :color="`grey lighten-3`" label small>{{ t.search }}</v-chip>
-              </v-list-item>
-            </template>
-          </v-combobox>
-          <p v-else>{{t.nom}}</p>
-        </v-col>
-        <v-col class="py-0 ma-0">
-          <v-text-field
-            v-model="t.qty"
-            :solo="!editable"
-            :flat="!editable"
-            :readonly="!editable"
-            dense
-            v-if="editable"
-          ></v-text-field>
-          <p v-else>{{t.qty}}</p>
-        </v-col>
+        <v-row v-if="editable">
+          <v-col class="py-0 my-0">
+            <v-combobox
+              :items="[...ingredientList]"
+              color="white"
+              item-text="name"
+              v-model="t.nom"
+              :readonly="!editable"
+              solo
+              :flat="!editable"
+              dense
+              @keydown.shift.enter="addIngredient()"
+              :search-input.sync="t.search"
+              v-if="editable"
+              class="pa-0 ma-0"
+            >
+              <template slot="prepend">
+                <v-icon v-if="editable" @click="removeIngredient(t.nom)">mdi-delete-circle</v-icon>
+              </template>
+              <template v-slot:no-data>
+                <v-list-item @click="addKeyIngredient(t.search)">
+                  <span class="subheading">Create</span>
+                  <v-chip :color="`grey lighten-3`" label small>{{ t.search }}</v-chip>
+                </v-list-item>
+              </template>
+            </v-combobox>
+          </v-col>
+          <v-col class="py-0 ma-0">
+            <v-text-field
+              v-model="t.qty"
+              :solo="!editable"
+              :flat="!editable"
+              :readonly="!editable"
+              dense
+              v-if="editable"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row v-else  gutters>
+          <v-col>
+            <p> {{t.nom}} </p>
+          </v-col>
+          <v-col>
+            <p>{{t.qty}}</p>
+          </v-col>
+        </v-row>
       </v-row>
     </v-container>
     <v-btn color="success" @click="addIngredient()" v-if="editable">Add</v-btn>
-
-  </v-card >
+  </v-card>
 </template>
 
 <script>
@@ -100,7 +107,6 @@ export default {
     addIngredient() {
       this.ingredients.push({ nom: "", qty: 0 });
     }
-
   },
   computed: {
     ingredientList() {
@@ -125,6 +131,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-p {height: 8px;
+p {
+  height: 8px;
 }
 </style>
