@@ -11,6 +11,7 @@
 
     <v-container fluid>
       <v-row v-if="checkAuth('Recettes','Editor')">
+      <!-- <v-row > -->
         <v-btn color="success" @click="newRecette() " v-if="!editable">Nouvelle recette</v-btn>
         <v-btn color="success" @click="editable=true" v-if="!editable">Editer</v-btn>
         <v-btn

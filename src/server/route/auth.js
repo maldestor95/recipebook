@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+let def=require('../lib/definition')
 
 router.get('/noSession', (req, res) => {
     var context = req.app.locals.specialContext;
@@ -12,14 +13,37 @@ router.get('/notAuthorised', (req, res) => {
     res.send('not authorized to access  '+context)
 
 })
-let isAuthorized = function (req, topic) {
-    let user = req.session
-    if (!user) {
+let checkLevelClearance = function (req, topic,role=null) {
+    if (req.session.hasOwnProperty('passport')) {
         if (Object.keys(req.session.passport.user.userApplication).includes(topic)) {
-            return req.session.passport.user.userApplication[topic]
+            let userLevel=req.session.passport.user.userApplication[topic]
+            if (role==null) {return userLevel}
+            else
+            {
+                let tempdef=Object.keys(def._role)
+                let r=tempdef.indexOf(role)+1
+                let temprole=tempdef.splice(0,r)
+                let rr= temprole.includes(userLevel)
+                return rr
+            }
         } else return false
     } else {
         return false
+    }
+}
+/**
+ * isAuthorised est à utiser dans un middleware d'une application
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @param {String} applicationName   (voir definition.js)
+ * @param {Sring} minimumLevelRequired (voir definition.js)
+ */
+let isAuthorized=function(req,res,next,applicationName,minimumLevelRequired){
+    if (checkLevelClearance(req, applicationName, minimumLevelRequired)) {
+        next()
+    } else {
+        res.status(403).send('/notAuthorised')  // TODO add meaningful text
     }
 }
 
