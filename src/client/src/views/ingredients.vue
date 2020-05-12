@@ -1,9 +1,9 @@
 <template>
-  <v-card outlined>
+  <v-card outlined class="pa-0 ma-0">
     <v-container>
-      <v-row v-for="t in ingredients" :key="t.nom" dense>
+      <v-row v-for="t in ingredients" :key="t.nom" dense class="pa-0 ma-0">
         <v-row v-if="editable">
-          <v-col class="py-0 my-0">
+          <v-col class="pa-0 ma-0">
             <v-combobox
               :items="[...ingredientList]"
               color="white"
@@ -14,12 +14,14 @@
               :flat="!editable"
               dense
               @keydown.shift.enter="addIngredient()"
+              @click:clear="removeIngredient(t.nom)"
+              :clearable="editable"
               :search-input.sync="t.search"
               v-if="editable"
               class="pa-0 ma-0"
             >
-              <template slot="prepend">
-                <v-icon v-if="editable" @click="removeIngredient(t.nom)">mdi-delete-circle</v-icon>
+              <template slot="append" >
+                <v-icon v-if="editable & t.nom.length==0" @click="removeIngredient(t.nom)">mdi-minus-circle</v-icon>
               </template>
               <template v-slot:no-data>
                 <v-list-item @click="addKeyIngredient(t.search)">
@@ -40,9 +42,9 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-row v-else  gutters>
+        <v-row v-else gutters>
           <v-col>
-            <p> {{t.nom}} </p>
+            <p>{{t.nom}}</p>
           </v-col>
           <v-col>
             <p>{{t.qty}}</p>
@@ -50,7 +52,7 @@
         </v-row>
       </v-row>
     </v-container>
-    <v-btn color="success" @click="addIngredient()" v-if="editable">Add</v-btn>
+      <v-icon @click="addIngredient()" v-if="editable">mdi-plus-circle</v-icon>
   </v-card>
 </template>
 
@@ -105,7 +107,7 @@ export default {
         });
     },
     addIngredient() {
-      this.ingredients.push({ nom: "", qty: 0 });
+      this.ingredients.push({ nom: "", qty: "" });
     }
   },
   computed: {

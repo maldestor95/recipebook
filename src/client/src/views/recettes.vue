@@ -1,13 +1,21 @@
 <template>
   <div>
-    <v-container fluid  >
+    <v-container fluid>
       <v-row>
+        <v-btn color="success" @click="newRecette() " v-if="!editable">Nouvelle recette</v-btn>
+        <v-btn
+          color="success"
+          @click="updateRecette()"
+          v-if="editable"
+          :loading="updateLoading"
+        >update recette</v-btn>
+        <v-btn color="success" @click="editable=false" v-if="editable">cancel</v-btn>
 
-      <v-btn color="success" @click="newRecette() " v-if="!editable" >Nouvelle recette</v-btn>
-      <v-btn color="success" @click="updateRecette()" v-if="editable" :loading="updateLoading" >update recette</v-btn>
-      <v-btn color="success" @click="editable=false" v-if="editable">cancel</v-btn>
-
-      <recetteindex :recettelist="recetteList" @getRecipe="getRecette($event)" :loading="getLoading"></recetteindex>
+        <recetteindex
+          :recettelist="recetteList"
+          @getRecipe="getRecette($event)"
+          :loading="getLoading"
+        ></recetteindex>
       </v-row>
 
       <v-row justify="center" align="end">
@@ -15,9 +23,8 @@
           <recette-header :editable="editable" v-model="recette" @edit="editable=true"></recette-header>
         </v-col>
       </v-row>
-      <v-row class="mx-0" >
-
-        <v-col >
+      <v-row class="mx-0">
+        <v-col class="pa-0 ma-0">
           <h1 class="d-flex justify-center">INGREDIENTS</h1>
           <ingredients
             v-model="recette.ingredients"
@@ -25,7 +32,7 @@
             @updateIngredientList="updateIngredientList($event)"
           ></ingredients>
         </v-col>
-        <v-col  class="px-0">
+        <v-col class="px-0">
           <h1 class="d-flex justify-center">PREPARATION</h1>
           <preparation v-model="recette.processDescription" :editable="editable"></preparation>
         </v-col>
@@ -79,8 +86,8 @@ export default {
       selectedRecette: "ratatouille",
 
       searchRecipe: "",
-      updateLoading:false,
-      getLoading:false
+      updateLoading: false,
+      getLoading: false
     };
   },
   mounted() {
@@ -88,6 +95,8 @@ export default {
       .get("/recettes")
       .then(data => {
         this.recetteList = data.data;
+        let rand = Math.floor(Math.random() * this.recetteList.length);
+        this.getRecette(this.recetteList[rand].nom);
       })
       .catch(err => {
         this.debug = err;
@@ -95,23 +104,27 @@ export default {
   },
   methods: {
     getRecette(recette) {
-      this.getLoading=true
+      this.getLoading = true;
       let recetteId = this.recetteList.filter(x => x.nom == recette)[0].id;
       axios
         .get("/recette/" + recetteId)
         .then(data => {
           this.recette = data.data;
-          this.getLoading=false
+          this.getLoading = false;
         })
         .catch(err => {
           this.debug = err;
-          this.getLoading=false
+          this.getLoading = false;
         });
     },
     updateRecette() {
       let _this = this;
-            this.updateLoading=true
-
+      this.updateLoading = true;
+      this.recette.ingredients = this.recette.ingredients
+        .filter(x => x.nom.length > 0)
+        .map(x => {
+          return { nom: x.nom, qty: x.qty };
+        });
       axios
         .put("/recette/" + this.recette.id, qs.stringify(this.recette))
         .then(data => {
@@ -123,14 +136,12 @@ export default {
               { nom: _this.recetteList.nom, id: _this.recette.id }
             ]);
           }
-                    this.updateLoading=false
-                    this.editable=false
-
+          this.updateLoading = false;
+          this.editable = false;
         })
         .catch(err => {
           this.debug = err;
-                    this.updateLoading=false
-
+          this.updateLoading = false;
         });
     },
     newRecette() {
@@ -162,8 +173,8 @@ export default {
 
 <style lang="scss" scoped>
 #recette {
-color: red;
-border: red;
-border-style: solid;
+  color: red;
+  border: red;
+  border-style: solid;
 }
 </style>
