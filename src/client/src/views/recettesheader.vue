@@ -8,14 +8,10 @@
           :outlined="editable"
           :dense="!editable"
           label="Nom"
-          id="id"
           v-model="value.nom"
           :rules="[rules.required]"
         >
-    <template slot="append" v-if="!editable">
-            <v-icon @click="$emit('edit')">mdi-pencil</v-icon>
-    
-    </template>
+
         </v-text-field>
       </v-row>
       <v-row>
@@ -26,7 +22,7 @@
             :outlined="editable"
             :dense="!editable"
             label="Temps"
-            id="id"
+
             v-model="value.temps"
             :rules="[rules.required]"
           >
@@ -42,7 +38,7 @@
             :outlined="editable"
             :dense="!editable"
             label="nombre de personnes"
-            id="id"
+
             v-model="value.nbPersonnes"
             :rules="[rules.number]"
           >

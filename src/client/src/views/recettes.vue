@@ -1,8 +1,19 @@
 <template>
   <div>
+    <!-- {{isAutorised}}
+    <v-btn color="success" v-if="checkAuth('Recettes','Editor')">checkAuth "Recettes":"Editor"</v-btn>
+    <v-btn color="success" v-if="checkAuth('Recettes','Viewer')">checkAuth "Recettes":"Viewer"</v-btn>
+    <v-btn color="success" v-if="checkAuth('Recettes','Manager')">checkAuth "Recettes":"Manager"</v-btn>
+    <v-btn color="success" @click="getAuth()">get Auth </v-btn>
+    {{auth}}
+
+    <v-btn color="success" @click="newRecette() " v-if="checkAuth('Recettes','Editor')">new Recette si  "Recettes":"Editor"</v-btn>-->
+
     <v-container fluid>
-      <v-row>
+      <v-row v-if="checkAuth('Recettes','Editor')">
+      <!-- <v-row > -->
         <v-btn color="success" @click="newRecette() " v-if="!editable">Nouvelle recette</v-btn>
+        <v-btn color="success" @click="editable=true" v-if="!editable">Editer</v-btn>
         <v-btn
           color="success"
           @click="updateRecette()"
@@ -10,7 +21,8 @@
           :loading="updateLoading"
         >update recette</v-btn>
         <v-btn color="success" @click="editable=false" v-if="editable">cancel</v-btn>
-
+      </v-row>
+      <v-row>
         <recetteindex
           :recettelist="recetteList"
           @getRecipe="getRecette($event)"
@@ -49,7 +61,9 @@ import ingredients from "./ingredients";
 import recetteindex from "./recettelist";
 import preparation from "./recettepreparation";
 import recetteHeader from "./recettesheader";
+import mixinAuth from "../mixins/mixin_auth";
 export default {
+  mixins: [mixinAuth],
   components: { ingredients, recetteindex, preparation, recetteHeader },
   data() {
     return {

@@ -22,15 +22,17 @@ var validate = require("validate.js");
 var qs = require("qs")
 const auth = require('./auth')
 var recettes = require('../lib/dynamodb/recettes')
+let definition =require('../lib/definition')
 
-// TODO autorisation 
-// router.use('/recettes',(req, res, next)=> { auth.checkAuth(req,res,next,'recettes') });
+function recetteAuthEditor(req, res, next) {
+    auth.isAuthorized(req,res,next, definition._application.Recettes,definition._role.Editor)
+}
 
 router.route('/recettes')
     .get((req, res) => {
         recettes.getRecettes()
-        .then(data=>res.send(data))
-        .catch(err=>res.send(err))
+            .then(data => res.send(data))
+            .catch(err => res.send(err))
     })
 
 router.route('/ingredients')
@@ -38,40 +40,44 @@ router.route('/ingredients')
         console.log(req.body)
         let newIngredient = qs.parse(req.body).ingredient
         recettes.putIngredients(newIngredient)
-        .then(data=>{res.send(data)})
-        .catch(err=>{res.send(err)})
+            .then(data => {
+                res.send(data)
+            })
+            .catch(err => {
+                res.send(err)
+            })
 
     })
     .get((req, res) => {
-            recettes.getIngredients().then(
-            data=>res.send(data)
+        recettes.getIngredients().then(
+            data => res.send(data)
         ).catch(
-            err=>res.send(err)
+            err => res.send(err)
         )
     })
 
 router.route('/recette/:recette_id')
-    .put((req, res) => { //TODO
+    .put(recetteAuthEditor, (req, res) => { //TODO
         console.log(req.body)
         let newRecette = qs.parse(req.body)
         recettes.putRecette(newRecette)
-        .then(data=>res.send(data))
-        .catch(err=>res.send(err))
+            .then(data => res.send(data))
+            .catch(err => res.send(err))
     })
-    .get((req, res) => {//TODO
+    .get((req, res) => { //TODO
         console.log(req.body)
-         recettes.getRecette(req.params.recette_id)
-        .then(data=>
-            res.send(data)
+        recettes.getRecette(req.params.recette_id)
+            .then(data =>
+                res.send(data)
             )
-        .catch(err=>res.send(err))
+            .catch(err => res.send(err))
     })
-    .post((req, res) => {//TODO
+    .post(recetteAuthEditor, (req, res) => { //TODO
         console.log(req.body)
         let newRecette = qs.parse(req.body).recette
         recettes.postRecette(newRecette)
-        .then()
-        .catch()
+            .then()
+            .catch()
     })
 
 module.exports = router;

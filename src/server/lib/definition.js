@@ -7,7 +7,8 @@ const _role = {
 const _application ={
     User:'Users',
     Todo: 'Todo',
-    Expenses: 'Expenses'
+    Expenses: 'Expenses',
+    Recettes: 'Recettes'
 }
 
 const _errorMessage = {
