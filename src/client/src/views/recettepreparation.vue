@@ -1,22 +1,15 @@
 <template>
-  <v-card outlined >
-    <v-container>
-      <v-row>
-        <v-col cols="4" v-if="editable">
-          <v-textarea
-            outlined
-            filled
-            auto-grow
-            :value="processDescription"
-            v-model="processDescription"
-            @keydown="$emit('input',processDescription)"
-          ></v-textarea>
-        </v-col>
-        <v-col >
-          <span v-html="processDescriptionMarked"></span>
-        </v-col>
-      </v-row>
-    </v-container>
+  <v-card outlined class="d-flex flex-wrap">
+    <v-textarea
+      outlined
+      filled
+      auto-grow
+      :value="processDescription"
+      v-model="processDescription"
+      @keydown="$emit('input',processDescription)"
+      v-if="editable"
+    ></v-textarea>
+    <span v-html="processDescriptionMarked"></span>
   </v-card>
 </template>
 
@@ -53,4 +46,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.outlined {
+  border-style: solid;
+  border-color: blue;
+  background-color: lightgray;
+}
 </style>

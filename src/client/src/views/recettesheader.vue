@@ -12,10 +12,7 @@
           v-model="value.nom"
           :rules="[rules.required]"
         >
-    <template slot="append" v-if="!editable">
-            <v-icon @click="$emit('edit')">mdi-pencil</v-icon>
-    
-    </template>
+
         </v-text-field>
       </v-row>
       <v-row>
