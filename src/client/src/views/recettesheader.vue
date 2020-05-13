@@ -8,7 +8,6 @@
           :outlined="editable"
           :dense="!editable"
           label="Nom"
-          id="id"
           v-model="value.nom"
           :rules="[rules.required]"
         >
@@ -23,7 +22,7 @@
             :outlined="editable"
             :dense="!editable"
             label="Temps"
-            id="id"
+
             v-model="value.temps"
             :rules="[rules.required]"
           >
@@ -39,7 +38,7 @@
             :outlined="editable"
             :dense="!editable"
             label="nombre de personnes"
-            id="id"
+
             v-model="value.nbPersonnes"
             :rules="[rules.number]"
           >
