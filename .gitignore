@@ -4,6 +4,7 @@ node_modules
 /zip
 /src/client/dist
 /dist
+/out
 
 
 # Elastic Beanstalk Files

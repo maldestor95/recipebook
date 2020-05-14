@@ -15,6 +15,11 @@
  * Except as contained in this notice, the name of Maldestor shall not be used in advertising or otherwise to promote the sale,
  * use or other dealings in this Software without prior written authorization from Maldestor.
  */
+
+ /**
+  * Express router providing recette related routes
+  * @module routers/recette
+  */
 "use strict"
 var express = require('express');
 var router = express.Router();
@@ -23,12 +28,24 @@ var qs = require("qs")
 const auth = require('./auth')
 var recettes = require('../lib/dynamodb/recettes')
 let definition =require('../lib/definition')
-
+/**
+ * Middleware applyied to specific route to ensure the user has a minimum privilege of Editor
+ * @function
+ * @param {Object} req Express middleware
+ * @param {Object} res Express middleware
+ * @param {Object} next Express middleware
+ */
 function recetteAuthEditor(req, res, next) {
     auth.isAuthorized(req,res,next, definition._application.Recettes,definition._role.Editor)
 }
 
 router.route('/recettes')
+/** @name get/recettes
+ * returns a JSON object with the recettes
+ * @function
+ * @static
+ * 
+ */
     .get((req, res) => {
         recettes.getRecettes()
             .then(data => res.send(data))
@@ -36,8 +53,13 @@ router.route('/recettes')
     })
 
 router.route('/ingredients')
+/** @name put/ingredients
+ * add a new ingredient to the  ingredients list
+ * @function
+ * @static
+ * @param {String} req.body.ingredient
+ */
     .put((req, res) => {
-        console.log(req.body)
         let newIngredient = qs.parse(req.body).ingredient
         recettes.putIngredients(newIngredient)
             .then(data => {
@@ -48,6 +70,11 @@ router.route('/ingredients')
             })
 
     })
+    /** @name get/ingredients
+ * returns a JSON object with the ingredients list
+ * @function
+ * @static
+ */
     .get((req, res) => {
         recettes.getIngredients().then(
             data => res.send(data)
