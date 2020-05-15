@@ -8,12 +8,24 @@
       color="blue lighten-1"
       text-color="white"
     >
-      <v-icon id="menu" @click="navdrawer = !navdrawer" color="white">mdi-menu</v-icon>
+    <img 
+    src="logoMaldestor.svg" 
+    alt="triangle with all three sides equal"
+    height="50"
+    width="50" 
+    @click="navdrawer = !navdrawer"
+    />
+
+      <!-- <v-icon id="menu" @click="navdrawer = !navdrawer" color="white">mdi-menu</v-icon> -->
 
       <span
         class="text-uppercase white--text"
         style="font-family:CoffeeHouse;font-size: x-large;"
       >Maldestor 95</span>
+      <span>
+          
+
+      </span>
       <v-spacer></v-spacer>
       <v-chip
         label
@@ -30,7 +42,7 @@
         <v-list-item @click="navdrawer = !navdrawer">
           <v-list-item-icon>
             <v-icon>mdi-menu</v-icon>
-          </v-list-item-icon>
+      </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>menu</v-list-item-title>
           </v-list-item-content>
@@ -63,11 +75,18 @@
       top
       left
       fab
-      color="blue lighten-3"
       id="menumobile"
       class="mt-8 hidden-md-and-up"
     >
-      <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon>
+      <!-- color="blue lighten-3" -->
+      <!-- <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon> -->
+      <img 
+    src="logoMaldestor.svg" 
+    alt="triangle with all three sides equal"
+    height="50"
+    width="50" 
+    @click="navdrawer = !navdrawer"
+    />
     </v-btn>
   </v-app>
 </template>
@@ -110,6 +129,12 @@ export default {
         text: "Users",
         link: "users",
         logrequired: true
+      },
+      {
+        icon: "mdi-notebook-outline",
+        text: "Recettes",
+        link: "recettes",
+        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
       }
     ]
   }),

@@ -43,6 +43,15 @@ const router = new VueRouter({
                 requireAuth: true
             }
 
+        },
+        {
+            path: "/recettes",
+            name:"recettes",
+            component:  () => import( /* webpackChunkName: "recettes" */ "@/views/recettes.vue"),
+            meta: {
+                requireAuth: false
+            }
+
         }
     ]
 });
