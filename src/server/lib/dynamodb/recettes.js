@@ -19,7 +19,7 @@
 var constants = require('../definition')
 var dynamo_error_msg = require('./definition_dynamodb').error_msg
 var AWS = require("aws-sdk");
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 AWS.config.update({
     region: "eu-west-3",
