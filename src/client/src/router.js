@@ -9,7 +9,12 @@ import {store} from "./store";
 const router = new VueRouter({
     // mode: "history",
     base: __dirname,
-    routes: [{
+    routes: [
+        {
+            path: '/',
+            redirect: '/about'
+          },
+        {
             path: "/about",
             name: "about",
             component:About,

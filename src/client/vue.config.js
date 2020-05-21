@@ -12,7 +12,7 @@ module.exports = {
       devtool: 'source-map',
       // module: {
       //   rules: [{
-      //     test: /\.(woff|woff2|eot|ttf|otf)$/,
+      //     test: /\.(woff|woff2|eot|ttf|otf|png|jpe?g)$/,
       //     use: [
       //       'file-loader',
       //     ],
