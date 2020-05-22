@@ -47,7 +47,6 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (login, done) {
-    //TODO
     let U = new User()
     U.getLogin(login, function (err, user) {
         done(err, user);
