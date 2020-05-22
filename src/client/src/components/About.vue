@@ -1,8 +1,7 @@
 <template>
   <v-container grid-list-xs class="back" fluid>
     <h1>
-      Bienvenue sur le site personnel de
-      <coffee>Maldestor95</coffee>
+      Bienvenue sur le site personnel de Maldestor95
     </h1>
     <p>En cours d'autoformation sur les technologies nodesjs/vuejs je vais créer quelques applications que je vais publier sur ce site au fil de l'eau.</p>
     <p>Bonne navigation !</p>
