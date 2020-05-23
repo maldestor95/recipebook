@@ -73,6 +73,15 @@ router.route('/doc/:category/:id')
             )
             .catch(err => res.send(err))
     })
+    .delete((req, res) => {
+        doc.deleteDocument(req.params.id)
+        .then(data =>{
+            console.log(data)
+            res.send(data)
+        }
+        )
+        .catch(err => res.send(err))
+    })
 
 
 module.exports = router;

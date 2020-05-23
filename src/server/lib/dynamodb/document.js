@@ -48,8 +48,8 @@ function getDocuments(category) { //TODO
                 "#cat": "categorie"
             },
             ExpressionAttributeValues: {
-                ":val":  category
-                
+                ":val": category
+
             }
         }
         documentDB.scan(params, (err, data) => {
@@ -57,14 +57,14 @@ function getDocuments(category) { //TODO
                 console.log(err)
                 reject(err)
             } else {
-                let result=data.Items
+                let result = data.Items
                 resolve(result)
             }
         });
     })
 }
 
-function putDocument(Id,docData,category) { //TODO
+function putDocument(Id, docData, category) { //TODO
     return new Promise(function (resolve, reject) {
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
@@ -106,7 +106,7 @@ function getDocument(Id) { //TODO
     })
 }
 
-function postDocument(docData,category) {
+function postDocument(docData, category) {
     return new Promise(function (resolve, reject) {
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
@@ -135,10 +135,38 @@ function postDocument(docData,category) {
     })
 }
 
+function deleteDocument(id) {
+    return new Promise(function (resolve, reject) {
+            let documentDB = new AWS.DynamoDB.DocumentClient()
+            let params = {
+                "TableName": "document",
+                Key: {
+                    "id": id
+                },
+                ConditionExpression: "attribute_exists(#u)",
+                ExpressionAttributeNames: {
+                    "#u": "id"
+                }
+            }
+            documentDB.delete(params, (err, data) => {
+                if (err) {
+                    reject(err)
+                }
+                resolve(data)
+
+            })
+        }
+
+    )
+}
+
+
+
 var self = (module.exports = {
 
     getDocuments,
     getDocument,
     postDocument,
-    putDocument
+    putDocument,
+    deleteDocument
 })
