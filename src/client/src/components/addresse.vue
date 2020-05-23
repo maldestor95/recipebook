@@ -5,16 +5,16 @@
           <v-text-field
             :label="item"
             :name="item"
-            v-model="adresse[item]"
-            @change="$emit('input',adresse)" 
+            v-model="value[item]"
+            @change="$emit('input',value)" 
             :disabled="!editable"           
           ></v-text-field>
         </div>
         <v-textarea
             label="notes"
             name="notes"
-            v-model="adresse.notes"
-            @change="$emit('input',adresse)"            
+            v-model="value.notes"
+            @change="$emit('input',value)"            
             :disabled="!editable"           
           ></v-textarea>
       </v-form>
@@ -28,7 +28,7 @@ export default {
       type:Boolean,
       default:false
     },
-    adresse: {
+    value: {
       type: Object,
       default: () => {
         return {
@@ -44,7 +44,7 @@ export default {
   },
   computed: {
       fieldlist() {
-          return Object.keys(this.adresse).filter(x=>x!='notes')
+          return Object.keys(this.value).filter(x=>x!='notes')
       }
   },
 };

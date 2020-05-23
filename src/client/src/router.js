@@ -60,7 +60,7 @@ const router = new VueRouter({
         {
             path: "/dev",
             name:"development",
-            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseur.vue"),
+            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
             meta: {
                 requireAuth: false
             }            

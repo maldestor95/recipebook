@@ -1,17 +1,19 @@
 <template>
   <div id="supplier">
-
     <adresse v-model="fournisseur.adresse" :editable="editable"></adresse>
-    <v-btn color="info" @click="save" v-if="editable">save</v-btn>
-    <v-btn color="info" @click="edit" v-if="!editable">edit</v-btn>
-    <v-btn color="info" @click="del" >delete</v-btn>
+    <v-btn color="info" @click="saveSupplier()" v-if="editable">save</v-btn>
+    <v-btn color="info" @click="editSupplier()" v-if="!editable">edit</v-btn>
+    <v-btn color="info" @click="delSupplier()">delete</v-btn>
+    <v-btn color="info" @click="newSupplier()">new</v-btn>
   </div>
 </template>
 
 <script>
 import adresse from "./addresse";
+import docaxios from "../mixins/mixin_doc";
 
 export default {
+  mixins: [docaxios],
   components: {
     adresse
   },
@@ -26,22 +28,32 @@ export default {
           adresse: "40 rue de Paris",
           complementAdresse: "59000 LILLE",
           notes: "NOTES"
-        },
+        }
       }
     };
   },
   methods: {
-      edit() {
-          this.editable=true
-      },
-      save() {
-          this.editable=false
-          
-      },
-      del() {
-          
-      }
-  },
+    editSupplier() {
+      this.editable = true;
+    },
+    saveSupplier() {
+      this.editable = false;
+    },
+    delSupplier() {},
+    newSupplier() {
+      this.$set(this, 'fournisseur', {
+        adresse: {
+          nom: "",
+          prenom: "",
+          societe: "",
+          adresse: "",
+          complementAdresse: "",
+          notes: ""
+        }
+      });
+      this.editable = false;
+    }
+  }
 };
 </script>
 
