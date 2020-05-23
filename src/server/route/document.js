@@ -1,4 +1,3 @@
-
 /**
  * Express router providing recette related routes
  * @module routers/recette
@@ -35,13 +34,15 @@ router.route('/doc/:category')
      * @static
      * 
      */
-    .get((req, res,next) => {
+    .get((req, res, next) => {
         doc.getDocuments(req.params.category)
-            .then(data => res.send(data))
+            .then(data => {
+                res.send(data)
+            })
             .catch(err => res.send(err))
     })
     .post(AuthEditor, (req, res) => {
-        console.log(req.body)
+ 
         let newDoc = qs.parse(req.body)
         doc.postDocument(newDoc.data, req.params.category)
             .then(data =>
@@ -56,17 +57,22 @@ router.route('/doc/:category/:id')
         console.log(req.body)
         let newDoc = qs.parse(req.body)
         doc.putDocument(req.params.id, newDoc.data, req.params.category)
-            .then(data => res.send(data))
+            .then(data => {
+                
+                res.send(data)
+            })
             .catch(err => res.send(err))
     })
     .get((req, res) => {
         console.log(req.body)
         doc.getDocument(req.params.id)
-            .then(data =>
+            .then(data =>{
+                console.log(data)
                 res.send(data)
+            }
             )
             .catch(err => res.send(err))
     })
-    
+
 
 module.exports = router;

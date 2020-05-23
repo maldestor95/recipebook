@@ -39,6 +39,7 @@ let dynamodb = new AWS.DynamoDB(AWS.config);
 
 
 function getDocuments(category) { //TODO
+    let documentDB = new AWS.DynamoDB.DocumentClient()
     return new Promise(function (resolve, reject) {
         let params = {
             TableName: "document",
@@ -47,14 +48,14 @@ function getDocuments(category) { //TODO
                 "#cat": "categorie"
             },
             ExpressionAttributeValues: {
-                ":val": {
-                    "S": category
-                },
+                ":val":  category
+                
             }
         }
-        dynamodb.scan(params, (err, data) => {
+        documentDB.scan(params, (err, data) => {
             if (err) {
-                reject(err.stack)
+                console.log(err)
+                reject(err)
             } else {
                 let result=data.Items
                 resolve(result)
