@@ -8,7 +8,9 @@ const _application ={
     User:'Users',
     Todo: 'Todo',
     Expenses: 'Expenses',
-    Recettes: 'Recettes'
+    Recettes: 'Recettes',
+    Fournisseur : 'fournisseur',
+    Cave : 'cave'
 }
 
 const _errorMessage = {

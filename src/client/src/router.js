@@ -58,6 +58,22 @@ const router = new VueRouter({
             }            
         },
         {
+            path: "/fournisseur",
+            name:"fournisseur",
+            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+            meta: {
+                requireAuth: false
+            }            
+        },
+        {
+            path: "/cave",
+            name:"cave",
+            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+            meta: {
+                requireAuth: true
+            }            
+        } ,
+               {
             path: "/dev",
             name:"development",
             component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),

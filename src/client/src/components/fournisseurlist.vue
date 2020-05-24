@@ -1,6 +1,12 @@
 <template>
   <div>
     {{err}}
+    <v-list>
+      <v-list-item v-for="item in fournisseurList" :key="item.id">
+        {{ item.data.adresse.societe }} - {{ item.data.adresse.nom }}
+      </v-list-item>
+
+    </v-list>
     <v-data-table
       :headers="headers"
       :items="fournisseurList"
@@ -15,6 +21,8 @@
       v-if="selected!=blankFournisseur | newFournisseur "
       v-model="selected"
       :editable="newFournisseur"
+      @delete="delFournisseur($event)"
+      @add="addFournisseur($event)"
     ></fournisseur>
   </div>
 </template>
@@ -89,6 +97,13 @@ export default {
           this.listLoading=false
           })
       .catch(err=>this.err=err)
+    },
+    addFournisseur(evt){
+      this.$set(this,'fournisseurList',[...this.fournisseurList,evt])
+      },
+    delFournisseur(evt){
+
+      this.$set(this, 'fournisseurList',this.fournisseurList.filter(x=>x.id!=evt.id))
     }
     
   }

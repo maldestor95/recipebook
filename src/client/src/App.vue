@@ -135,6 +135,18 @@ export default {
         text: "Recettes",
         link: "recettes",
         logrequired: false  // TODO NODE-8 activate recette at the end of Dev
+      },
+      {
+        icon: "mdi-domain",
+        text: "Fournisseur",
+        link: "fournisseur",
+        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
+      },
+      {
+        icon: "mdi-bottle-wine",
+        text: "Cave",
+        link: "cave",
+        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
       }
     ]
   }),

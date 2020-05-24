@@ -1,6 +1,5 @@
 <template>
   <div id="supplier">
-    {{value.id}}
     <adresse v-model="value.data" :editable="editableComputed"></adresse>
     <v-btn color="info" @click="saveSupplier()" v-if="editableComputed" :loading="loading">save</v-btn>
     <v-btn color="info" @click="editSupplier()" v-if="!editableComputed">edit</v-btn>
@@ -64,6 +63,7 @@ export default {
         this.postDoc("fournisseur", this.value.data)
           .then(() => {
             this.loading = false;
+            this.$emit('add',this.value)
           })
           .catch(() => {
             this.loading = false;
@@ -75,6 +75,7 @@ export default {
       this.delDoc("fournisseur", this.value.id)
         .then(() => {
           this.loading = false;
+          this.$emit('delete',this.value)
         })
         .catch(() => {
           this.loading = false;
