@@ -112,7 +112,7 @@ const router = new VueRouter({
         {
             path: "/fournisseur",
             name: "fournisseur",
-            component: () => import( /* webpackChunkName: "fournisseur" */ "@/components/fournisseurlist.vue"),
+            component: () => import( /* webpackChunkName: "fournisseur" */ "@/feature/fournisseur.vue"),
             meta: {
                 requireAuth: true,
                 icon: "mdi-domain",
@@ -130,7 +130,7 @@ const router = new VueRouter({
         {
             path: "/cave",
             name: "cave",
-            component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/cave.vue"),
             meta: {
                 requireAuth: true,
                 icon: "mdi-bottle-wine",
@@ -144,20 +144,21 @@ const router = new VueRouter({
                 },
                 dev:true
             }
-        },
-        {
-            path: "/dev",
-            name: "development",
-            component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
-            meta: {
-                requireAuth: true,
-                icon: "mdi-dev-to",
-                text: "Dev",
-                link: "dev",
-                logrequired: false,
-                menu: true
-            }
         }
+        // ,
+        // {
+        //     path: "/dev",
+        //     name: "development",
+        //     component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+        //     meta: {
+        //         requireAuth: true,
+        //         icon: "mdi-dev-to",
+        //         text: "Dev",
+        //         link: "dev",
+        //         logrequired: false,
+        //         menu: true
+        //     }
+        // }
     ]
 });
 router.beforeEach((to, from, next) => {

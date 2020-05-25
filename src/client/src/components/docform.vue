@@ -1,9 +1,9 @@
 <template>
   <div id="supplier">
     <adresse v-model="value.data" :editable="editableComputed"></adresse>
-    <v-btn color="info" @click="saveSupplier()" v-if="editableComputed" :loading="loading">save</v-btn>
-    <v-btn color="info" @click="editSupplier()" v-if="!editableComputed">edit</v-btn>
-    <v-btn color="info" @click="delSupplier()">delete</v-btn>
+    <v-btn color="info" @click="saveDoc()" v-if="editableComputed" :loading="loading">save</v-btn>
+    <v-btn color="info" @click="editDoc()" v-if="!editableComputed">edit</v-btn>
+    <v-btn color="info" @click="delDoc()">delete</v-btn>
   </div>
 </template>
 
@@ -45,14 +45,14 @@ export default {
     };
   },
   methods: {
-    editSupplier() {
+    editDoc() {
       this.editableComputed = true;
     },
-    saveSupplier() {
+    saveDoc() {
       this.editableComputed = false;
       this.loading = true;
       if (this.value.id != "") {
-        this.putDoc("fournisseur", this.value.id, this.value.data)
+        this.putDoc(this.value.categorie, this.value.id, this.value.data)
           .then(() => {
             this.loading = false;
           })
@@ -60,7 +60,7 @@ export default {
             this.loading = false;
           });
       } else {
-        this.postDoc("fournisseur", this.value.data)
+        this.postDoc(this.value.categorie, this.value.data)
           .then(() => {
             this.loading = false;
             this.$emit('add',this.value)
@@ -70,9 +70,9 @@ export default {
           });
       }
     },
-    delSupplier() {
+    delDoc() {
       this.loading = true;
-      this.delDoc("fournisseur", this.value.id)
+      this.delDoc(this.value.categorie, this.value.id)
         .then(() => {
           this.loading = false;
           this.$emit('delete',this.value)
