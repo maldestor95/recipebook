@@ -10,7 +10,8 @@ const _application ={
     Expenses: 'Expenses',
     Recettes: 'Recettes',
     Fournisseur : 'fournisseur',
-    Cave : 'cave'
+    Cave : 'cave',
+    Dev : 'dev'
 }
 
 const _errorMessage = {

@@ -4,82 +4,159 @@ import VueRouter from "vue-router";
 // import Expenses from "./components/Expenses.vue";
 // import Users from "./components/Users.vue";
 import About from "./components/About.vue";
-import {store} from "./store";
+import {
+    store
+} from "./store";
 
 const router = new VueRouter({
     // mode: "history",
     base: __dirname,
-    routes: [
-        {
+    routes: [{
             path: '/',
-            redirect: '/about'
-          },
+            redirect: '/about',
+            meta: {
+                requireAuth: false,
+                icon: "mdi-information-variant",
+                text: "About",
+                link: "about",
+                logrequired: false,
+                menu: false
+            }
+        },
         {
             path: "/about",
             name: "about",
-            component:About,
+            component: About,
             meta: {
-                requireAuth: false
+                requireAuth: false,
+                icon: "mdi-information-variant",
+                text: "About",
+                link: "about",
+                logrequired: false,
+                menu: true
             }
         },
         {
             path: "/login",
             name: "login",
             component: () => import( /* webpackChunkName: "login" */ "@/views/user.vue"),
-        },
-        {
-            path: "/Expenses",
-            name:"expenses",
-            component: () => import( /* webpackChunkName: "Expenses" */ "@/components/Expenses.vue"),
             meta: {
-                requireAuth: true
+                requireAuth: false,
+                icon: "mdi-information-variant",
+                text: "About",
+                link: "about",
+                logrequired: false,
+                menu: false
+            }
+        },
+        // {
+        //     path: "/Expenses",
+        //     name: "expenses",
+        //     component: () => import( /* webpackChunkName: "Expenses" */ "@/components/Expenses.vue"),
+        //     meta: {
+        //         requireAuth: true
+        //     }
+        // },
+        {
+            path: "/scoreboard",
+            name: "scoreboard",
+            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/scoreBoard/scoreBoard.vue"),
+            meta: {
+                requireAuth: false,
+                icon: "mdi-scoreboard",
+                text: "ScoreBoard",
+                link: "scoreboard",
+                logrequired: false,
+                menu: true,
+                about: {
+                    img: "scoreboard.jpg",
+                    routetitle: "Scoreboard",
+                    text: `Application pour compter les points. Idéal pour UNO avec les enfants`
+                },
+
             }
         },
         {
-            path: "/scoreboard",
-            name:"scoreboard",
-            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/scoreBoard/scoreBoard.vue"),
-        },
-        {
             path: "/Users",
-            name:"users",
-            component:  () => import( /* webpackChunkName: "Users" */ "@/views/Users.vue"),
+            name: "users",
+            component: () => import( /* webpackChunkName: "Users" */ "@/views/Users.vue"),
             meta: {
-                requireAuth: true
+                requireAuth: true,
+                icon: "mdi-account-group",
+                text: "Users",
+                link: "users",
+                logrequired: true,
+                menu: true,
             }
 
         },
         {
             path: "/recettes",
-            name:"recettes",
-            component:  () => import( /* webpackChunkName: "recettes" */ "@/views/recettes.vue"),
+            name: "recettes",
+            component: () => import( /* webpackChunkName: "recettes" */ "@/views/recettes.vue"),
             meta: {
-                requireAuth: false
-            }            
+                requireAuth: false,
+                icon: "mdi-notebook-outline",
+                text: "Recettes",
+                link: "recettes",
+                logrequired: false,
+                menu: true,
+                about: {
+                    img: "recette.jpg",
+                    routetitle: "Recettes",
+                    text: `Petit recueil de recettes que j'ai trouvé interéssantes.`
+                }
+
+            }
         },
         {
             path: "/fournisseur",
-            name:"fournisseur",
-            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+            name: "fournisseur",
+            component: () => import( /* webpackChunkName: "fournisseur" */ "@/components/fournisseurlist.vue"),
             meta: {
-                requireAuth: false
-            }            
+                requireAuth: true,
+                icon: "mdi-domain",
+                text: "Fournisseur",
+                link: "fournisseur",
+                logrequired: false,
+                menu: true,
+                about :{
+                    routetitle: "Fournisseurs",
+                    text: `Gestion des fournisseurs.`
+                },
+                dev:true
+            }
         },
         {
             path: "/cave",
-            name:"cave",
-            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+            name: "cave",
+            component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
             meta: {
-                requireAuth: true
-            }            
-        } ,
-               {
+                requireAuth: true,
+                icon: "mdi-bottle-wine",
+                text: "Cave",
+                link: "cave",
+                logrequired: false,
+                menu: true,
+                about :{
+                    routetitle: "Cave",
+                    text: `Gestion de la cave à vin.`
+                },
+                dev:true
+            }
+        },
+        {
             path: "/dev",
-            name:"development",
-            component:  () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
+            name: "development",
+            component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
             meta: {
-                requireAuth: false
-            }            
+                requireAuth: true,
+                icon: "mdi-dev-to",
+                text: "Dev",
+                link: "dev",
+                logrequired: false,
+                menu: true
+            }
         }
     ]
 });
@@ -89,9 +166,11 @@ router.beforeEach((to, from, next) => {
             next({
                 name: 'login'
             })
-        }else {next()}
+        } else {
+            next()
+        }
     } else {
-                next()
+        next()
     }
 })
 export default router

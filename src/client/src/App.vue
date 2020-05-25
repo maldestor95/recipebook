@@ -34,6 +34,8 @@
         v-if="storeState.username"
       >User Connected: {{storeState.username}}</v-chip>
       <v-spacer></v-spacer>
+
+      <v-spacer></v-spacer>
       <login-user v-model="logged"></login-user>
     </v-app-bar>
 
@@ -49,7 +51,7 @@
         </v-list-item>
         <v-subheader>TOOLS</v-subheader>
         <v-list-item-group v-model="item">
-          <v-list-item v-for="(item, i) in navlistfiltered" :key="i" @click="navigateTo(item)">
+          <v-list-item v-for="(item, i) in routeList" :key="i" @click="navigateTo(item)">
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -104,51 +106,7 @@ export default {
     storeState: store.state,
     logged: false,
     navdrawer: null,
-    item: 1,
-    navlist: [
-      {
-        icon: "mdi-information-variant",
-        text: "About",
-        link: "about",
-        logrequired: false
-      },
-      {
-        icon: "mdi-alert-box",
-        text: "Risks",
-        link: "risks",
-        logrequired: true
-      },
-      {
-        icon: "mdi-cash-100",
-        text: "Expenses",
-        link: "expenses",
-        logrequired: true
-      },
-      {
-        icon: "mdi-account-group",
-        text: "Users",
-        link: "users",
-        logrequired: true
-      },
-      {
-        icon: "mdi-notebook-outline",
-        text: "Recettes",
-        link: "recettes",
-        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
-      },
-      {
-        icon: "mdi-domain",
-        text: "Fournisseur",
-        link: "fournisseur",
-        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
-      },
-      {
-        icon: "mdi-bottle-wine",
-        text: "Cave",
-        link: "cave",
-        logrequired: false  // TODO NODE-8 activate recette at the end of Dev
-      }
-    ]
+    item: 1
   }),
   methods: {
     navigateTo(it) {
@@ -159,17 +117,6 @@ export default {
     }
   },
   computed: {
-    // filter navlist depending on user's right to access other menus
-    navlistfiltered() {
-      const res = this.navlist.filter(nav => {
-        if (this.logged) {
-          return !nav.logrequired | store.isAuthorised(nav.link);
-        } else {
-          return !nav.logrequired;
-        }
-      });
-      return res;
-    },
     currentroute() {
       return JSON.stringify(this.$route);
     },
@@ -178,7 +125,15 @@ export default {
         return this.$route.name == nav.link;
       });
       return currentNav[0] ? currentNav[0].text : "none";
-    }
+    },
+    routeList(){
+      let routeL= this.$router.options.routes.map(x=> {return x.meta})
+      routeL=routeL.filter((x)=>{
+        let displayMenu=(this.logged?x.menu & store.isAuthorised(x.link):false) | x.menu & !x.requireAuth
+        return displayMenu
+        })
+      return routeL
+      }
   },
   mounted() {
     store.reinitSession();
