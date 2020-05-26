@@ -3,30 +3,21 @@
     {{err}}
     {{value}}
     -----
-    {{selected}}
+    <p>Selected - {{selected}}</p>
 
     <v-data-table
       :headers="value.headers"
       :items="docList"
       class="elevation-1"
       item-key="id"
-      @click:row="selected=$event"
+      @click:row="rowClick($event)"
       :loading="listLoading"
     ></v-data-table>
-    <v-btn
-      color="info"
-      @click="newDoc=true;selected=blankDoc"
-      v-if="newDoc==false"
-    >New</v-btn>
-    <v-btn
-      color="info"
-      @click="newDoc=false;selected=blankDoc"
-      v-if="newDoc==true | selected!=blankDoc"
-    >Cancel</v-btn>
+
     <docForm
-      v-if="selected!=blankDoc | newDoc "
-      v-model="selected"
+      v-model.lazy="selected"
       :editable="newDoc"
+      :dataFormat="dataFormat"
       @delete="delDoc($event)"
       @add="addDoc($event)"
     ></docForm>
@@ -60,6 +51,10 @@ export default {
           ]
         };
       }
+    },
+    dataFormat: {
+      type:Object,
+      default:()=>{return {}}
     }
   },
   data() {
@@ -83,25 +78,11 @@ export default {
       listLoading: true,
       err: null,
       newDoc: false,
-      blankDoc: {
-        categorie: this.value.categorie,
-        id: "",
-        data: {
-          adresse: {
-            adresse: "",
-            complementAdresse: "",
-            notes: "",
-            nom: "",
-            prenom: "",
-            societe: ""
-          }
-        }
-      },
+      
       selected: {}
     };
   },
   mounted() {
-    this.selected = this.blankDoc;
     this.loadList();
   },
   methods: {
@@ -122,6 +103,9 @@ export default {
         "docList",
         this.docList.filter(x => x.id != evt.id)
       );
+    },
+    rowClick(evt){
+      this.selected=evt
     }
   }
 };

@@ -129,7 +129,7 @@ function postDocument(docData, category) {
             if (err) {
                 reject(err)
             } else {
-                resolve(err)
+                resolve(params.Item)
             }
         })
     })
