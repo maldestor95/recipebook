@@ -39,7 +39,8 @@ const router = new VueRouter({
         {
             path: "/login",
             name: "login",
-            component: () => import( /* webpackChunkName: "login" */ "@/views/user.vue"),
+            props: {logged : true, value:true},
+            component: () => import( /* webpackChunkName: "login" */ "@/components/loginform.vue"),
             meta: {
                 requireAuth: false,
                 icon: "mdi-information-variant",
@@ -167,6 +168,7 @@ router.beforeEach((to, from, next) => {
             next({
                 name: 'login'
             })
+            
         } else {
             next()
         }
