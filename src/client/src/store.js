@@ -1,94 +1,86 @@
 import axios from "axios";
 import Vue from "vue";
 import VueSession from 'vue-session'
+import Vuex from 'vuex'
+
+
+
+Vue.use(Vuex)
 Vue.use(VueSession)
 
-export const store = {
+export const store = new Vuex.Store({
     state: {
-        numbers: [1, 2, 3],
+        // numbers: [1, 2, 3],
         logged: false,
         sessionID: "none yet",
         applicationPrivilege: null,
         username: null
     },
-    debug: "",
-    login(name, pwd) {
-        axios.post('/login', {
-                username: name,
-                password: pwd
-            })
-            .then(res => {
-                this.state.logged = true
-                this.debug = res
-                this.state.sessionID = res.data.sessionID
+    mutations: {
+        login(state, payload) {
+            axios.post('/login', {
+                    username: payload.name,
+                    password: payload.pwd
+                })
+                .then(res => {
+                    state.logged = true
+                    state.sessionID = res.data.sessionID
 
-                this.state.applicationPrivilege = res.data.applicationPrivilege
-                this.state.username = name
-                sessionStorage.setItem('sessionID', JSON.stringify(this.state));
-            })
-            .catch(err => {
-                this.state.logged = false
-                this.debug = err
-            })
-    },
-    logout() {
-        axios.post('/logout')
-            .then(res => {
-                this.state.logged = false
-                this.debug = res
-                this.state.sessionID = "not logged anymore"
-                this.state.applicationPrivilege = null
-                this.state.username = null
-                sessionStorage.removeItem('sessionID');
-            })
-            .catch(err => {
-                this.state.logged = false
-                this.debug = err
-            })
+                    state.applicationPrivilege = res.data.applicationPrivilege
+                    state.username = payload.name
+                    sessionStorage.setItem('sessionID', JSON.stringify(store.state));
+                })
+                .catch(() => {
+                    state.logged = false
+                })
+        },
+        logout(state) {
+            axios.post('/logout')
+                .then(() => {
+                    state.logged = false
+                    state.sessionID = "not logged anymore"
+                    state.applicationPrivilege = null
+                    state.username = null
+                    sessionStorage.removeItem('sessionID');
+                })
+                .catch(() => {
+                    state.logged = false
+                })
 
-    },
-    reinitSession() {
-        if (sessionStorage.getItem('sessionID')) {
-            let t=sessionStorage.getItem('sessionID')
-            this.state=JSON.parse(t)
-        } 
-        
-    },
+        },
 
-    reinitState() {
-        this.state =
-         {
-            numbers: [1, 2, 3],
-            logged: false,
-            sessionID: "none yet",
-            applicationPrivilege: null,
-            username: null
-        }
+        reinitSession(state) {
+            if (sessionStorage.getItem('sessionID')) {
+                let t = JSON.parse(sessionStorage.getItem('sessionID'))
+                Object.keys(t).forEach(x => state[x] = t[x])
+            }
+        },
     },
-    clearSession() {
-        sessionStorage.removeItem('sessionID')
+    getters: {
+        isAuthorised: (state) => (routeName) => {
+            if (state.username == null) return false
+            else {
+                return Object.keys(state.applicationPrivilege).map(x => {
+                    return x.toLowerCase()
+                }).includes(routeName)
+            }
+        },
+        // FIXME =>  application users
+        getApplicationAccess:(state)=>(ApplicationName)=> {
+            let t = Object.keys(state.applicationPrivilege).filter(x => {
+                return x == ApplicationName
+            })
+            if (t.length == 0) {
+                return null
+            } else {
+                return state.applicationPrivilege[t[0]]
+            }
+        },
     },
-    isAuthorised(routeName) {
-        if (this.state.username == null) return false
-        else {
-            return Object.keys(this.state.applicationPrivilege).map(x => {
-                return x.toLowerCase()
-            }).includes(routeName)
-        }
-    },
-    getApplicationAccess(ApplicationName) {
-        let t = Object.keys(this.state.applicationPrivilege).filter(x => {
-            return x == ApplicationName
-        })
-        if (t.length == 0) {
-            return null
-        } else {
-            return this.state.applicationPrivilege[t[0]]
-        }
-    },
+    /*
     getState(){
         return this.state
     }
+*/
 
-
-}
+})

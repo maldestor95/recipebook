@@ -1,6 +1,6 @@
 <template>
   <v-card raised>
-    <v-container v-if="loginDialog">
+    <v-container v-if="$store.state.username==null">
       <h1 class="text-center">Malestor95</h1>
       <p class="text-center">Login</p>
 
@@ -16,7 +16,7 @@
       </v-row>
     </v-container>
 
-    <v-container v-if="!loginDialog">
+    <v-container v-if="$store.state.username!=null">
       <v-row no-gutters>
         <v-col md="12" align="center">
           <p>Are you sure you want to log out?</p>
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { store } from "../store.js";
+
 export default {
   props: {
 
@@ -49,12 +49,12 @@ export default {
   },
   methods: {
     login() {
-      store.login(this.username, this.password);
+      this.$store.commit('login',{name:this.username, pwd:this.password});
       this.loginDialog = false;
       this.$router.push("about");
     },
     logout() {
-      store.logout()
+      this.$store.commit('logout')
       this.$router.push("about");
       this.loginDialog = true;
     },

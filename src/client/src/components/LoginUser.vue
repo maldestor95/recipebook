@@ -1,21 +1,22 @@
 <template>
   <div>
-    <v-btn class="blue lighten-1 white--text" @click="$router.push('login')">
+    <v-btn class="blue lighten-1 white--text" @click="$router.push('loginapp')">
       <span>
         <v-icon small>
           {{
-          value? "mdi-logout" : "mdi-login"
+          loginstate? "mdi-logout" : "mdi-login"
           }}
         </v-icon>
       </span>
       <v-spacer></v-spacer>
-      <span color="white">{{value ? " logout" : " login"}}</span>
+      <span color="white">{{loginstate ? " logout" : " login"}}</span>
     </v-btn>
+
   </div>
 </template>
 
 <script>
-import { store } from "../store.js";
+
 
 export default {
   components: {},
@@ -31,11 +32,11 @@ export default {
   },
   data() {
     return {
-      storeState: store.state,
+ 
     };
   },
   computed: {
-
+loginstate(){return this.$store.state.username!=null}
   },
   methods: {
 

@@ -181,7 +181,7 @@ export default {
         });
     },
     isRoot() {
-      let t = store.getApplicationAccess("Users");
+      let t = this.$store.getters.getApplicationAccess("Users");
       return t == "Root" ? true : false;
     },
     DeleteSelectedUsers() {

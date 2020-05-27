@@ -8,13 +8,13 @@
       color="blue lighten-1"
       text-color="white"
     >
-    <img 
-    src="logoMaldestor.svg" 
-    alt="triangle with all three sides equal"
-    height="50"
-    width="50" 
-    @click="navdrawer = !navdrawer"
-    />
+      <img
+        src="logoMaldestor.svg"
+        alt="triangle with all three sides equal"
+        height="50"
+        width="50"
+        @click="navdrawer = !navdrawer"
+      />
 
       <!-- <v-icon id="menu" @click="navdrawer = !navdrawer" color="white">mdi-menu</v-icon> -->
 
@@ -22,10 +22,7 @@
         class="text-uppercase white--text"
         style="font-family:CoffeeHouse;font-size: x-large;"
       >Maldestor 95</span>
-      <span>
-          
-
-      </span>
+      <span></span>
       <v-spacer></v-spacer>
       <v-chip
         label
@@ -44,7 +41,7 @@
         <v-list-item @click="navdrawer = !navdrawer">
           <v-list-item-icon>
             <v-icon>mdi-menu</v-icon>
-      </v-list-item-icon>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>menu</v-list-item-title>
           </v-list-item-content>
@@ -72,23 +69,16 @@
       <router-view></router-view>
     </v-content>
 
-    <v-btn
-      absolute
-      top
-      left
-      fab
-      id="menumobile"
-      class="mt-8 hidden-md-and-up"
-    >
+    <v-btn absolute top left fab id="menumobile" class="mt-8 hidden-md-and-up">
       <!-- color="blue lighten-3" -->
       <!-- <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon> -->
-      <img 
-    src="logoMaldestor.svg" 
-    alt="triangle with all three sides equal"
-    height="50"
-    width="50" 
-    @click="navdrawer = !navdrawer"
-    />
+      <img
+        src="logoMaldestor.svg"
+        alt="triangle with all three sides equal"
+        height="50"
+        width="50"
+        @click="navdrawer = !navdrawer"
+      />
     </v-btn>
   </v-app>
 </template>
@@ -126,19 +116,20 @@ export default {
       });
       return currentNav[0] ? currentNav[0].text : "none";
     },
-    routeList(){
-      let routeL= this.$router.options.routes.map(x=> {return x.meta})
-      routeL=routeL.filter((x)=>{
-        let displayMenu=(this.logged?x.menu & store.isAuthorised(x.link):false) | x.menu & !x.requireAuth
-        return displayMenu
-        })
-      return routeL
-      }
+    routeList() {
+      let routeL = this.$router.options.routes.map(x => {
+        return x.meta;
+      });
+      routeL = routeL
+        .filter(x => x.menu)
+        .filter(x => {
+          return !x.requireAuth | this.$store.getters.isAuthorised(x.link);
+        });
+      return routeL;
+    }
   },
   mounted() {
-    store.reinitSession();
-    this.storeState = store.getState();
-    this.logged = this.storeState.logged;
+    this.$store.commit("reinitSession");
   }
 };
 </script>

@@ -20,7 +20,8 @@
     "vue-router": "^3.1.5",
     "vue-session": "^1.0.0",
     "vue-sessionstorage": "^1.0.0",
-    "vuetify": "^2.1.0"
+    "vuetify": "^2.1.0",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
