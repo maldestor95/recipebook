@@ -1,6 +1,6 @@
 {
     "name": "nodejs",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "- [ExpressJS](https://expressjs.com/) server Maldestor95 Application",
     "main": "gulp.js",
     "scripts": {
