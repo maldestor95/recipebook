@@ -1,12 +1,17 @@
-# About
+# Maldestor95 Application
 
-- [ExpressJS](https://expressjs.com/) server Maldestor95 Application
-- 
 
-# developpement
 
- Gestion des tickets avec [JIRA](https://maldestor95.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=NODE)
- 
+# Développement
+
+## méthodologie
+ * Gestion des tickets avec [JIRA](https://maldestor95.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=NODE)
+ * utilise le process [Git Flow](https://www.atlassian.com/fr/git/tutorials/comparing-workflows/gitflow-workflow)
+   
+   <img src="https://wac-cdn.atlassian.com/dam/jcr:a9cea7b7-23c3-41a7-a4e0-affa053d9ea7/04%20(1).svg?cdnVersion=1040" width="800">
+
+ * pour deployer en production, cela se fait avec `EB CLI`d'ElasticBeanStalk dans la branche `master`
+
 ## Arborescence
 Le répertoire `src` est composé de composants pour le server expressJS ou pour le client VueJS
 * src
@@ -23,14 +28,18 @@ Le répertoire `src` est composé de composants pour le server expressJS ou pour
 *  lancements des tests unitaires
     * pour le projet `src/server` il faut lancer le serveur en mode développement avec `npm run dev` 
     * `npm run test` `démarre le serveur en mode de test  (base de donnée dynmoDB en local)
+
 ## Packages client
 Ce package est principalement constitués de packages vuejs. Les commandes sont:
 *  `npm run serve`  => lance vueJS en développement qui compile à la volée. Si besoin d'accès au serveurs, les commandes REST sont redirigées vers le port 3000.
-*  `npm run build`  => lance un builds
+*  `npm run build`  => lance un build
     * après avoir fait un build, il peut être utile de tester localement avec `serve -s dist`    
 * le projet Vue peut être aussi revu/mise à jour avec la GUI de Vue  `vue ui`
 
-## Déploiement
+
+## methode non opérationnelle - A corriger 
+Elle permettrait de ne pas commiter le code buildé du client VUEJS lors de l'envoi vers Elastic Beanstalk
+
 A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. Parmi elles:
 * `gulp clean`  nettoyage du répertoire dist
 * `gulp build` préparation du répertoire dist
@@ -57,3 +66,7 @@ A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. 
 * [ElasticBeanStalk](https://docs.aws.amazon.com/fr_fr/elastic-beanstalk/?id=docs_gateway)
 * [ExpressJS](https://expressjs.com/)
 * [serve](https://www.npmjs.com/package/serve)
+* [Vuejs](https://vuejs.org/)
+* [Vue Router](https://router.vuejs.org/)
+* [Vuex](https://vuex.vuejs.org/)
+* [Vuetify](https://vuetifyjs.com/en/getting-started/quick-start/)
