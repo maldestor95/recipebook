@@ -65,11 +65,5 @@ export default {
                 "cost": 230
             }
         ]
-    },
-    login() {
-        this.state.logged = true;
-    },
-    logout() {
-        this.state.logged = false;
     }
 };
