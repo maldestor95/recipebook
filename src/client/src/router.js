@@ -145,6 +145,24 @@ const router = new VueRouter({
                 },
                 dev:true
             }
+        },
+        {
+            path: "/vin",
+            name: "vin",
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/vin.vue"),
+            meta: {
+                requireAuth: true,
+                icon: "mdi-bottle-wine-outline",
+                text: "Boisson",
+                link: "vin",
+                logrequired: false,
+                menu: true,
+                about :{
+                    routetitle: "Boisson",
+                    text: `Gestion des références de bouteilles (vin/biere...).`
+                },
+                dev:true
+            }
         }
         // ,
         // {

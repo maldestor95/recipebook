@@ -13,7 +13,7 @@
       </div>
       <div v-else>
         <v-text-field
-          :label="eltname"
+          :label="elt"
           v-model="dataIn.data[eltname]"
           :disabled="!editable"
           v-if="dataIn.data"
