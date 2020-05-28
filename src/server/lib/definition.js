@@ -11,7 +11,8 @@ const _application ={
     Recettes: 'Recettes',
     Fournisseur : 'fournisseur',
     Cave : 'cave',
-    Dev : 'dev'
+    Dev : 'dev',
+    Vin : 'vin'
 }
 
 const _errorMessage = {
