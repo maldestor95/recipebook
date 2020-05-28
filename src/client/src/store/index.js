@@ -60,12 +60,12 @@ export const store = new Vuex.Store({
         isAuthorised: (state) => (routeName) => {
             if (state.username == null) return false
             else {
-                return Object.keys(state.applicationPrivilege).map(x => {
+                let routeNameAccess=Object.keys(state.applicationPrivilege).map(x => {
                     return x.toLowerCase()
-                }).includes(routeName)
+                })
+                return routeNameAccess.includes(routeName) | Object.keys(state.applicationPrivilege).includes('dev')
             }
         },
-        // FIXME =>  application users
         getApplicationAccess:(state)=>(ApplicationName)=> {
             let t = Object.keys(state.applicationPrivilege).filter(x => {
                 return x == ApplicationName
