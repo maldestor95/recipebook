@@ -1,5 +1,16 @@
 <template>
   <div>
+    <h1>
+      <slot name="title"></slot>
+    </h1>
+    <v-text-field
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Search"
+      single-line
+      hide-details
+    ></v-text-field>
+
     <v-data-table
       :headers="value.headers"
       :items="docList"
@@ -7,6 +18,7 @@
       item-key="id"
       @click:row="rowClick($event)"
       :loading="listLoading"
+      :search="search"
     ></v-data-table>
     <v-btn color="info" @click="newDoc()" v-if="!docFormEditable">New</v-btn>
 
@@ -18,11 +30,7 @@
 
     <v-btn color="info" @click="saveDocForm()" v-if="docFormEditable">save</v-btn>
 
-    <docForm
-      v-model="selected"
-      :editable="docFormEditable"
-      :dataFormat="dataFormat"
-    ></docForm>
+    <docForm v-model="selected" :editable="docFormEditable" :dataFormat="dataFormat"></docForm>
   </div>
 </template>
 
@@ -63,6 +71,7 @@ export default {
   },
   data() {
     return {
+      search: "",
       docList: [
         {
           categorie: this.value.categorie,
@@ -118,7 +127,7 @@ export default {
       this.docFormEditable = true;
       this.beforechange = JSON.stringify(Object.assign({}, this.selected));
     },
-    saveDocForm() {      
+    saveDocForm() {
       this.loading = true;
       if (this.selected.id != "") {
         this.putDoc(
@@ -136,8 +145,8 @@ export default {
       } else {
         this.postDoc(this.selected.categorie, this.selected.data)
           .then(res => {
-            this.selected=res
-            this.docList.push(res)
+            this.selected = res;
+            this.docList.push(res);
             this.loading = false;
             this.docFormEditable = false;
           })
@@ -159,21 +168,24 @@ export default {
     },
     cancel() {
       this.docFormEditable = false;
-      if (Object.keys(this.beforechange).length==0){
+      if (Object.keys(this.beforechange).length == 0) {
         this.$set(this, "selected", {});
-      }
-      else {
+      } else {
         this.$set(this, "selected", JSON.parse(this.beforechange));
       }
       let originList = this.docList.map(x => {
-        if (x.id!=""){
-          if (x.id == this.selected.id & x.id!="") {
-            return JSON.parse(this.beforechange)
-        }
-          return x
+        if (x.id != "") {
+          if ((x.id == this.selected.id) & (x.id != "")) {
+            return JSON.parse(this.beforechange);
+          }
+          return x;
         }
       });
-      this.$set(this, "docList", originList.filter(x=>x!=null));
+      this.$set(
+        this,
+        "docList",
+        originList.filter(x => x != null)
+      );
     },
     newDoc() {
       this.docFormEditable = true;

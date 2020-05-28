@@ -2,10 +2,12 @@
 
 
 <template>
-  <div>
-    <h1>Feature Bouteille</h1>
-    <doclist v-model="list" type="text" :dataFormat="dataFormat"></doclist>
-  </div>
+
+
+    <doclist v-model="list" type="text" :dataFormat="dataFormat">
+      <template v-slot:title>Feature Bouteille</template>
+    </doclist>
+
 </template>
 
 <script>
@@ -27,8 +29,12 @@ export default {
           },
           { text: "type", value: "data.type", sortable: true },
           { text: "Région", value: "data.region", sortable: true },
-          
-          { text: "Quantité achetée", value: "data.qtyBought", sortable: false },
+
+          {
+            text: "Quantité achetée",
+            value: "data.qtyBought",
+            sortable: false
+          },
           { text: "Millesime", value: "data.millesime", sortable: true },
           {
             text: "A consommer avant",
@@ -46,7 +52,7 @@ export default {
       },
       dataFormat: {
         nom: "Nom",
-        region : "Région (Alsace, Bourgogne, Bordeaux",
+        region: "Région (Alsace, Bourgogne, Bordeaux",
         type: "Type de vin (rouge, blanc ...)",
         qtyBought: "Quantité achetée",
         millesime: "Millésime",
