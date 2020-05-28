@@ -77,10 +77,6 @@ export const store = new Vuex.Store({
             }
         },
     },
-    /*
-    getState(){
-        return this.state
-    }
-*/
+
 
 })
