@@ -85,7 +85,7 @@
 
 <script>
 import LoginUser from "./components/LoginUser.vue";
-import { store } from "./store.js";
+import { store } from "./store/index.js";
 
 export default {
   name: "App",

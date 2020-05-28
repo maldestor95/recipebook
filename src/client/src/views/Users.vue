@@ -108,7 +108,7 @@
   </v-container>
 </template>
 <script>
-import { store } from "../store.js";
+import { store } from "../store/index.js";
 import { userstore } from "./userstore.js";
 import usersApi from "../components/usersapi";
 import userEdit from "./UsersEdit";

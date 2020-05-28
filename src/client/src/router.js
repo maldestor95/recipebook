@@ -6,7 +6,7 @@ import VueRouter from "vue-router";
 import About from "./components/About.vue";
 import {
     store
-} from "./store";
+} from "./store/index.js";
 
 const router = new VueRouter({
     // mode: "history",
