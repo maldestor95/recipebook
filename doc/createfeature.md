@@ -1,4 +1,7 @@
-# dans client/src
+# Creation d'une feature  - que faut-il faire ?
+
+
+## dans client/src
 * creer feature#.vue dans ./feature
 * creer dans route.js une entrée 
 `
@@ -24,10 +27,11 @@
 `
 dev:true=> donne un  accès root au composant
 
-# dans server
+## dans server
 * ajouter la nouvelle definition dasn `J:\dev\nodejs\src\server\lib\definition.js` => _application 
 
-# dans la gestion des utilisateurs 
-* donner les droits d'accès à l'appli
+## dans la gestion des utilisateurs 
+
+* Au niveau de l'application web, donner les droits d'accès à la feature developpée
 
 
