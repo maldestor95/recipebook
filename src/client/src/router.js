@@ -6,7 +6,7 @@ import VueRouter from "vue-router";
 import About from "./components/About.vue";
 import {
     store
-} from "./store";
+} from "./store/index.js";
 
 const router = new VueRouter({
     // mode: "history",
@@ -37,9 +37,10 @@ const router = new VueRouter({
             }
         },
         {
-            path: "/login",
+            path: "/loginapp",
             name: "login",
-            component: () => import( /* webpackChunkName: "login" */ "@/views/user.vue"),
+            props: {logged : true, value:true},
+            component: () => import( /* webpackChunkName: "login" */ "@/components/loginform.vue"),
             meta: {
                 requireAuth: false,
                 icon: "mdi-information-variant",
@@ -144,6 +145,24 @@ const router = new VueRouter({
                 },
                 dev:true
             }
+        },
+        {
+            path: "/vin",
+            name: "vin",
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/vin.vue"),
+            meta: {
+                requireAuth: true,
+                icon: "mdi-bottle-wine-outline",
+                text: "Boisson",
+                link: "vin",
+                logrequired: false,
+                menu: true,
+                about :{
+                    routetitle: "Boisson",
+                    text: `Gestion des références de bouteilles (vin/biere...).`
+                },
+                dev:true
+            }
         }
         // ,
         // {
@@ -163,10 +182,11 @@ const router = new VueRouter({
 });
 router.beforeEach((to, from, next) => {
     if (to.meta.requireAuth) {
-        if (!store.isAuthorised(to.name)) {
+        if (!store.getters.isAuthorised(to.name)) {
             next({
                 name: 'login'
             })
+            
         } else {
             next()
         }

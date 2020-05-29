@@ -1,6 +1,11 @@
 import Vue from "vue";
+import Vuex from 'vuex'
+import { store } from "./store/index.js";
+Vue.use(Vuex)
+
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
+
 import VueRouter from "vue-router";
 
 Vue.config.productionTip = false;
@@ -13,10 +18,13 @@ Vue.use(VueSession)
 import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 
+
+
 import router from '@/router'
 
 new Vue({
   vuetify,
   router,
+  store:store,
   render: h => h(App)
 }).$mount("#app");

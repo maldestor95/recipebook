@@ -10,11 +10,11 @@
           <template v-slot="{hover}">
             <v-card max-width="300" :elevation="hover ? 24 : 6" :to="LLL.link">
               <v-img height="200px" :src="LLL.about.img" v-if="Object.keys(LLL.about).includes('img')"></v-img>
-              <v-icon v-if="LLL.requireAuth" color="yellow darken-4" class="lock">mdi-lock</v-icon>
+              <v-icon v-if="LLL.requireAuth & !$store.getters.isAuthorised(LLL.link)" color="yellow darken-4" class="lock">mdi-lock</v-icon>
+              <v-icon v-if="LLL.requireAuth & $store.getters.isAuthorised(LLL.link)" color="green darken-4" class="lock">mdi-lock-open</v-icon>
               <v-card-title class="justify-center">{{LLL.about.routetitle}}</v-card-title>
               <v-card-text style="justify-center">{{LLL.about.text}}</v-card-text>
               <div class="dev" v-if="LLL.dev" >DEV en cours</div>
-
             </v-card>
           </template>
         </v-hover>
