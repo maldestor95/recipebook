@@ -1,6 +1,12 @@
 # Maldestor95 Application
 
+## V0.1.1 - 29/05/2020
+* Nouveau applet "Cave" et "Boisson" toujours en cours de développement
+* Documentation sur deploiement Elastic Beanstalk 
+* creation d'un store Vuex pour les authentications
 
+## V0.1.0 - 27/05/2020
+* Menu et applet visible dans About.vue géré par vuejs router
 
 # Développement
 
