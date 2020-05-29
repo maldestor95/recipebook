@@ -76,6 +76,21 @@ export const store = new Vuex.Store({
                 return state.applicationPrivilege[t[0]]
             }
         },
+        checkAuth: (state)=> (application, levelRequired)=> {
+            // let auth = JSON.parse(sessionStorage.getItem('sessionID'))
+            if (!state.logged) {
+                return false
+            } else {
+                let order = {
+                    Root: 4,
+                    Manager: 3,
+                    Editor: 2,
+                    Viewer: 1
+                }
+                let sessionLevel = state.applicationPrivilege[application]
+                return order[levelRequired] <= order[sessionLevel] ? true : false
+            }
+        },
     },
 
 

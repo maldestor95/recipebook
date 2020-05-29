@@ -42,6 +42,7 @@ Ce package est principalement constitués de packages vuejs. Les commandes sont:
     * après avoir fait un build, il peut être utile de tester localement avec `serve -s dist`    
 * le projet Vue peut être aussi revu/mise à jour avec la GUI de Vue  `vue ui`
 
+* [documentation pour creer une feature, voir la](./doc/createfeature.md)
 
 ## methode non opérationnelle - A corriger 
 Elle permettrait de ne pas commiter le code buildé du client VUEJS lors de l'envoi vers Elastic Beanstalk
