@@ -1,8 +1,6 @@
 import VueRouter from "vue-router";
 // 1. Define route components.
 
-// import Expenses from "./components/Expenses.vue";
-// import Users from "./components/Users.vue";
 import About from "./components/About.vue";
 import {
     store
@@ -80,7 +78,7 @@ const router = new VueRouter({
         {
             path: "/Users",
             name: "users",
-            component: () => import( /* webpackChunkName: "Users" */ "@/views/Users.vue"),
+            component: () => import( /* webpackChunkName: "Users" */ "@/feature/users/Users.vue"),
             meta: {
                 requireAuth: true,
                 icon: "mdi-account-group",
@@ -94,7 +92,7 @@ const router = new VueRouter({
         {
             path: "/recettes",
             name: "recettes",
-            component: () => import( /* webpackChunkName: "recettes" */ "@/views/recettes.vue"),
+            component: () => import( /* webpackChunkName: "recettes" */ "@/feature/recette/recettes.vue"),
             meta: {
                 requireAuth: false,
                 icon: "mdi-notebook-outline",
