@@ -61,7 +61,7 @@ const router = new VueRouter({
         {
             path: "/scoreboard",
             name: "scoreboard",
-            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/scoreBoard/scoreBoard.vue"),
+            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/feature/scoreBoard/scoreBoard.vue"),
             meta: {
                 requireAuth: false,
                 icon: "mdi-scoreboard",
