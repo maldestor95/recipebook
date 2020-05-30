@@ -35,28 +35,6 @@ const router = new VueRouter({
             }
         },
         {
-            path: "/loginapp",
-            name: "login",
-            props: {logged : true, value:true},
-            component: () => import( /* webpackChunkName: "login" */ "@/components/loginform.vue"),
-            meta: {
-                requireAuth: false,
-                icon: "mdi-information-variant",
-                text: "About",
-                link: "about",
-                logrequired: false,
-                menu: false
-            }
-        },
-        // {
-        //     path: "/Expenses",
-        //     name: "expenses",
-        //     component: () => import( /* webpackChunkName: "Expenses" */ "@/components/Expenses.vue"),
-        //     meta: {
-        //         requireAuth: true
-        //     }
-        // },
-        {
             path: "/scoreboard",
             name: "scoreboard",
             component: () => import( /* webpackChunkName: "scoreBoard" */ "@/feature/scoreBoard/scoreBoard.vue"),
@@ -162,27 +140,27 @@ const router = new VueRouter({
                 dev:true
             }
         }
-        // ,
-        // {
-        //     path: "/dev",
-        //     name: "development",
-        //     component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
-        //     meta: {
-        //         requireAuth: true,
-        //         icon: "mdi-dev-to",
-        //         text: "Dev",
-        //         link: "dev",
-        //         logrequired: false,
-        //         menu: true
-        //     }
-        // }
+        ,
+        {
+            path: "/dev",
+            name: "development",
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/dev.vue"),
+            meta: {
+                requireAuth: true,
+                icon: "mdi-dev-to",
+                text: "Dev",
+                link: "dev",
+                logrequired: false,
+                menu: true
+            }
+        }
     ]
 });
 router.beforeEach((to, from, next) => {
     if (to.meta.requireAuth) {
         if (!store.getters.isAuthorised(to.name)) {
             next({
-                name: 'login'
+                name: 'about'
             })
             
         } else {
