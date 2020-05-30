@@ -20,15 +20,15 @@
       :loading="listLoading"
       :search="search"
     ></v-data-table>
-    <v-btn color="info" @click="newDoc()" v-if="!docFormEditable">New</v-btn>
+    <v-btn color="info" @click="newDoc()" v-if="!docFormEditable & editDocFormAuth">New</v-btn>
 
-    <v-btn color="info" @click="cancel()" v-if="docFormEditable">Cancel</v-btn>
+    <v-btn color="info" @click="cancel()" v-if="docFormEditable & editDocFormAuth">Cancel</v-btn>
 
-    <v-btn color="info" @click="editDocForm()" v-if="!docFormEditable&selected.id!=''">edit</v-btn>
+    <v-btn color="info" @click="editDocForm()" v-if="editDocFormAuth">edit</v-btn>
 
-    <v-btn color="info" @click="delDocForm()" v-if="!docFormEditable&selected!={}">delete</v-btn>
+    <v-btn color="info" @click="delDocForm()" v-if="delDocFormAuth">delete</v-btn>
 
-    <v-btn color="info" @click="saveDocForm()" v-if="docFormEditable">save</v-btn>
+    <v-btn color="info" @click="saveDocForm()" v-if="saveDocFormAuth">save</v-btn>
 
     <docForm v-model="selected" :editable="docFormEditable" :dataFormat="dataFormat"></docForm>
   </div>
@@ -37,6 +37,7 @@
 <script>
 import docForm from "./docform";
 import docaxios from "../mixins/mixin_doc";
+import {_role} from "../store/constants"
 
 export default {
   mixins: [docaxios],
@@ -214,6 +215,21 @@ export default {
         return arr;
       }
       return "";
+    }
+  },
+  computed: {
+    name() {
+      return this.data;
+    },
+    editDocFormAuth() {
+      return !this.docFormEditable & (this.selected.id != "")& this.$store.getters.checkAuth(this.value.categorie,_role.Editor);
+    },
+
+    delDocFormAuth() {
+      return !this.docFormEditable & (this.selected != {}) & this.$store.getters.checkAuth(this.value.categorie,_role.Manager);
+    },
+    saveDocFormAuth() {
+      return this.docFormEditable& this.$store.getters.checkAuth(this.value.categorie,_role.Editor);
     }
   }
 };

@@ -34,7 +34,7 @@
           <template v-slot:item.login="{item}">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon color="primary" v-on="on" @click="userEditDialog=true">
+                <v-btn icon color="primary" v-on="on" @click="userEditDialog=true" v-if="editionAuthorised">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
@@ -55,7 +55,7 @@
       </v-row>
 
     <v-row>
-      <div v-if="!EditUserForm">
+      <div v-if="!EditUserForm & editionAuthorised">
         <v-btn color="success" @click="userAddDialog=true">Add User</v-btn>
         <v-btn
           color="success"
@@ -88,7 +88,7 @@
         </v-dialog>
       </div>
 
-      <div v-if="EditUserForm">
+      <div v-if="EditUserForm & editionAuthorised">
         <v-btn color="success" @click="EditUserForm=false">Cancel</v-btn>
       </div>
 
@@ -113,6 +113,7 @@ import { userstore } from "./userstore.js";
 import usersApi from "./usersapi";
 import userEdit from "./UsersEdit";
 import usersAdmin from "./UsersAdmin";
+import {_role} from "../../store/constants"
 
 export default {
   name: "User",
@@ -203,6 +204,9 @@ export default {
   computed: {
     selectUserToDelete() {
       return this.isRoot();
+    },
+    editionAuthorised(){
+      return this.$store.getters.checkAuth('Users',_role.Editor)
     }
   }
 };

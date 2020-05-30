@@ -14,6 +14,7 @@
         >update recette</v-btn>
         <v-btn color="success" @click="editable=false" v-if="editable">cancel</v-btn>
       </v-row>
+
       <v-row>
         <recetteindex
           :recettelist="recetteList"
@@ -27,6 +28,7 @@
           <recette-header :editable="editable" v-model="recette" @edit="editable=true"></recette-header>
         </v-col>
       </v-row>
+
       <v-row class="mx-0">
         <v-col class="pa-0 ma-0">
           <h1 class="d-flex justify-center">INGREDIENTS</h1>
