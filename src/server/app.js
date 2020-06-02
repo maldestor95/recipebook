@@ -91,6 +91,7 @@ app.use(require("./route/login"));
 app.use(require("./route/auth").router);
 app.use(require("./route/recette"))
 app.use(require("./route/document"))
+app.use(require("./route/s3"))
 app.use('/apps',require("./route/Applications_router"));
 app.use('/', express.static(__dirname+'/static'))
 app.use('/tt', (req,res)=>res.sendFile(__dirname+'/static'))
