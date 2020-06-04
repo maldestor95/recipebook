@@ -1,86 +1,74 @@
-// Load the AWS SDK for Node.js
-
-var fs = require('fs')
-var AWS = require('aws-sdk');
 const definition = require('../definition')
+let multer = require('multer')
+let multerS3 = require('multer-s3')
 
-
+var AWS = require('aws-sdk');
 AWS.config.update(definition.AWSconfigS3);
 
 s3 = new AWS.S3({
     apiVersion: '2006-03-01'
 });
 
+const BUCKET = 'maldestorbucket1'
+const PICSPREFIX = 'pics/'
+
 // Create the parameters for calling listObjects
 var bucketParams = {
-    Bucket: 'maldestorbucket1',
+    Bucket: BUCKET,
 };
 
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listBuckets-property
 
-function listBucket(folder = '') {
-    bucketParams.Prefix = folder
-    return new Promise(function (resolve, reject) {
-        s3.listObjectsV2(bucketParams, function (err, data) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data)
-            }
-        });
-    })
+function listObjects(params = {
+    prefix: PICSPREFIX
+}, callback) {
+    s3.listObjects({
+        Bucket: BUCKET,
+        Prefix: params.prefix
+    }, callback)
 }
 
-function getPic(folder = 'pics', fname, callback) {
-   
-// console.log('pics/new.jpg',`${folder}${fname}`)
-    var s3Stream = s3.getObject({Bucket: 'maldestorbucket1', Key: `${folder}${fname}`}).createReadStream();
+function getPic(req, res, next) {
+    if (!req.targetFile) res.status(404).send('picture name shall not be null')
 
-// Listen for errors returned by the service
-s3Stream.on('error', function(err) {
-    // NoSuchKey: The specified key does not exist
-    console.error(err);
-});
+    var s3Stream = s3.getObject({
+        Bucket: BUCKET,
+        Key: req.targetFile
+    }).createReadStream();
 
-// var fileStream = fs.createWriteStream('./newP.jpg');
-callback(s3Stream)
-// .on('error', function(err) {
-//     // capture any errors that occur when writing data to the file
-//     console.error('File Stream:', err);
-// }).on('close', function() {
-//     console.log('Done.');
-// })
-// .on('end',stream());
+    s3Stream.on('error', function (err) {
+        // NoSuchKey: The specified key does not exist
+        res.status(500).send(`could not get ${req.targetFile} file - server error ${err}`)
+    }, next);
+
+    s3Stream.pipe(res)
 
 }
-
-function putPic(fname, callback) {
-    // app.post('/addPhotoDetectFace', function(req, res) {
-    //Convert base64 to Buffer Array for putobject function
-    // var base64data = new Buffer(req.body.photo.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    var fileBuffer = fs.readFileSync(fname);
-    // var base64data = new Buffer(req.body.photo.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    var params = {
-        Bucket: 'maldestorbucket1',
-        Key: `pics/${fname}`,
-        Body: fileBuffer,
-    };
-    s3.putObject(params, function (err, data) {
-        if (err) callback(err);
-        else {
-            callback('Successfully uploaded photo from bucket');
-            //if upload Successfully detect faces will work
+/**
+ * multi files upload to S3 based on multer &nd multer-s3
+ * https://github.com/expressjs/multer#readme
+ */
+var  uploadPics= 
+    multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: BUCKET,
+        metadata: function (req, file, cb) {
+            cb(null, {
+                fieldName: file.fieldname,
+                filename: file.originalname
+            });
+        },
+        key: function (req, file, cb) {
+            cb(null, req.targetFolder +'/'+ file.originalname)
         }
-    });
-}
+    })
+})
+
 
 var self = (module.exports = {
-    listBucket,
+    listObjects,
     getPic,
-    putPic
+    uploadPics,
+
 })
-// listBucket()
-// let fname = '20191117_163838.jpg'
-// // getPicStream(fname,console.log)
-// fname = 'new.jpg'
-// putPic(fname, console.log)
