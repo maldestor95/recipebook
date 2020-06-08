@@ -154,6 +154,21 @@ const router = new VueRouter({
                 menu: true
             }
         }
+        ,
+        {
+            path: "/test",
+            name: "test",
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/test.vue"),
+            meta: {
+                requireAuth: true,
+                icon: "mdi-alpha",
+                text: "Test",
+                link: "test",
+                logrequired: false,
+                menu: true
+            }
+        }
+        
     ]
 });
 router.beforeEach((to, from, next) => {
