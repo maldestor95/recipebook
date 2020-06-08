@@ -8,9 +8,10 @@
       color="blue lighten-1"
       text-color="white"
     >
+        <!-- src="logoMaldestor.svg" -->
       <img
         src="logoMaldestor.svg"
-        alt="triangle with all three sides equal"
+        alt="logo Maldestor"
         height="50"
         width="50"
         @click="navdrawer = !navdrawer"
