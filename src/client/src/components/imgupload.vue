@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card>
+  <v-container>
+    <v-row>
       <form enctype="multipart/form-data">
         <input
           type="file"
@@ -9,70 +9,70 @@
           accept="image/*"
         />
       </form>
-      <v-btn color="info" @click="reset">reset</v-btn>
-    </v-card>
+      <!-- <v-btn color="info" @click="reset">reset</v-btn> -->
+    </v-row>
 
-    <v-card>
-      <v-slider v-model="zoomFactor" step="1" :label="`Zoom ${this.zoomFactor}`" min="1" max="4"></v-slider>
-      <v-slider
-        v-model="mireHeight"
-        step="10"
-        :label="`Height ${this.mireHeight}`"
-        min="20"
-        max="400"
-      ></v-slider>
-      <v-slider v-model="mireWidth" step="10" :label="`Width ${this.mireWidth}`" min="20" max="400"></v-slider>
-    </v-card>
-
-    <div>
-      <v-container grid-list-xs>
-        <v-row v-if="loaded">
-          <v-col>
-            <p>Name: {{originFileName}}</p>
-            <p>Size: {{originFileSize}}</p>
-            <div>
-              <img
-                :src="originSrc"
-                alt="original image"
-                width="400"
-                id="originpic"
-                class="canvas originsrc"
-              />
-              <canvas class="originsrc" id="srccanvas" width="400" @mousemove="cropMireToDest($event)"></canvas>
-            </div>
-          </v-col>
-          <v-col>
-            <p>Name: {{finalFileName}}</p>
-            <p>Size: {{finalFileSize}}</p>
-            <canvas
-              id="destcanvas"
-              :height="mireHeight*zoomFactor"
-              :width="mireWidth*zoomFactor"
-              class="canvas"
-            ></canvas>
-          </v-col>
+    <v-row v-if="loaded" no-gutter>
+      <v-col class="menu grey lighten-4">
+        <v-icon :class="drawmode=='crop'?'activebtn':''" @click="drawmode='crop'">mdi-crop</v-icon>
+        <v-icon :class="drawmode=='drag'?'activebtn':''" @click="drawmode='drag'">mdi-arrow-all</v-icon>
+        <v-icon :class="drawmode=='mire'?'activebtn':''" @click="drawmode='mire'">mdi-target-variant</v-icon>
+        <v-spacer></v-spacer>
+        <v-icon @click="reset">mdi-close-circle</v-icon>
+      </v-col>
+      <v-col class="grey lighten-5">
+        <v-row>
+          <p>Name: {{originFileName}}</p>
+          <v-spacer></v-spacer>
+          <p>Size: {{originFileSize}}</p>
         </v-row>
+        <v-row>
+          <img
+            :src="originSrc"
+            alt="original image"
+            width="400"
+            id="originpic"
+            class="canvas originsrc"
+          />
+          <canvas
+            class="originsrc"
+            id="srccanvas"
+            width="400"
+            @mousemove="canvasEvent($event)"
+            @mousedown="mousedown()"
+            @mouseup="mouseup()"
+          ></canvas>
+        </v-row>
+      </v-col>
 
-        <v-btn color="info" @click="save()">Save</v-btn>
-        <v-row></v-row>
-      </v-container>
-    </div>
-    <a
-      :href="imageURI"
-      target="_blank"
-      download="myImage.jpg"
-      class="canvas"
-      width="200"
-      height="200"
-    ></a>
-  </div>
+      <v-col class='lighten-4'>
+        <v-row>
+          <p>Name: {{finalFileName}}</p>
+          <v-spacer></v-spacer>
+          <p>Size: {{finalFileSize}}</p>
+        </v-row>
+        <v-row>
+          <canvas
+            id="destcanvas"
+            :height="mireHeight*zoomFactor"
+            :width="mireWidth*zoomFactor"
+            class="canvas"
+          ></canvas>
+        </v-row>
+        <v-row>
+          <v-btn color="info" @click="save()">Save</v-btn>
+          <v-spacer></v-spacer>
+          <a :href="imageURI" target="_blank" download="myImage.jpg">Download Link</a>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 export default {
   components: {},
   data() {
-
     return {
       name: "",
       files: [],
@@ -92,10 +92,19 @@ export default {
       mireHeight: 100,
       mireWidth: 100,
       zoomFactor: 4,
-      imageURI: null
+      imageURI: null,
+      drawmode: "mire",
+      editMode: false,
+      isDrawing: false,
+      points: { x0: 0, y0: 0, x1: 0, y1: 0 },
+      position: { x: 0, y: 0 }
     };
   },
-  mounted() {},
+  mounted() {
+    //for dev only
+    //this.originSrc =       "https://elements-cover-images-0.imgix.net/61135a49-0307-4638-bab1-8ec3e78055ea?auto=compress%2Cformat&fit=max&w=710&s=03c225c60518ba88a505e980ba511ce8";
+    // this.loaded = true;
+  },
   methods: {
     filesChange(name, files) {
       this.name = name;
@@ -132,22 +141,103 @@ export default {
       this.originSrc = null;
       this.loaded = false;
     },
-    cropMireToDest(event) {
+    canvasEvent(event) {
       var x = event.layerX;
       var y = event.layerY;
+      this.position = { x: x, y: y };
       this.coord.x = x;
       this.coord.y = y;
-      var ctx = document.getElementById("srccanvas").getContext("2d");
+      var canvas = document.getElementById("srccanvas");
+      var ctx = canvas.getContext("2d");
+
+      switch (this.drawmode) {
+        case "mire":
+          canvas.style.cursor = "crosshair";
+          if (this.editMode) {
+            this.points = {
+              x0: x - this.mireWidth / 2,
+              y0: y - this.mireHeight / 2,
+              x1: x + this.mireWidth / 2,
+              y1: y + this.mireHeight / 2
+            };
+          }
+          break;
+        case "crop":
+          canvas.style.cursor =
+            "url('https://img.icons8.com/material-outlined/24/000000/crop.png'),auto";
+          if (this.isDrawing) {
+            this.points.x1 = x;
+            this.points.y1 = this.points.y0 + x - this.points.x0;
+            // this.mireHeight = Math.abs(this.points.y1 - this.points.y0);
+            // this.mireWidth = Math.abs(this.points.x1 - this.points.x0);
+          }
+          break;
+        case "drag":
+          if (this.isDrawing) {
+            canvas.style.cursor = "all-scroll";
+            this.points = {
+              x0: x - Math.abs(this.points.x0 - this.points.x1) / 2,
+              y0: y - Math.abs(this.points.y0 - this.points.y1) / 2,
+              x1: x + Math.abs(this.points.x0 - this.points.x1) / 2,
+              y1: y + Math.abs(this.points.y0 - this.points.y1) / 2
+            };
+          }
+          break;
+        default:
+          break;
+      }
+
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      this.drawMireOnSource(ctx, x, y, this.mireWidth, this.mireHeight);
+      this.drawMireOnSource(
+        ctx,
+        this.points.x0,
+        this.points.y0,
+        this.points.x1,
+        this.points.y1
+      );
       this.copyRectangle(
-        x - this.mireWidth / 2,
-        y - this.mireHeight / 2,
-        this.mireWidth,
-        this.mireHeight,this.originSrc,"srccanvas","destcanvas"
+        this.points.x0,
+        this.points.y0,
+        this.points.x1 - this.points.x0,
+        this.points.y1 - this.points.y0,
+        this.originSrc,
+        "srccanvas",
+        "destcanvas"
       );
     },
-    copyRectangle(sx, sy, wx, wy,src,srcCtxString,destCtxString) {
+    mousedown() {
+      this.isDrawing = true;
+      switch (this.drawmode) {
+        case "mire":
+          this.editMode = !this.editMode;
+          break;
+
+        case "crop":
+          this.points = {
+            x0: this.position.x,
+            y0: this.position.y,
+            x1: this.position.x,
+            y1: this.position.y
+          };
+          break;
+        default:
+          break;
+      }
+    },
+    mouseup() {
+      switch (this.drawmode) {
+        case "mire":
+          break;
+        case "crop":
+          this.isDrawing = false;
+          break;
+
+        default:
+          this.isDrawing = false;
+          break;
+      }
+    },
+    copyRectangle(sx, sy, wx, wy, src, srcCtxString, destCtxString) {
       var x = new Image();
       x.src = src;
 
@@ -166,11 +256,13 @@ export default {
           ctx.canvas.width,
           ctx.canvas.height
         );
+        this.mireWidth = wx;
+        this.mireHeight = wy;
       };
     },
     saveCanvas() {
       let ctx = document.getElementById("destcanvas");
-      
+
       this.imageURI = ctx.toDataURL("image/jpeg", 1);
 
       this.finalFileName = "thumb" + this.originFileName;
@@ -179,34 +271,24 @@ export default {
     },
     save() {
       var canvas = document.getElementById("destcanvas");
-      var ctx = canvas.getContext("2d");
-      var ox = canvas.width / 2;
-      var oy = canvas.height / 2;
-      ctx.font = "42px serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#800";
-      ctx.fillRect(ox / 2, oy / 2, ox, oy);
-
       this.imageURI = canvas.toDataURL("image/jpg");
-      // el.href = imageURI;
     },
-    drawMireOnSource(ctx, cx, cy, wx, wy) {
+    drawMireOnSource(ctx, x0, y0, x1, y1) {
       let segmentLength = 10;
       let segmentWidth = 2;
 
       ctx.fillStyle = "rgb(200, 0, 0)";
-      ctx.fillRect(cx - wx / 2, cy + wy / 2, segmentLength, segmentWidth);
-      ctx.fillRect(cx - wx / 2, cy + wy / 2, segmentWidth, -segmentLength);
+      ctx.fillRect(x0, y1, segmentLength, segmentWidth);
+      ctx.fillRect(x0, y1, segmentWidth, -segmentLength);
 
-      ctx.fillRect(cx - wx / 2, cy - wy / 2, segmentLength, segmentWidth);
-      ctx.fillRect(cx - wx / 2, cy - wy / 2, segmentWidth, segmentLength);
+      ctx.fillRect(x0, y0, segmentLength, segmentWidth);
+      ctx.fillRect(x0, y0, segmentWidth, segmentLength);
 
-      ctx.fillRect(cx + wx / 2, cy - wy / 2, -segmentLength, segmentWidth);
-      ctx.fillRect(cx + wx / 2, cy - wy / 2, segmentWidth, segmentLength);
+      ctx.fillRect(x1, y0, -segmentLength, segmentWidth);
+      ctx.fillRect(x1, y0, segmentWidth, segmentLength);
 
-      ctx.fillRect(cx + wx / 2, cy + wy / 2, -segmentLength, segmentWidth);
-      ctx.fillRect(cx + wx / 2, cy + wy / 2, segmentWidth, -segmentLength);
+      ctx.fillRect(x1, y1, -segmentLength, segmentWidth);
+      ctx.fillRect(x1, y1, segmentWidth, -segmentLength);
     }
   }
 };
@@ -214,11 +296,25 @@ export default {
 
 <style lang="scss" scoped>
 .canvas {
-  border: solid blue;
+  margin: auto;
 }
 .originsrc {
   position: absolute;
   padding: 0px;
   width: 400px;
+}
+
+#miresetup,
+#fileSelect {
+  width: 300px;
+}
+.activebtn {
+  color: blue;
+}
+.menu {
+  max-width: 30px;
+  margin: 10px;
+  padding: 0px;
+  border: red solid;
 }
 </style>
