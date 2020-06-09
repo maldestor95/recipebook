@@ -31,18 +31,24 @@
     <v-btn color="info" @click="saveDocForm()" v-if="saveDocFormAuth">save</v-btn>
 
     <docForm v-model="selected" :editable="docFormEditable" :dataFormat="dataFormat"></docForm>
+
+    <img-upload @saveModifiedCanvas="uploadImgToS3" v-if="docFormEditable"></img-upload>
+    <img :src="ii" alt="original image" width="400" id="originpic" class="canvas originsrc" />
+    {{selected}}
   </div>
 </template>
 
 <script>
+import imgUpload from "./imgupload";
 import docForm from "./docform";
 import docaxios from "../mixins/mixin_doc";
-import {_role} from "../store/constants"
+import { _role } from "../store/constants";
 
 export default {
   mixins: [docaxios],
   components: {
-    docForm
+    docForm,
+    imgUpload
   },
   props: {
     value: {
@@ -95,7 +101,8 @@ export default {
       editable: false,
       docFormEditable: false,
       beforechange: {},
-      selected: {}
+      selected: {},
+      ii: ""
     };
   },
   mounted() {
@@ -215,6 +222,39 @@ export default {
         return arr;
       }
       return "";
+    },
+    uploadImgToS3(ctx) {
+      let fname = new Date();
+      fname =
+        fname.toLocaleDateString() +
+        "-" +
+        fname.toLocaleTimeString() +
+        "-" +
+        this.selected.id +
+        ".jpg";
+
+      let _this = this;
+
+      var canvas = ctx; //document.getElementById('srccanvas');
+
+      canvas.toBlob(function(blob) {
+        var newImg = document.createElement("img"),
+          url = URL.createObjectURL(blob);
+
+        newImg.onload = function() {
+          URL.revokeObjectURL(url);
+        };
+
+        newImg.src = url;
+        document.body.appendChild(newImg);
+        _this.postFileToS3(
+          _this.selected.categorie,
+          _this.selected.id,
+          blob,
+          fname
+        );
+        // this.ii = data;
+      });
     }
   },
   computed: {
@@ -222,14 +262,25 @@ export default {
       return this.data;
     },
     editDocFormAuth() {
-      return !this.docFormEditable & (this.selected.id != "")& this.$store.getters.checkAuth(this.value.categorie,_role.Editor);
+      return (
+        !this.docFormEditable &
+        (this.selected.id != "") &
+        this.$store.getters.checkAuth(this.value.categorie, _role.Editor)
+      );
     },
 
     delDocFormAuth() {
-      return !this.docFormEditable & (this.selected != {}) & this.$store.getters.checkAuth(this.value.categorie,_role.Manager);
+      return (
+        !this.docFormEditable &
+        (this.selected != {}) &
+        this.$store.getters.checkAuth(this.value.categorie, _role.Manager)
+      );
     },
     saveDocFormAuth() {
-      return this.docFormEditable& this.$store.getters.checkAuth(this.value.categorie,_role.Editor);
+      return (
+        this.docFormEditable &
+        this.$store.getters.checkAuth(this.value.categorie, _role.Editor)
+      );
     }
   }
 };

@@ -36,7 +36,7 @@ const dev = process.env.NODE_ENV?process.env.NODE_ENV:"production";
 // Logger Function
 var myLogger = function (req, res, next) {
     let t=new Date()
-    console.log(t,   req.path);
+    console.log(t,   req.path, req.method);
     next();
 };
 

@@ -82,7 +82,7 @@ router.route(/(^\/res\/\w)/)
 
     }, s3lib.getPic)
 
-router.route('/newres/:application')
+router.route('/newres/:application/:id')
     .post(AuthEditor,(req, res, next) => {
         req.targetFolder = req.params.application;
         next()

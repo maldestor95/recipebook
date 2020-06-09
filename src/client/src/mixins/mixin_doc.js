@@ -42,7 +42,7 @@ export default {
                     })
             });
         },
-        postDoc(category,  data) {
+        postDoc(category, data) {
             let prepareData = {
                 data: data,
                 categorie: category
@@ -57,10 +57,40 @@ export default {
                     })
             });
         },
-        delDoc(category,id) {
-            
+        delDoc(category, id) {
+
             return new Promise(function (resolve, reject) {
                 axios.delete(`/doc/${category}/${id}`)
+                    .then(res => {
+                        resolve(res.data)
+                    })
+                    .catch(err => {
+                        reject(err);
+                    })
+            });
+        },
+        postFileToS3(category, id, mydata,fname) {
+            let fd = new FormData()
+            fd.append('photos', mydata,fname)
+            return new Promise(function (resolve, reject) {
+                axios.post(`/newres/${category}/${id}`, fd,
+                 {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                )
+                    .then(res => {
+                        resolve(res.data)
+                    })
+                    .catch(err => {
+                        reject(err);
+                    })
+            });
+        },
+        delFileOnS3(category, id) {
+            return new Promise(function (resolve, reject) {
+                axios.delete(`/file/${category}/${id}`)
                     .then(res => {
                         resolve(res.data)
                     })

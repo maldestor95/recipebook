@@ -45,7 +45,7 @@
         </v-row>
       </v-col>
 
-      <v-col class='lighten-4'>
+      <v-col class="lighten-4">
         <v-row>
           <p>Name: {{finalFileName}}</p>
           <v-spacer></v-spacer>
@@ -62,7 +62,7 @@
         <v-row>
           <v-btn color="info" @click="save()">Save</v-btn>
           <v-spacer></v-spacer>
-          <a :href="imageURI" target="_blank" download="myImage.jpg">Download Link</a>
+          <a :href="imageURI" target="_blank" download="myImage.jpg" v-if="saved">Download Link</a>
         </v-row>
       </v-col>
     </v-row>
@@ -140,6 +140,7 @@ export default {
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       this.originSrc = null;
       this.loaded = false;
+      this.saved = false;
     },
     canvasEvent(event) {
       var x = event.layerX;
@@ -260,18 +261,21 @@ export default {
         this.mireHeight = wy;
       };
     },
-    saveCanvas() {
+    save() {
       let ctx = document.getElementById("destcanvas");
 
       this.imageURI = ctx.toDataURL("image/jpeg", 1);
+      // let _this=this
+      // if (ctx.toBlob) {
+      //   ctx.toBlob(function(blob) {
+      //     _this.$emit("saveModifiedCanvas", blob);
+      //     });
+      // }
+          this.$emit("saveModifiedCanvas", ctx);
 
       this.finalFileName = "thumb" + this.originFileName;
       this.finalFileSize = this.imageURI.length + " bytes";
       this.saved = true;
-    },
-    save() {
-      var canvas = document.getElementById("destcanvas");
-      this.imageURI = canvas.toDataURL("image/jpg");
     },
     drawMireOnSource(ctx, x0, y0, x1, y1) {
       let segmentLength = 10;
