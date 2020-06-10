@@ -46,11 +46,16 @@
 </template>
 
 <script>
+/**
+ * Edit input image for croping and size reduction
+   * @vue-prop {String} originSrc - Path to source image  (\\img src="xxx"`)
+   * @vue-event {Canvas} saveModifiedCanvas - Emit the final canvas
+   */
 export default {
   props: {
     originSrc: {
       type: String,
-      default: null
+      default: null,
     }
   },
   data() {

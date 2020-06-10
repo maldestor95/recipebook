@@ -77,3 +77,5 @@ A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. 
 * [Vue Router](https://router.vuejs.org/)
 * [Vuex](https://vuex.vuejs.org/)
 * [Vuetify](https://vuetifyjs.com/en/getting-started/quick-start/)
+* [jsdoc-vuejs](https://www.npmjs.com/package/jsdoc-vuejs)
+* [jsdoc](https://jsdoc.app/)
