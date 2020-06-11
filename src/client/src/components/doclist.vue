@@ -199,7 +199,7 @@ export default {
       this.docFormEditable = true;
 
       let nnDoc = {
-        id: "",
+        id: this.$uuid.v4(),
         data: this.emptyObject(JSON.parse(JSON.stringify(this.dataFormat))),
         categorie: this.value.categorie
       };
