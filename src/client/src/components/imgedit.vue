@@ -1,15 +1,14 @@
 <template>
   <v-container fluid>
-
     <v-row>
       <v-icon :class="drawmode=='crop'?'activebtn':''" @click="drawmode='crop'">mdi-crop</v-icon>
       <v-icon :class="drawmode=='drag'?'activebtn':''" @click="drawmode='drag'">mdi-arrow-all</v-icon>
       <v-icon :class="drawmode=='mire'?'activebtn':''" @click="drawmode='mire'">mdi-target-variant</v-icon>
       <v-spacer></v-spacer>
-      <v-icon class="green--text" @click="publish()">mdi-publish </v-icon>
-      
+      <v-icon class="green--text" @click="publish()">mdi-publish</v-icon>
+
       <!-- <v-spacer></v-spacer>
-      <v-icon :class="drawmode=='extend'?'activebtn':''" @click="drawmode='extend'">mdi-overscan</v-icon> -->
+      <v-icon :class="drawmode=='extend'?'activebtn':''" @click="drawmode='extend'">mdi-overscan</v-icon>-->
 
       <v-spacer></v-spacer>
       <v-icon class="red--text" @click="reset">mdi-close-circle</v-icon>
@@ -19,7 +18,7 @@
       <v-col cols="6" class="ImageEdit" id="originRow">
         <v-row>
           <img :src="originSrc" alt="original image" id="originpic" class="originSrcClass" />
-     
+
           <canvas
             id="originCanvas"
             @mousemove="canvasEvent($event)"
@@ -27,12 +26,11 @@
             @mouseup="mouseup()"
             class="originCanvas"
           ></canvas>
-
         </v-row>
       </v-col>
 
-      <v-col cols="6" class="ImageEdit" >
-        <v-row justify="center" >
+      <v-col cols="6" class="ImageEdit">
+        <v-row justify="center">
           <canvas
             id="destinationcanvas"
             class="canvas"
@@ -48,14 +46,17 @@
 <script>
 /**
  * Edit input image for croping and size reduction
+  * @module components/imgedit
    * @vue-prop {String} originSrc - Path to source image  (\\img src="xxx"`)
-   * @vue-event {Canvas} saveModifiedCanvas - Emit the final canvas
+   * @vue-event {DataUrl} saveModifiedCanvas - Emit the final canvas as a DataUrl
+   *     
+   * @vue-event {null} cancel - Emit if cancel   
    */
 export default {
   props: {
     originSrc: {
       type: String,
-      default: null,
+      default: null
     }
   },
   data() {
@@ -67,7 +68,7 @@ export default {
       mireHeight: 100,
       mireWidth: 100,
       zoomFactor: 3,
-      debug:{}
+      debug: {}
     };
   },
   methods: {
@@ -79,8 +80,8 @@ export default {
       this.coord.y = y;
       var srcPic = document.getElementById("originpic");
       var canvas = document.getElementById("originCanvas");
-      canvas.width=srcPic.width
-      canvas.height=srcPic.height
+      canvas.width = srcPic.width;
+      canvas.height = srcPic.height;
 
       var ctx = canvas.getContext("2d");
 
@@ -102,7 +103,6 @@ export default {
           if (this.isDrawing) {
             this.points.x1 = x;
             this.points.y1 = this.points.y0 + x - this.points.x0;
-
           }
           break;
         case "drag":
@@ -188,28 +188,24 @@ export default {
       ctx.fillRect(x1, y1, segmentWidth, -segmentLength);
     },
     reset() {
-      var ctx = document.getElementById("originCanvas").getContext("2d");
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      this.originSrc = null;
-      this.loaded = false;
-      this.saved = false;
+      this.$emit("cancel");
     },
     copyRectangle(sx, sy, wx, wy, src, srcCtxString, destCtxString) {
       var x = new Image();
       x.src = src;
-// let _this=this
+      // let _this=this
       x.onload = function() {
         var ctx = document.getElementById(destCtxString).getContext("2d");
         var ctxOrig = document.getElementById(srcCtxString).getContext("2d");
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle='#FF00000'
-// _this.debug={sx:sx,sy:sy,wx:wx,wy:wy,ctxw:ctx.canvas.width,ctxh:ctx.canvas.height,naturalWidth:x.naturalWidth,origcanvasWidth:ctxOrig.canvas.width}
+        ctx.fillStyle = "#FF00000";
+        // _this.debug={sx:sx,sy:sy,wx:wx,wy:wy,ctxw:ctx.canvas.width,ctxh:ctx.canvas.height,naturalWidth:x.naturalWidth,origcanvasWidth:ctxOrig.canvas.width}
         ctx.drawImage(
           x,
-          sx * x.naturalWidth / ctxOrig.canvas.width,
-          sy * x.naturalHeight / ctxOrig.canvas.height,
-          wx *   x.naturalWidth / ctxOrig.canvas.width,
-          wy * x.naturalHeight / ctxOrig.canvas.height,
+          (sx * x.naturalWidth) / ctxOrig.canvas.width,
+          (sy * x.naturalHeight) / ctxOrig.canvas.height,
+          (wx * x.naturalWidth) / ctxOrig.canvas.width,
+          (wy * x.naturalHeight) / ctxOrig.canvas.height,
           0,
           0,
           ctx.canvas.width,
@@ -219,9 +215,9 @@ export default {
         this.mireHeight = wy;
       };
     },
-    publish(){
-      let canvas=document.getElementById('destinationcanvas')
-      this.$emit('saveModifiedCanvas', canvas.getContext('2d'))
+    publish() {
+      let canvas = document.getElementById("destinationcanvas");
+      this.$emit("saveModifiedCanvas", canvas.toDataURL("image/jpeg"));
     }
   }
 };
@@ -252,7 +248,7 @@ export default {
   position: absolute;
   padding: 0px;
   max-width: 400px;
-  width:100%;
+  width: 100%;
   left: 500px;
 }
 .activebtn {

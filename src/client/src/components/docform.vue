@@ -20,15 +20,22 @@
         ></v-text-field>        
       </div>
     </div>
+        <img-upload @saveModifiedCanvas="uploadImgToS3" :pictureName="dataIn.id" v-if="editable"></img-upload>
+{{dataIn}}
+
+
   </div>
 </template>
 
 <script>
+
+import imgUpload from "./imgupload";
 import docaxios from "../mixins/mixin_doc";
 
 export default {
   mixins: [docaxios],
   components: {
+    imgUpload
   },
   model: {
     prop: "dataIn",
@@ -66,7 +73,7 @@ export default {
             societe: ""
           }
         }
-      }
+      },
     };
   },
   watch: {
@@ -83,6 +90,10 @@ export default {
         return false;
       }
     },
+    uploadImgToS3(){
+      // let fname=this.data.id+'./jpg'
+// this.postFileToS3(this.data.categorie, this.data.id, mydata,fname) 
+    }
     
   }
 };
