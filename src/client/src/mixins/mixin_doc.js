@@ -119,9 +119,9 @@ export default {
          * @param {string} fname - files path to S3  ; correspond to key on amazonS3
          * @returns {Promise}   
          */
-        postFileToS3(category, id, dataFile, fname) {
+        postFileToS3(category, id, dataFileBlob, fname) {
             let fd = new FormData()
-            fd.append('photos', dataFile, fname)
+            fd.append('photos', dataFileBlob, fname)
             return new Promise(function (resolve, reject) {
                 axios.post(`/newres/${category}/${id}`, fd, {
                         headers: {
@@ -141,9 +141,9 @@ export default {
          * @description delete a file on S3
          * TODO   
          */
-        delFileOnS3(category, id) { //TODO 
+        delFileOnS3(id) { //TODO 
             return new Promise(function (resolve, reject) {
-                axios.delete(`/file/${category}/${id}`)
+                axios.delete(`/res/${id}`)
                     .then(res => {
                         resolve(res.data)
                     })
@@ -152,5 +152,11 @@ export default {
                     })
             });
         },
+        dataUrlToBlob(dataUrl) {
+            return new Promise(function (resolve, reject) {
+                fetch(dataUrl).then(r => {resolve(r.blob())} ).catch(err=>reject(err));
+            });
+
+        }
     },
 }

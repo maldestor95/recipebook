@@ -70,18 +70,19 @@ router.route(/(^\/dir\/\w)|(^\/dir$)/)
     })
 
 router.route(/(^\/res\/\w)/)
-    .get((req, res, next) => {
-        let path = req.originalUrl.replace(/^\/res\//, '')
-        let pos = path.lastIndexOf('/')
-        pos = pos < 0 ? 0 : pos + 1
-        let fname = path.slice(pos, path.length)
-        path = path.slice(0, path.length - fname.length)
+.all((req, res, next) => {
+    let path = req.originalUrl.replace(/^\/res\//, '')
+    let pos = path.lastIndexOf('/')
+    pos = pos < 0 ? 0 : pos + 1
+    let fname = path.slice(pos, path.length)
+    path = path.slice(0, path.length - fname.length)
 
-        req.targetFile = `${path}${fname}`
-        next()
+    req.targetFile = `${path}${fname}`
+    next()
 
-    }, s3lib.getPic)
-
+},)
+    .get( s3lib.getPic)
+  .delete(s3lib.deletePic)
 router.route('/newres/:application/:id')
     .post(AuthEditor,(req, res, next) => {
         req.targetFolder = req.params.application;

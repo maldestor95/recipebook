@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{originSrc}}
     <v-container>
       <v-row v-if="!loaded">
         <form enctype="multipart/form-data">
@@ -29,16 +28,20 @@
                 alt="original image"
                 class="originsrc"
                 id="imguploadPicSrc"
-                width="400"
+                @load="updateDimension()"
               />
-              <v-spacer></v-spacer>
-              <canvas id="finalPic" width="400"></canvas>
-              <v-btn color="warning" @click="drawFinalPic()">Draw</v-btn>
             </v-row>
             <v-row>
+              <p>{{picDim.x}}x{{picDim.y}}</p>
+              <v-spacer></v-spacer>
+              <p>{{originFileSize}} bytes</p>
+            </v-row>
+            <v-row>
+              <v-btn color="warning" @click="applyImage()">Apply</v-btn>
               <v-btn color="primary" dark v-bind="attrs" v-on="on">Resize</v-btn>
-              <!-- <v-btn color="info" @click="save()">Apply</v-btn> -->
+              <v-spacer></v-spacer>
               <v-btn color="cancel" @click="cancel()">Cancel</v-btn>
+              <v-btn color="cancel" @click="reset()">Reset</v-btn>
             </v-row>
           </v-container>
         </template>
@@ -81,7 +84,9 @@ export default {
       originFileSize: null,
       originFileName: null,
       dialogEdit: false,
-      loaded: false
+      loaded: false,
+      picDim: { x: 0, y: 0 },
+      picSize: 0
     };
   },
   methods: {
@@ -91,44 +96,38 @@ export default {
 
       this.originSrc = URL.createObjectURL(files[0]);
       this.originFileName = files[0].name;
-      this.originFileSize = files[0].size + " bytes";
+      this.originFileSize = files[0].size;
       this.loaded = true;
     },
-    drawFinalPic() {
-      let canvas = document.getElementById("finalPic");
-      let canvasOrigin=document.getElementById('imguploadPicSrc')
-      let ctx = canvas.getContext("2d");
-      let img = new Image();
-      img.src = this.originSrc;
-      let _this = this;
-      canvas.height=canvasOrigin.height*canvas.width/canvasOrigin.width;
 
-      img.onload = function() {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        // ctx.drawImage(img,0,0,canvasOrigin.width,canvasOrigin.height,0,0,ctx.width,ctx.height)
-        canvas.toBlob(
-          blob => {
-            // eslint-disable-next-line no-console
-            console.log(blob);
-            _this.$emit("ApplyImage", blob);
-          },
-          "image/jpg",
-          1
-        );
-      };
-    },
-    save() {
-      this.$emit("ApplyImage", this.originSrc);
-    },
     resize(dataUrl) {
       this.originSrc = dataUrl;
       this.dialogEdit = false;
+      let _this = this;
+      fetch(this.originSrc)
+        .then(response => response.blob())
+        .then(myblob => {
+          _this.originFileSize = myblob.size;
+          // _this.originFileSize='ttt'
+        });
     },
     cancel() {
       this.loaded = false;
       this.files = [];
       this.name = "";
       this.originSrc = null;
+    },
+    applyImage() {
+      let _this = this;
+      fetch(this.originSrc)
+        .then(response => response.blob())
+        .then(myblob => {
+          _this.$emit("ApplyImage", myblob);
+        });
+    },
+    updateDimension() {
+      let canvas = document.getElementById("imguploadPicSrc");
+      this.picDim = { x: canvas.naturalWidth, y: canvas.naturalHeight };
     }
   }
 };

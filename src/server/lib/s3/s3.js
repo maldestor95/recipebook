@@ -44,6 +44,15 @@ function getPic(req, res, next) {
     s3Stream.pipe(res)
 
 }
+function deletePic(req,res){
+    if (!req.targetFile) res.status(404).send('picture name shall not be null')
+    s3.deleteObject({
+        Bucket: BUCKET,
+        Key: req.targetFile},(err,data)=>{
+            if (err) res.send ('error deleting ressource '+ req.targetFile + '---' + JSON.stringify(err))
+            res.send(data)
+        })
+}
 /**
  * multi files upload to S3 based on multer &nd multer-s3
  * https://github.com/expressjs/multer#readme
@@ -70,5 +79,6 @@ var self = (module.exports = {
     listObjects,
     getPic,
     uploadPics,
+    deletePic
 
 })
