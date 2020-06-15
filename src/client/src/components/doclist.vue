@@ -30,29 +30,40 @@
 
     <v-btn color="info" @click="saveDocForm()" v-if="saveDocFormAuth">save</v-btn>
 
-    <docForm v-model="selected" :editable="docFormEditable" :dataFormat="dataFormat"></docForm>
-
-    <img-upload @saveModifiedCanvas="uploadImgToS3" v-if="docFormEditable"></img-upload>
-    <img :src="ii" alt="original image" width="400" id="originpic" class="canvas originsrc" />
-    {{selected}}
+    <docForm
+      :editable="docFormEditable"
+      v-model="selected"
+      :dataFormat="dataFormat"
+     
+    ></docForm>
   </div>
 </template>
 
 <script>
-import imgUpload from "./imgupload";
 import docForm from "./docform";
 import docaxios from "../mixins/mixin_doc";
 import { _role } from "../store/constants";
 
+/**
+ * Component that manage read/write of a document directly into dynamoDB and if required associated files into amazon S3
+ * @module components/doclist
+ * @vue-prop {Object} value - description
+ * @vue-prop {Object} dataFormat - description
+ * @vue-data {Datatype} dataname - description
+ * @vue-event {Datatype} eventname - description
+ */
 export default {
   mixins: [docaxios],
   components: {
-    docForm,
-    imgUpload
+    docForm
   },
   props: {
     value: {
-      type: Object,
+      validator: function(value) {
+        let validCategorie = value.categorie != undefined;
+        let validHeader = Array.isArray(value.headers);
+        return validCategorie & validHeader;
+      },
       default: () => {
         return {
           categorie: "fournisseur",
@@ -91,7 +102,8 @@ export default {
               nom: "yes",
               prenom: "PRENOM",
               societe: "SOCIETE3"
-            }
+            },
+            img: []
           }
         }
       ],
@@ -101,8 +113,7 @@ export default {
       editable: false,
       docFormEditable: false,
       beforechange: {},
-      selected: {},
-      ii: ""
+      selected: {}
     };
   },
   mounted() {
@@ -235,25 +246,22 @@ export default {
 
       let _this = this;
 
+      _this.loading = true;
       var canvas = ctx; //document.getElementById('srccanvas');
-
       canvas.toBlob(function(blob) {
-        var newImg = document.createElement("img"),
-          url = URL.createObjectURL(blob);
-
-        newImg.onload = function() {
-          URL.revokeObjectURL(url);
-        };
-
-        newImg.src = url;
-        document.body.appendChild(newImg);
-        _this.postFileToS3(
-          _this.selected.categorie,
-          _this.selected.id,
-          blob,
-          fname
-        );
-        // this.ii = data;
+        _this
+          .postFileToS3(
+            _this.selected.categorie,
+            _this.selected.id,
+            blob,
+            fname
+          )
+          .then(() => {
+            _this.docList.data.img = "res.data";
+            _this.editDocForm();
+            _this.loading = false;
+          })
+          .catch(err => (_this.err = err));
       });
     }
   },
