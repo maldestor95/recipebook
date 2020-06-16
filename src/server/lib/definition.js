@@ -1,3 +1,5 @@
+
+
 const _role = {
     Root: 'Root',
     Manager: 'Manager',
@@ -20,8 +22,18 @@ const _errorMessage = {
     InvalidParam:"Invalid parameter"
 }
 
+const AWSconfigS3=
+{
+    region: "eu-west-3",
+    maxRetries: 1,
+    httpOptions: {
+        timeout: 1000
+    }
+}
+
 var self = (module.exports = {
     _role,
     _application,
-    _errorMessage
+    _errorMessage,
+    AWSconfigS3
 })

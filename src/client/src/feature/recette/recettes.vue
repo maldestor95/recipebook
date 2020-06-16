@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import uuid from "uuid";
 import axios from "axios";
 import qs from "qs";
 import ingredients from "./ingredients";
@@ -153,7 +152,7 @@ export default {
     },
     newRecette() {
       this.recette = {
-        id: uuid.v4(),
+        id: this.$uuid.v4(),
         nbPersonnes: 1,
         nom: "",
         temps: "",

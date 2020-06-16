@@ -30,15 +30,28 @@
 
     <v-btn color="info" @click="saveDocForm()" v-if="saveDocFormAuth">save</v-btn>
 
-    <docForm v-model="selected" :editable="docFormEditable" :dataFormat="dataFormat"></docForm>
+    <docForm
+      :editable="docFormEditable"
+      v-model="selected"
+      :dataFormat="dataFormat"
+     
+    ></docForm>
   </div>
 </template>
 
 <script>
 import docForm from "./docform";
 import docaxios from "../mixins/mixin_doc";
-import {_role} from "../store/constants"
+import { _role } from "../store/constants";
 
+/**
+ * Component that manage read/write of a document directly into dynamoDB and if required associated files into amazon S3
+ * @module components/doclist
+ * @vue-prop {Object} value - description
+ * @vue-prop {Object} dataFormat - description
+ * @vue-data {Datatype} dataname - description
+ * @vue-event {Datatype} eventname - description
+ */
 export default {
   mixins: [docaxios],
   components: {
@@ -46,7 +59,11 @@ export default {
   },
   props: {
     value: {
-      type: Object,
+      validator: function(value) {
+        let validCategorie = value.categorie != undefined;
+        let validHeader = Array.isArray(value.headers);
+        return validCategorie & validHeader;
+      },
       default: () => {
         return {
           categorie: "fournisseur",
@@ -85,7 +102,8 @@ export default {
               nom: "yes",
               prenom: "PRENOM",
               societe: "SOCIETE3"
-            }
+            },
+            img: []
           }
         }
       ],
@@ -192,7 +210,7 @@ export default {
       this.docFormEditable = true;
 
       let nnDoc = {
-        id: "",
+        id: this.$uuid.v4(),
         data: this.emptyObject(JSON.parse(JSON.stringify(this.dataFormat))),
         categorie: this.value.categorie
       };
@@ -215,6 +233,36 @@ export default {
         return arr;
       }
       return "";
+    },
+    uploadImgToS3(ctx) {
+      let fname = new Date();
+      fname =
+        fname.toLocaleDateString() +
+        "-" +
+        fname.toLocaleTimeString() +
+        "-" +
+        this.selected.id +
+        ".jpg";
+
+      let _this = this;
+
+      _this.loading = true;
+      var canvas = ctx; //document.getElementById('srccanvas');
+      canvas.toBlob(function(blob) {
+        _this
+          .postFileToS3(
+            _this.selected.categorie,
+            _this.selected.id,
+            blob,
+            fname
+          )
+          .then(() => {
+            _this.docList.data.img = "res.data";
+            _this.editDocForm();
+            _this.loading = false;
+          })
+          .catch(err => (_this.err = err));
+      });
     }
   },
   computed: {
@@ -222,14 +270,25 @@ export default {
       return this.data;
     },
     editDocFormAuth() {
-      return !this.docFormEditable & (this.selected.id != "")& this.$store.getters.checkAuth(this.value.categorie,_role.Editor);
+      return (
+        !this.docFormEditable &
+        (this.selected.id != "") &
+        this.$store.getters.checkAuth(this.value.categorie, _role.Editor)
+      );
     },
 
     delDocFormAuth() {
-      return !this.docFormEditable & (this.selected != {}) & this.$store.getters.checkAuth(this.value.categorie,_role.Manager);
+      return (
+        !this.docFormEditable &
+        (this.selected != {}) &
+        this.$store.getters.checkAuth(this.value.categorie, _role.Manager)
+      );
     },
     saveDocFormAuth() {
-      return this.docFormEditable& this.$store.getters.checkAuth(this.value.categorie,_role.Editor);
+      return (
+        this.docFormEditable &
+        this.$store.getters.checkAuth(this.value.categorie, _role.Editor)
+      );
     }
   }
 };
