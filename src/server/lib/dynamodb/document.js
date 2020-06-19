@@ -64,7 +64,7 @@ function getDocuments(category) { //TODO
     })
 }
 
-function putDocument(Id, docData, category) { //TODO
+function putDocument(Id, docData, category ,owner) { //TODO
     return new Promise(function (resolve, reject) {
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
@@ -73,6 +73,7 @@ function putDocument(Id, docData, category) { //TODO
                 "id": Id,
                 "categorie": category,
                 "data": docData,
+                "owner": owner
             },
             ReturnConsumedCapacity: "TOTAL",
             ReturnItemCollectionMetrics: "SIZE",
@@ -115,6 +116,7 @@ function postDocument(docData, category) {
                 "id": uuid.v4(),
                 "categorie": category,
                 "data": docData,
+                "owner": owner,
                 "version": 0
             },
             ConditionExpression: "attribute_not_exists(#u)",
