@@ -13,8 +13,14 @@
 ## méthodologie
  * Gestion des tickets avec [JIRA](https://maldestor95.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=NODE)
  * utilise le process [Git Flow](https://www.atlassian.com/fr/git/tutorials/comparing-workflows/gitflow-workflow)
-   
-   <img src="https://wac-cdn.atlassian.com/dam/jcr:a9cea7b7-23c3-41a7-a4e0-affa053d9ea7/04%20(1).svg?cdnVersion=1040" width="800">
+   * Feature
+      * creation `git flow feature init myfeature`
+      * finir  `git flow feature finish`
+   * Release
+      * préparer `git flow release start 'Majeur.Mineur.fix'`  (0.1.1)
+      * finir `git flow release finish '0.1.0'`
+
+<img src="https://wac-cdn.atlassian.com/dam/jcr:a9cea7b7-23c3-41a7-a4e0-affa053d9ea7/04%20(1).svg?cdnVersion=1040" width="800">
 
  * pour deployer en production, cela se fait avec `EB CLI`d'ElasticBeanStalk dans la branche `master`
 
@@ -23,6 +29,7 @@ Le répertoire `src` est composé de composants pour le server expressJS ou pour
 * src
     * server  
     * client
+    * cv
     * common
 
 
@@ -42,8 +49,22 @@ Ce package est principalement constitués de packages vuejs. Les commandes sont:
     * après avoir fait un build, il peut être utile de tester localement avec `serve -s dist`    
 * le projet Vue peut être aussi revu/mise à jour avec la GUI de Vue  `vue ui`
 
+* [documentation pour creer une feature, voir la](./doc/createfeature.md)
 
 ## methode non opérationnelle - A corriger 
+
+en cours de release faire:
+
+`cd src/client`
+
+`npm run build`
+
+`cd src/cv`
+
+`npm run build`
+
+mettre à jour la version dans package.json
+
 Elle permettrait de ne pas commiter le code buildé du client VUEJS lors de l'envoi vers Elastic Beanstalk
 
 A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. Parmi elles:
@@ -70,9 +91,13 @@ A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. 
 * [EC2](https://docs.aws.amazon.com/fr_fr/ec2/?id=docs_gateway)
 * [dynamoDB](https://docs.aws.amazon.com/fr_fr/dynamodb/?id=docs_gateway)
 * [ElasticBeanStalk](https://docs.aws.amazon.com/fr_fr/elastic-beanstalk/?id=docs_gateway)
+* [AWS documentation JS](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/index.html)
+* [AWS S3](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)
 * [ExpressJS](https://expressjs.com/)
 * [serve](https://www.npmjs.com/package/serve)
 * [Vuejs](https://vuejs.org/)
 * [Vue Router](https://router.vuejs.org/)
 * [Vuex](https://vuex.vuejs.org/)
 * [Vuetify](https://vuetifyjs.com/en/getting-started/quick-start/)
+* [jsdoc-vuejs](https://www.npmjs.com/package/jsdoc-vuejs)
+* [jsdoc](https://jsdoc.app/)

@@ -8,8 +8,13 @@ import vuetify from "./plugins/vuetify";
 
 import VueRouter from "vue-router";
 
+
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
+
+import UUID from "vue-uuid";
+Vue.use(UUID);
+
 Vue.use(require('vue-moment'));
 
 import VueSession from 'vue-session'

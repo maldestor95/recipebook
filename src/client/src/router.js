@@ -1,8 +1,6 @@
 import VueRouter from "vue-router";
 // 1. Define route components.
 
-// import Expenses from "./components/Expenses.vue";
-// import Users from "./components/Users.vue";
 import About from "./components/About.vue";
 import {
     store
@@ -37,31 +35,9 @@ const router = new VueRouter({
             }
         },
         {
-            path: "/loginapp",
-            name: "login",
-            props: {logged : true, value:true},
-            component: () => import( /* webpackChunkName: "login" */ "@/components/loginform.vue"),
-            meta: {
-                requireAuth: false,
-                icon: "mdi-information-variant",
-                text: "About",
-                link: "about",
-                logrequired: false,
-                menu: false
-            }
-        },
-        // {
-        //     path: "/Expenses",
-        //     name: "expenses",
-        //     component: () => import( /* webpackChunkName: "Expenses" */ "@/components/Expenses.vue"),
-        //     meta: {
-        //         requireAuth: true
-        //     }
-        // },
-        {
             path: "/scoreboard",
             name: "scoreboard",
-            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/scoreBoard/scoreBoard.vue"),
+            component: () => import( /* webpackChunkName: "scoreBoard" */ "@/feature/scoreBoard/scoreBoard.vue"),
             meta: {
                 requireAuth: false,
                 icon: "mdi-scoreboard",
@@ -80,7 +56,7 @@ const router = new VueRouter({
         {
             path: "/Users",
             name: "users",
-            component: () => import( /* webpackChunkName: "Users" */ "@/views/Users.vue"),
+            component: () => import( /* webpackChunkName: "Users" */ "@/feature/users/Users.vue"),
             meta: {
                 requireAuth: true,
                 icon: "mdi-account-group",
@@ -94,7 +70,7 @@ const router = new VueRouter({
         {
             path: "/recettes",
             name: "recettes",
-            component: () => import( /* webpackChunkName: "recettes" */ "@/views/recettes.vue"),
+            component: () => import( /* webpackChunkName: "recettes" */ "@/feature/recette/recettes.vue"),
             meta: {
                 requireAuth: false,
                 icon: "mdi-notebook-outline",
@@ -164,27 +140,55 @@ const router = new VueRouter({
                 dev:true
             }
         }
-        // ,
-        // {
-        //     path: "/dev",
-        //     name: "development",
-        //     component: () => import( /* webpackChunkName: "dev" */ "@/components/fournisseurlist.vue"),
-        //     meta: {
-        //         requireAuth: true,
-        //         icon: "mdi-dev-to",
-        //         text: "Dev",
-        //         link: "dev",
-        //         logrequired: false,
-        //         menu: true
-        //     }
-        // }
+        ,
+        {
+            path: "/dev",
+            name: "development",
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/dev.vue"),
+            meta: {
+                requireAuth: true,
+                icon: "mdi-dev-to",
+                text: "Dev",
+                link: "dev",
+                logrequired: false,
+                menu: true
+            }
+        }
+        ,
+        {
+            path: "/test",
+            name: "test",
+            component: () => import( /* webpackChunkName: "dev" */ "@/feature/test.vue"),
+            meta: {
+                requireAuth: true,
+                icon: "mdi-alpha",
+                text: "Test",
+                link: "test",
+                logrequired: false,
+                menu: true
+            }
+        },
+        {
+            path: "/cv",
+            name: "cv",
+            meta: {
+                requireAuth: false,
+                icon: "mdi-account-tie-outline",
+                text: "CV",
+                extLocation: window.location.origin+'/cv',
+                newWindow : false,
+                logrequired: false,
+                menu: true
+            }
+        }
+        
     ]
 });
 router.beforeEach((to, from, next) => {
     if (to.meta.requireAuth) {
         if (!store.getters.isAuthorised(to.name)) {
             next({
-                name: 'login'
+                name: 'about'
             })
             
         } else {

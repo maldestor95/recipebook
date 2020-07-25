@@ -3,8 +3,11 @@ node_modules
 /test
 /zip
 /src/client/dist
+/src/client/out
 /dist
 /out
+
+
 
 
 # Elastic Beanstalk Files

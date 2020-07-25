@@ -23,8 +23,8 @@ const minimumRole = definition._role.Editor
  * @param {Object} next Express middleware
  */
 function AuthEditor(req, res, next) { //TODO
-    // auth.isAuthorized(req,res,next, req.params.category,minimumRole)
-    next()
+    auth.isAuthorized(req,res,next, req.params.category,minimumRole)
+    // next()
 }
 
 router.route('/doc/:category')
@@ -44,7 +44,7 @@ router.route('/doc/:category')
     .post(AuthEditor, (req, res) => {
  
         let newDoc = qs.parse(req.body)
-        doc.postDocument(newDoc.data, req.params.category)
+        doc.postDocument(newDoc.data, req.params.category,req.session.passport.user.login)
             .then(data =>
                 res.send(data)
             )
@@ -56,7 +56,7 @@ router.route('/doc/:category/:id')
     .put(AuthEditor, (req, res) => {
         console.log(req.body)
         let newDoc = qs.parse(req.body)
-        doc.putDocument(req.params.id, newDoc.data, req.params.category)
+        doc.putDocument(req.params.id, newDoc.data, req.params.category,req.session.passport.user.login)
             .then(data => {
                 
                 res.send(data)

@@ -47,18 +47,24 @@ export default {
             sortable: true
           },
           { test: "notes", value: "data.notes", sortable: false },
-          { text: "Id", value: "id" }
+          
+          {text: "Prix", value:"data.prix"},
+          {text: "Vigneron", value:"data.vigneron"}
+          
         ]
       },
       dataFormat: {
         nom: "Nom",
+        vigneron:"Vigneron",
         region: "Région (Alsace, Bourgogne, Bordeaux",
         type: "Type de vin (rouge, blanc ...)",
         qtyBought: "Quantité achetée",
         millesime: "Millésime",
         bestBefore: "A consommer avant",
         bestAfter: "A consommer après",
-        notes: "notes"
+        notes: "notes",
+        prix: "prix TTC",
+        image: 'Image'
       }
     };
   }

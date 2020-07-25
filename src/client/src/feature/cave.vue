@@ -23,12 +23,14 @@ export default {
             value: "data.nom"
           },
           { text: "millesime", value: "data.millesime", sortable: true },
-          { text: "Id", value: "id" }
+          { text: "Id", value: "id" },
+          { test: "Image", value: "image"}
         ]
       },
       dataFormat: {
         nom: "Nom",
-        millesime: "Millesime"
+        millesime: "Millesime",
+        image: 'Image'
       }
     };
   }
