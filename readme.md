@@ -13,8 +13,14 @@
 ## méthodologie
  * Gestion des tickets avec [JIRA](https://maldestor95.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=NODE)
  * utilise le process [Git Flow](https://www.atlassian.com/fr/git/tutorials/comparing-workflows/gitflow-workflow)
-   
-   <img src="https://wac-cdn.atlassian.com/dam/jcr:a9cea7b7-23c3-41a7-a4e0-affa053d9ea7/04%20(1).svg?cdnVersion=1040" width="800">
+   * Feature
+      * creation `git flow feature init myfeature`
+      * finir  `git flow feature finish`
+   * Release
+      * préparer `git flow release start 'Majeur.Mineur.fix'`  (0.1.1)
+      * finir `git flow release finish '0.1.0'`
+
+<img src="https://wac-cdn.atlassian.com/dam/jcr:a9cea7b7-23c3-41a7-a4e0-affa053d9ea7/04%20(1).svg?cdnVersion=1040" width="800">
 
  * pour deployer en production, cela se fait avec `EB CLI`d'ElasticBeanStalk dans la branche `master`
 
