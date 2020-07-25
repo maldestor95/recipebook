@@ -52,6 +52,19 @@ Ce package est principalement constitués de packages vuejs. Les commandes sont:
 * [documentation pour creer une feature, voir la](./doc/createfeature.md)
 
 ## methode non opérationnelle - A corriger 
+
+en cours de release faire:
+
+`cd src/client`
+
+`npm run build`
+
+`cd src/cv`
+
+`npm run build`
+
+mettre à jour la version dans package.json
+
 Elle permettrait de ne pas commiter le code buildé du client VUEJS lors de l'envoi vers Elastic Beanstalk
 
 A la racine du projet, exécuter `gulp --tasks`pour voir les taches disponible. Parmi elles:
