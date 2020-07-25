@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid >
+    <v-container fluid>
       <h2>A propos de moi</h2>
       <v-row>
           <v-col>

@@ -80,7 +80,7 @@ export default {
       date: '1998-1999',
       company: 'CHATAIN BLANCHON',
       location: 'MAISONS ALFORT',
-      objectifs: 'Dans le cadre de mon service militaire, j\'ai participé à l\'intégration d\'un modem à étalement de spectre dans un système de capteurs pour la DGA',
+      objectifs: 'Dans le cadre de mon service militaire, intégration d\'un modem à étalement de spectre dans un système embarqué pour la DGA',
       tasks: [
         ' Développement driver modem sans fil (assembleur & C)'
       ]

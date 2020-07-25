@@ -1,6 +1,6 @@
 // TODO s'inspirer de https://alpha-creative.vuetifyjs.com/
 <template>
-  <v-card>
+  <v-card flat>
     <v-app-bar class='menuBack' dense>
       <v-btn @click="drawer=true" text class="d-sm-none menuBack menuFont--text"><v-icon>mdi-menu</v-icon></v-btn>
       <v-spacer></v-spacer>

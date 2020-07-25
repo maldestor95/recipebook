@@ -4,6 +4,20 @@ module.exports = {
   ],
 
   publicPath: '/cv',
+  devServer: {
+    proxy: {
+      '^/tt': {
+        target: 'http://localhost:3000/',
+        ws: true,
+        changeOrigin: true
+      },
+      '^/': {
+        target: 'http://localhost:3000/',
+        ws: true,
+        changeOrigin: true
+      }
+    }
+  },
   configureWebpack: {
     devtool: 'source-map',
     module: {
@@ -19,23 +33,23 @@ module.exports = {
         prependData: '@import "@/styles/variables.scss";'
       }
     }
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.scss$/,
-  //       use: [
-  //         'vue-style-loader',
-  //         'css-loader',
-  //         {
-  //           loader: 'sass-loader',
-  //           options: {
-  //             // Prefer `dart-sass`
-  //             implementation: require('sass'),
-  //           },
-  //         },
-  //       ]
-  //     }
-  //   ]
-  // }
+    // module: {
+    //   rules: [
+    //     {
+    //       test: /\.scss$/,
+    //       use: [
+    //         'vue-style-loader',
+    //         'css-loader',
+    //         {
+    //           loader: 'sass-loader',
+    //           options: {
+    //             // Prefer `dart-sass`
+    //             implementation: require('sass'),
+    //           },
+    //         },
+    //       ]
+    //     }
+    //   ]
+    // }
   }
 }
