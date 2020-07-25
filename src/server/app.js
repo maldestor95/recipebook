@@ -2,11 +2,11 @@
  * Required libraries 
  */
 const express = require("express");
-const path=require('path')
+const path = require('path')
 
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
-let auth= require('./route/auth')
+let auth = require('./route/auth')
 
 var session = require("express-session")
 var AWS = require("aws-sdk");
@@ -16,13 +16,15 @@ var DynamoDBStore = require('connect-dynamodb')({
 }); // more doc on https://www.npmjs.com/package/connect-dynamodb
 var DynamoDBStoreOptions = {
     client: new AWS.DynamoDB({
-        endpoint: process.env.NODE_ENV=="developmentLocal"?new AWS.Endpoint('http://localhost:8000'):null,
+        endpoint: process.env.NODE_ENV == "developmentLocal" ? new AWS.Endpoint('http://localhost:8000') : null,
         region: "eu-west-3",
     })
     // AWSConfigPath:'.pathtoCredentials.json' //TODO add credentials when going to production
 }
-if (process.env.NODE_ENV=="developmentLocal") {
-    DynamoDBStoreOptions.client.config.update({endpoint: "http://localhost:8000"})
+if (process.env.NODE_ENV == "developmentLocal") {
+    DynamoDBStoreOptions.client.config.update({
+        endpoint: "http://localhost:8000"
+    })
 }
 const User = require('./lib/dynamodb/user')
 
@@ -30,20 +32,23 @@ var history = require('connect-history-api-fallback');
 
 var bodyParser = require('body-parser')
 const port = 3000;
-const dev = process.env.NODE_ENV?process.env.NODE_ENV:"production";
+const dev = process.env.NODE_ENV ? process.env.NODE_ENV : "production";
 
 
 // Logger Function
 var myLogger = function (req, res, next) {
-    let t=new Date()
-    console.log(t,   req.path, req.method);
+    let t = new Date()
+    console.log(t, req.path, req.method);
     next();
 };
 
 
 //Passport session management
 passport.serializeUser(function (user, done) {
-    done(null, {login:user.login,userApplication:user.userApplication});
+    done(null, {
+        login: user.login,
+        userApplication: user.userApplication
+    });
 });
 
 passport.deserializeUser(function (login, done) {
@@ -74,7 +79,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: false
-})); 
+}));
 // more doc on https://www.npmjs.com/package/express-session
 app.use(passport.session())
 
@@ -82,7 +87,9 @@ app.use(passport.session())
 app.get("/tot", function (req, res) {
     res.send("Hello World!");
 });
-app.get('/lok',(req,res,next)=>{auth.checkAuth(req,res,next,'Users')},function(req,res){
+app.get('/lok', (req, res, next) => {
+    auth.checkAuth(req, res, next, 'Users')
+}, function (req, res) {
     res.send('success')
 })
 
@@ -92,14 +99,15 @@ app.use(require("./route/auth").router);
 app.use(require("./route/recette"))
 app.use(require("./route/document"))
 app.use(require("./route/s3"))
-app.use('/apps',require("./route/Applications_router"));
-app.use('/', express.static(__dirname+'/static'))
-app.use('/tt', (req,res)=>res.sendFile(__dirname+'/static'))
+app.use('/apps', require("./route/Applications_router"));
+app.use('/', express.static(__dirname + '/static'))
+app.use('/tt', (req, res) => res.sendFile(__dirname + '/static'))
 
-const cvFolder=__dirname.replace('server', 'cv\\dist')
-app.use('/cv',express.static(cvFolder))
+const cvFolder = __dirname.replace('server', 'cv\\dist')
+app.use('/cv', express.static(cvFolder))
+app.use('/test', (req, res) => res.send({
+    dirname: __dirname,
+    cvFolder: cvFolder
+}))
 
-
-
-module.exports=app
-
+module.exports = app
