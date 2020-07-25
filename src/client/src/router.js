@@ -167,6 +167,19 @@ const router = new VueRouter({
                 logrequired: false,
                 menu: true
             }
+        },
+        {
+            path: "/cv",
+            name: "cv",
+            meta: {
+                requireAuth: false,
+                icon: "mdi-account-tie-outline",
+                text: "CV",
+                extLocation: window.location.origin+'/cv',
+                newWindow : false,
+                logrequired: false,
+                menu: true
+            }
         }
         
     ]

@@ -96,6 +96,9 @@ app.use('/apps',require("./route/Applications_router"));
 app.use('/', express.static(__dirname+'/static'))
 app.use('/tt', (req,res)=>res.sendFile(__dirname+'/static'))
 
+const cvFolder=__dirname.replace('server', 'cv\\dist')
+app.use('/cv',express.static(cvFolder))
+
 
 
 module.exports=app
