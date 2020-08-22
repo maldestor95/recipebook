@@ -1,5 +1,6 @@
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 //   .BundleAnalyzerPlugin;
+const path = require("path");
 
 module.exports = {
   "transpileDependencies": [
@@ -9,14 +10,12 @@ module.exports = {
   runtimeCompiler: true, //https: //cli.vuejs.org/config/#runtimecompiler
   configureWebpack: {
     // plugins: [new BundleAnalyzerPlugin()],
-      devtool: 'source-map',
-      // module: {
-      //   rules: [{
-      //     test: /\.(woff|woff2|eot|ttf|otf|png|jpe?g)$/,
-      //     use: [
-      //       'file-loader',
-      //     ],
-      //   }]}
+    resolve: {
+      alias: {
+        /* Use vuetify from the app, not from fence-vue */
+        vuetify: path.resolve(__dirname, "node_modules/vuetify"),
+      },
+    }
   },
   devServer: {
     proxy:  'http://localhost:3000/',
@@ -25,9 +24,9 @@ module.exports = {
   css: {
     loaderOptions: {
       scss: {
-        prependData: `@import "@/styles/variables.scss";`
-      }
-    }
+        prependData: `@import "@/styles/variables.scss";`,
+      },
+    },
   },
-  publicPath:'/'
-}
+  publicPath: "/",
+};
