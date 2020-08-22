@@ -96,7 +96,9 @@ export default {
 
 </script>
 <style scoped lang="scss">
-  #cv * {
+ @import "../styles/variables.scss";
+
+ #cv * {
     color: $col-pen;
     background-color: $col-back;
   }

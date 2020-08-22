@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+@import "../styles/variables.scss";
   .contact {
     padding-left: 10px;
     margin-left: 0px;
