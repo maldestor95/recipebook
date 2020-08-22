@@ -182,13 +182,17 @@ const router = new VueRouter({
       path: "/cv",
       name: "cv",
       component: () =>
-        import(/* webpackChunkName: "cv" */ "../../cv/src/components/cv.vue" ),
+        import(/* webpackChunkName: "cv" */ "../../cv/src/components/cv.vue"),
+        // import(/* webpackChunkName: "cv" */ 
+        // "@/feature/scoreBoard/scoreBoard.vue"
+        // ),
       meta: {
         requireAuth: false,
         icon: "mdi-account-tie-outline",
-        text: "CV",
-        extLocation: window.location.origin + "/cv",
+        text: "cv",
+        // extLocation: window.location.origin + "/cv",
         newWindow: false,
+        link: "cv",
         logrequired: false,
         menu: true,
       },
