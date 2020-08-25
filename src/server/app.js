@@ -105,6 +105,7 @@ app.use('/tt', (req, res) => res.sendFile(__dirname + '/static'))
 
 const cvFolder = __dirname.replace('server', 'cv/dist')
 app.use('/cv', (req,res,next)=>{console.log(cvFolder);next()},express.static(cvFolder))
+
 app.use('/test', (req, res) => res.send({
     dirname: __dirname,
     cvFolder: cvFolder

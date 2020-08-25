@@ -1,5 +1,13 @@
 
-# cvludo
+# cv ludo
+
+Standalone VueJS app that show the CV
+
+## how to update the content of the CV?
+Just edit the cvdata.js file located in [./src/components/cvdata.js](./src/components/cvdata.js) 
+
+# Development instruction
+All commands below have to be performed within the cv folder
 
 ## Project setup
 ```
@@ -16,14 +24,13 @@ npm run serve
 npm run build
 ```
 
+The output is saved into the [local dist folder](./dist/) and set the base URL to '/cv'
+
+ExpressJS server then expose a static website [cf app.js](../server/app.js)
+
 ### Run your tests
 ```
 npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
 ```
 
 ### Run your unit tests

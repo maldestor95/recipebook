@@ -1,4 +1,6 @@
 # Maldestor95 Application
+## V0.2.0  - 25/08/2020
+* Integration d'une WebApp [cv](./src/cv/readme.md)
 
 ## V0.1.1 - 29/05/2020
 * Nouveau applet "Cave" et "Boisson" toujours en cours de développement
