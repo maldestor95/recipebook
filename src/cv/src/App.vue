@@ -2,12 +2,14 @@
   <v-app class='background'>
 
     <cv class='background'></cv>
-
-    <v-footer class='teal darken-3 menuFont--text '>
-      <a href='../'>Site Personnel</a>
-      <v-spacer></v-spacer>
-      <v-icon class='menuFont--text'>mdi-copyright</v-icon>L.Deparis
+    <p/>
+    <p>
+      <v-footer class='teal darken-3 menuFont--text ' absolute>
+        <a href='../'>Site Personnel</a>
+        <v-spacer></v-spacer>
+        <v-icon class='menuFont--text'>mdi-copyright</v-icon>L.Deparis
       </v-footer>
+    </p>
   </v-app>
 </template>
 
@@ -35,5 +37,8 @@ export default {
 <style scoped lang="scss">
 .bordertop {
   border: red 10px solid;
+}
+a.hover {
+  color: $menuFont;
 }
 </style>

@@ -13,8 +13,9 @@ const option = {
         accent: colors.indigo.base, // #3F51B5
         menuBack: colors.teal.darken4,
         menuBackSelected: colors.teal.darken3,
-        menuFont: colors.teal.lighten2,
-        background: colors.teal.darken4
+        menuFont: colors.teal.lighten4,
+        background: colors.teal.darken4,
+        anchor: colors.teal.lighten3
       }
     }
   }
