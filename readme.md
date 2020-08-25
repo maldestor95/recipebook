@@ -1,4 +1,9 @@
 # Maldestor95 Application
+## V0.2.1  - 25/08/2020
+
+* Add Build documentation for [cv](./src/cv/readme.md)
+* Fix cv style and update Data
+
 ## V0.2.0  - 25/08/2020
 * Integration d'une WebApp [cv](./src/cv/readme.md)
 
