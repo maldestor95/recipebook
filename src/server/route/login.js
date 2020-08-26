@@ -21,13 +21,13 @@ passport.use(new LocalStrategy(
             if (err) {
                 return done(err);
             }
-            if (!user) {
-                return done("unknow user", false);
+            if (!user) {//"unknow user"
+                return done(null, false, { message: 'Incorrect username.' });
             }
-            if (user.pwd != password) {
-                return done("wrong password", false);
+            if (user.pwd != password) {//"wrong password"
+                return done(null, false, { message: 'Incorrect password.' });
             }
-            console.log(`User "${username}" authenticated`)
+            // console.log(`User "${username}" authenticated`)
             return done(null, user);
         });
     }))
@@ -64,9 +64,9 @@ let notImplementedYet = function (req, res) {
 router.route('/login')
     .post(passport.authenticate('local', {
         session: true,
-        failureRedirect: 'fail'
+        failureRedirect: '/fail'
     }), (req, res) => {
-        console.log(`/login \n ${req.sessionID} \n ${JSON.stringify(req.body)}`)
+        console.log(`/login , ${req.sessionID} , ${JSON.stringify(req.body)}`)
         res.send({
             Session: req.session,
             sessionID: req.sessionID,
@@ -88,8 +88,8 @@ router.route('/logout')
     })
 
 router.get('/fail', (req, res) => {
-    console.log(req.body)
-    res.send("auth NOK")
+    // console.log(res)
+    res.send("authentication Failed")
 })
 
 module.exports = router

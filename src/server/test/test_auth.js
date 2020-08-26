@@ -2,10 +2,15 @@ var assert = require("chai").assert;
 var axios = require("axios")
 const testDef = require('./definition')
 
-
-
 describe("Authentication", function () {
-it("shall pass", done => {
+    var server;
+    before( function () {
+      server = require('../bin/www');
+    });
+    after( function () {
+      server.close();
+    });
+    it("shall pass", done => {
         let url = testDef.baseURL + '/login'
         let params = {
             username: 'ludo',
@@ -13,7 +18,10 @@ it("shall pass", done => {
         }
         axios.post(url, params)
             .then(res => {
-                console.log(res)
+                // console.log(res.data)
+                assert.isObject(res.data)
+                assert.typeOf(res.data.sessionID,'String', 'SessionID shall be a String')
+                assert.typeOf(res.data.applicationPrivilege,'Object', 'applicationPrivilege shall be a Object')
                 done()
             })
             .catch(err => {
@@ -21,14 +29,36 @@ it("shall pass", done => {
                 done()
             })
     }),
-    it("shall get user", done => {
-        axios.get(testDef.baseURL + '/users')
+    it("shall fail on bad password", done => {
+        let url = testDef.baseURL + '/login'
+        let params = {
+            username: 'ludo',
+            password: 'badPWD'
+        }
+        axios.post(url, params)
             .then(res => {
+                assert.deepEqual(res.data,"authentication Failed")
                 done()
             })
             .catch(err => {
+                console.error(err);
                 done()
             })
     })
-
+    it("shall fail on bad username", done => {
+        let url = testDef.baseURL + '/login'
+        let params = {
+            username: 'unknowId',
+            password: 'badPWD'
+        }
+        axios.post(url, params)
+            .then(res => {
+                assert.deepEqual(res.data,"authentication Failed")
+                done()
+            })
+            .catch(err => {
+                console.error(err);
+                done()
+            })
+    })
 })
