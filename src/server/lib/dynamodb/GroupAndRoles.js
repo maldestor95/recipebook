@@ -33,14 +33,17 @@ class Manager {
      * @returns {string} - null if no error; "unknown" if fail
      */
     add(role) {
+        if (this.OptionList==null) return ("unknown")
         if (this.OptionList.includes(role)) {
             this.Option.push(role)
             return null
-        } else {
+        } 
+        else {
             return ("unknown")
         }
     }
     isvalid(role) {
+        if (this.OptionList==null) return false
         if (this.OptionList.includes(role)) {
             return true
         } else {
@@ -53,6 +56,7 @@ class Manager {
      * @returns {string} - null if no error; "unknown" if fail
      */
     delete(role) {
+        if (this.OptionList==null) return "unknown"
         if (this.OptionList.includes(role)) {
             this.Option = this.Option.filter((rr) => {
                 return rr != role
@@ -77,7 +81,7 @@ class Manager {
 class RoleClass extends Manager {
     constructor() {
         super(Object.values(constants._role))
-        this.role = this.option
+        this.role = this.Option
     }
 }
 /**
@@ -87,7 +91,7 @@ class RoleClass extends Manager {
 class GroupClass extends Manager {
     constructor() {
         super(Object.values(constants._application))
-        this.group = this.option
+        this.group = this.Option
     }
 }
 
