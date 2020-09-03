@@ -191,6 +191,11 @@ class User {
         documentDB.delete(params, callback)
 
     }
+    /**
+     * print outputs to console the user
+     * @param {string} pre 
+     * @param {string} post 
+     */
     print(pre = null, post = null) {
         if (pre) {
             console.log(pre)
@@ -202,8 +207,9 @@ class User {
     }
     updateLoginPwd(data = null, callback) {
         //data={pwd:newpwd,version:version}!
-        if (this.login == null) {
-            callback("missing login", null)
+        if (data==null |data==undefined) return callback("missing data", null)
+        if (this.login == null || data.pwd ==null || data.pwd ==undefined) {
+            return callback("invalid login and pwd", null)
         } else {
             let documentDB = new AWS.DynamoDB.DocumentClient()
             let params = {
