@@ -244,7 +244,7 @@ class User {
             callback("missing login", null)
         }
         if (data == null) {
-            callback("missing details", null)
+            return callback("missing details", null)
         } else {
             let documentDB = new AWS.DynamoDB.DocumentClient()
             let params = {
@@ -325,9 +325,6 @@ class User {
                     } else {
                         delete tempUserApplication[applicationName]
                     }
-                    break;
-                default:
-                    callback(constants._errorMessage.InvalidParam, null)
                     break;
             }
 

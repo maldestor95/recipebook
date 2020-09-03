@@ -1,3 +1,8 @@
+
+/* This code is to ensure that this script is executed in an NODE_ENV=development mode to avoid corrupting production database*/
+const safety=require('./safety.js')
+safety.test()
+
 const {
     User,
     create_userTable,
@@ -6,13 +11,21 @@ const {
     scanUsers,
     test
 } = require('../user')
+
 const {
-    expect
+    expect,
+    assert
 } = require('chai')
+
+const constants = require('../../definition')
+
 const user = require('../user')
+
 const {
     forEach
 } = require('lodash')
+
+
 
 describe("users with local dynamodB support", function () {
     before((done) => {
@@ -164,6 +177,7 @@ describe("users with local dynamodB support", function () {
                     userToPrint
                         .getLogin('userToPrint', (err, data) => {
                             userToPrint.print()
+                            userToPrint.print('pre', 'post')
                             done()
                         })
                 })
@@ -190,7 +204,7 @@ describe("users with local dynamodB support", function () {
                         "pwd": 'testPwd',
                         "version": MochaTestUser.pwd
                     }, (err, data) => {
-                        MochaTestUser.getLogin(MochaTestUser.login,(e2,d2)=>{
+                        MochaTestUser.getLogin(MochaTestUser.login, (e2, d2) => {
                             expect(e2).to.eq(null)
                             expect(d2.pwd).to.eq('testPwd')
                         })
@@ -198,13 +212,13 @@ describe("users with local dynamodB support", function () {
                     })
                 })
 
-                testPwd = [null,undefined]
+                testPwd = [null, undefined]
                 testPwd.forEach(pwd => {
                     it(`shall change invalid  password: ${pwd}`, done => {
-                        MochaTestUser.getLogin(MochaTestUser.login,(err,data)=>{
+                        MochaTestUser.getLogin(MochaTestUser.login, (err, data) => {
                             MochaTestUser.updateLoginPwd({
                                 pwd: pwd,
-                                version:MochaTestUser.version,
+                                version: MochaTestUser.version,
                             }, (err, data) => {
                                 expect(typeof err).to.eq('string')
                                 expect(typeof data).to.eq('object')
@@ -214,10 +228,288 @@ describe("users with local dynamodB support", function () {
                     })
                 })
             })
+            describe("updateLoginDetails", function () {
+                var V = new User()
+                const MochaTestUser = "MochaUpdate"
+                before((done) => {
+                    V.createLogin(MochaTestUser, (err, data) => {
+                        if (err) {
+                            V.getLogin(MochaTestUser, (err, data) => {
+                                done()
+                            })
+                        } else {
+                            done()
+                        }
+                    })
+                });
+                after((done) => {
+                    V.deleteLogin(MochaTestUser, done)
+                    // done()
+                });
+                // describe("shall", function () {
+                it("add all ", done => {
+                    let newdetails = {
+
+                        phone: "123",
+                        address: "ici",
+                        email: "tre@tre.com"
+
+                    }
+                    assert.equal(V.login, MochaTestUser, "[message]");
+                    V.updateLoginDetails({
+                        details: newdetails,
+                        version: V.version
+                    }, (err, data) => {
+                        assert.isNull(err, "[message]");
+                        V.getLogin(MochaTestUser, (err, data) => {
+                            assert.deepEqual(V.details.email, newdetails.email, "verification update");
+                            done()
+                        })
+                    })
+                })
+
+                it("add email only ", done => {
+                    let newdetails = {
+                        email: "tre1@tre.com"
+                    }
+                    assert.equal(V.login, MochaTestUser, "[message]");
+                    V.updateLoginDetails({
+                        details: newdetails,
+                        version: V.version
+                    }, (err, data) => {
+                        assert.isNull(err, "[message]");
+                        V.getLogin(MochaTestUser, (err, data) => {
+                            assert.deepEqual(V.details.email, newdetails.email, "verification update");
+                            done()
+                        })
+
+                    })
+                })
+                it("add phone only ", done => {
+                    let newdetails = {
+                        phone: "1234"
+                    }
+                    assert.equal(V.login, MochaTestUser, "[message]");
+                    V.updateLoginDetails({
+                        details: newdetails,
+                        version: V.version
+                    }, (err, data) => {
+                        assert.isNull(err, "[message]");
+                        V.getLogin(MochaTestUser, (err, data) => {
+                            assert.deepEqual(V.details.phone, newdetails.phone, "verification update");
+                            done()
+                        })
+
+                    })
+                })
+                it("add address only ", done => {
+                    let newdetails = {
+                        address: "trenew@tre.com"
+                    }
+                    assert.equal(V.login, MochaTestUser, "[message]");
+                    V.getLogin(V.login, (e1, d1) => {
+                        let initialversion = V.version
+                        V.updateLoginDetails({
+                            details: newdetails,
+                            version: V.version
+                        }, (err, data) => {
+                            assert.isNull(err, "[message]");
+                            V.getLogin(MochaTestUser, (err, data) => {
+                                assert.deepEqual(V.details.address, newdetails.address, "verification update");
+                                assert.equal(V.version, initialversion + 1, "Version updated");
+                                done()
+                            })
+                        })
+                    })
+                })
+                // })
+
+                it("shall change one pwd", done => {
+                    let newpwd = "newpwd"
+                    let newpwd2 = "newpwd2"
+
+                    assert.equal(V.login, MochaTestUser, "[message]");
+
+                    V.getLogin(V.login, (e1, d1) => {
+                        let initialversion = V.version
+                        V.updateLoginPwd({
+                            pwd: newpwd,
+                            version: V.version
+                        }, (err, data) => {
+                            assert.isNull(err, "[message]");
+                            V.getLogin(MochaTestUser, (err, data) => {
+                                assert.deepEqual(V.pwd, newpwd, "verification pwd1");
+                                V.updateLoginPwd({
+                                    pwd: newpwd2,
+                                    version: V.version
+                                }, (err, data) => {
+                                    assert.isNull(err, "[message]");
+                                    V.getLogin(MochaTestUser, (err, data) => {
+                                        assert.deepEqual(V.pwd, newpwd2, "verification pwd2");
+                                        assert.equal(V.version, initialversion + 2, "Version updated");
+
+                                        done()
+
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            describe("update authorisations", function () {
+                let V = new User()
+                const MochaAuthorisationUser = "MochaAuthorisationUser"
+                before((done) => {
+                    V.createLogin(MochaAuthorisationUser, (err, data) => {
+                        V.getLogin(null, (err2, data2) => {
+                            // V.print("Initialised :")
+                            done()
+                        })
+                    })
+                });
+                after((done) => {
+                    V.deleteLogin(MochaAuthorisationUser, done)
+                    // done()
+                });
+                it("shall add a valid application", done => {
+                    V.getLogin(MochaAuthorisationUser, (err, data) => {
+                        V.updateApplication({
+                            applicationName: constants._application.Todo,
+                            authorisation: constants._role.Editor,
+                            operation: "ADD"
+                        }, (err, data) => {
+                            // V.print("Initial :")
+                            assert.equal(err, null, "valid application");
+                            // V.print("Initial :")
+                            V.getLogin(MochaAuthorisationUser, (err, data) => {
+                                // V.print("Final :")
+                                V.updateApplication({
+                                    applicationName: constants._application.Expenses,
+                                    authorisation: constants._role.Viewer,
+                                    operation: "ADD"
+                                }, (err, data) => {
+                                    assert.equal(err, null, "valid application");
+                                    // V.print("Initial2 :")
+                                    V.getLogin(MochaAuthorisationUser, (err, data) => {
+                                        // V.print("Final2 :")
+                                        assert.equal(V.userApplication.Todo, "Editor")
+                                        assert.equal(V.userApplication.Expenses, "Viewer");
+                                        done()
+                                    })
+                                })
+                            })
+                        })
+                    })
+
+                })
+
+                it("shall fail ADD/DEL an  invalid operation", done => {
+                    const MochaInvalid = "MochaInvalid"
+                    V.createLogin(MochaInvalid, (err1, data1) => {
+
+                        V.updateApplication({
+                            applicationName: constants._application.Todo,
+                            authorisation: constants._role.Editor,
+                            operation: "VV"
+                        }, (err, data) => {
+                            assert.equal(err, constants._errorMessage.InvalidParam, "valid application");
+                            V.deleteLogin(MochaInvalid, done)
+                        })
+                    })
+
+                })
+                it("shall fail Add an  invalid role", done => {
+                    V.updateApplication({
+                        applicationName: constants._application.Todo,
+                        authorisation: "VV",
+                        operation: 'ADD'
+                    }, (err, data) => {
+                        assert.equal(err, constants._errorMessage.InvalidParam, "valid application");
+                        done()
+                    })
+                })
+                it("shall fail Add an  invalid application", done => {
+                    V.updateApplication({
+                        applicationName: "BAD APP",
+                        authorisation: constants._role.Editor,
+                        operation: 'ADD'
+                    }, (err, data) => {
+                        assert.equal(err, constants._errorMessage.InvalidParam, "valid application");
+                        done()
+                    })
+                })
+                it("shall remove a valid application", done => {
+                    const MochaREmoveTest = "MochaRemoveTest";
+                    V.createLogin(MochaREmoveTest, (err1, res1) => {
+                        V.getLogin(MochaREmoveTest, (err1, res1) => {
+                            V.updateApplication({
+                                applicationName: constants._application.Todo,
+                                authorisation: constants._role.Editor,
+                                operation: "ADD"
+                            }, (err, data) => {
+                                // V.print("Initial :")
+                                assert.equal(err, null, "valid application");
+                                // V.print("Initial :")
+                                V.getLogin(V.login, (err, data) => {
+                                    // V.print("Final :")
+                                    V.updateApplication({
+                                        applicationName: constants._application.Expenses,
+                                        authorisation: constants._role.Viewer,
+                                        operation: "ADD"
+                                    }, (err, data) => {
+                                        assert.equal(err, null, "valid application");
+                                        // V.print("Initial2 :")
+                                        V.getLogin(V.login, (err, data) => {
+                                            // V.print("Final2 :")
+                                            assert.equal(V.userApplication.Todo, "Editor")
+                                            assert.equal(V.userApplication.Expenses, "Viewer");
+                                            V.updateApplication({
+                                                applicationName: constants._application.Expenses,
+                                                authorisation: constants._role.Viewer,
+                                                operation: "DEL"
+                                            }, (err, data) => {
+                                                assert.equal(err, null, "valid application");
+                                                // V.print("Initial3 :")
+                                                V.getLogin(V.login, (err, data) => {
+                                                    // V.print("Final3 :")
+                                                    assert.deepEqual(V.userApplication, {
+                                                        "Todo": "Editor"
+                                                    })
+                                                    V.updateApplication({
+                                                        applicationName: constants._application.Todo,
+                                                        authorisation: constants._role.Editor,
+                                                        operation: "DEL"
+                                                    }, (err, data) => {
+                                                        assert.equal(err, null, "valid application");
+                                                        // V.print("Initial3 :")
+                                                        V.getLogin(V.login, (err, data) => {
+                                                            // V.print("Final3 :")
+                                                            assert.deepEqual(V.userApplication, {})
+                                                            V.deleteLogin(MochaREmoveTest, done)
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+
+            })
+        })
+        describe("updateApplicationList", function () {
+            it("shall succeed with a valid application List", done => {
+            done()
+            })
+            it.skip("shall fail with an invalif application List", done => {
+            done()
+            })
         })
         // updateLoginDetails
-        // updateApplication
-        // updateApplicationList
     })
 
     describe("support tests fonction", function () {

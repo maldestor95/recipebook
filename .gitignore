@@ -6,7 +6,8 @@ node_modules
 /src/client/out
 /dist
 /out
-
+# code coverage report
+/src/server/.nyc_output
 
 
 
