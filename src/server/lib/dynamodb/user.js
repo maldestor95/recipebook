@@ -19,6 +19,7 @@
 var constants = require('../definition')
 var dynamo_error_msg = require('./definition_dynamodb').error_msg
 var AWS = require("aws-sdk");
+const { json } = require('body-parser');
 var GroupRole = require('./GroupAndRoles').Manager
 
 AWS.config.update({
@@ -28,7 +29,7 @@ AWS.config.update({
         timeout: 1000
     }
 });
-if (process.env.NODE_ENV=="developmentLocal") {
+if (process.env.NODE_ENV=="development") {
     AWS.config.update({endpoint: "http://localhost:8000"})
 }
 
@@ -70,7 +71,6 @@ function delete_userTable(callback) {
         TableName: "Users"
     };
     dynamodb.deleteTable(params, (err, data) => {
-        this.connectionStatus = !err ? err : err.message
         callback(err, data)
     });
 
@@ -82,7 +82,7 @@ function scan_userTable(callback) {
         TableName: "Users"
     };
     dynamodb.scan(params, (err, data) => {
-        this.connectionStatus = !err ? err : err.message
+        // this.connectionStatus = !err ? err : err.message
         callback(err, data)
     });
 
@@ -106,6 +106,7 @@ class User {
         }
     }
     getLogin(login, callback) {
+        if (login==null | login==undefined) return callback({message:'invalid input'},null)
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
             "TableName": this.tableName,
@@ -114,8 +115,8 @@ class User {
             }
         }
         documentDB.get(params, (err, data) => {
-            if (data == null) {
-                callback(err, null)
+            if (data == null ) {
+                callback({message:'not found'}, null)
             } else {
                 if (!err & Object.keys(data).length > 0) {
                     this.login = data.Item.login
@@ -174,6 +175,7 @@ class User {
     }
 
     deleteLogin(login, callback) {
+        if (login==null | login==undefined) callback({message:'The conditional request failed'})
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
             "TableName": this.tableName,
@@ -183,7 +185,8 @@ class User {
             ConditionExpression: "attribute_exists(#u)",
             ExpressionAttributeNames: {
                 "#u": "login"
-            }
+            },
+            ReturnValues: "ALL_OLD"
         }
         documentDB.delete(params, callback)
 
@@ -404,13 +407,16 @@ function scanUsers(lastlogin = null, callback) {
         callback(err, data)
     });
 }
-
+function test(){
+    return(process.env.NODE_ENV)
+}
 var self = (module.exports = {
     User,
     create_userTable,
     delete_userTable,
     scan_userTable,
-    scanUsers
+    scanUsers,
+    test
 })
 
 // FEATURE error management when dynamoDB is not accessible
