@@ -350,13 +350,13 @@ class User {
             })
         };
     }
-    updateApplicationList(applicationList = null, callback) {
-        /* application list is an array of object, e.g
-        [
+    updateApplicationList(applicationList = {}, callback) {
+        /* application list is an  object, e.g
+        {
             { Users: "Root" },
             { Todo: "Viewer" },
             { Expenses: "Manager" }
-          ]*/
+        }*/
 
         if (this.login == null) {
             callback("missing login", null)
@@ -376,25 +376,21 @@ class User {
                     '#V': "version"
                 },
                 ExpressionAttributeValues: {
-                    ':userApplication': applicationList.userApplication?applicationList.userApplication:{},
-                    ":newvers": Number(applicationList.version) + 1,
+                    ':userApplication': applicationList,
+                    ":newvers": Number(this.version) + 1,
                 }
 
             }
-
-
             documentDB.update(params, (err, res) => {
-                this.version =Number(applicationList.version) + 1
-                this.userApplication = applicationList.userApplication
-                // console.log(err, res)
-                // console.log("Version " + this.version + " -- " + JSON.stringify(this.userApplication))
+                this.version +=1
+                this.userApplication = applicationList
                 callback(err, res);
             })
         }
     }
 }
 //TODO SCAN USER
-function scanUsers(lastlogin = null, callback) {
+/*function scanUsers(lastlogin = null, callback) {
     var params = {
         TableName: 'Users',
         ExclusiveStartKey: lastlogin ? {
@@ -409,17 +405,15 @@ function scanUsers(lastlogin = null, callback) {
         // else console.log(data);
         callback(err, data)
     });
-}
-function test(){
-    return(process.env.NODE_ENV)
-}
+}*/
+
 var self = (module.exports = {
     User,
     create_userTable,
     delete_userTable,
     scan_userTable,
-    scanUsers,
-    test
+    // scanUsers,
+    
 })
 
 // FEATURE error management when dynamoDB is not accessible

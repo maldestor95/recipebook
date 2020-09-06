@@ -1,6 +1,5 @@
-
 /* This code is to ensure that this script is executed in an NODE_ENV=development mode to avoid corrupting production database*/
-const safety=require('./safety.js')
+const safety = require('./safety.js')
 safety.test()
 
 const {
@@ -79,6 +78,7 @@ describe("users with local dynamodB support", function () {
             const User1 = new User('User1login')
             expect(User1.login).to.eq('User1login')
             expect(User1.pwd).to.eq('')
+            expect(Array.isArray(User1.userApplication)).to.eq(false)
             const UserNull = new User()
             expect(UserNull.login).to.eq(null)
             expect(UserNull.pwd).to.eq('')
@@ -502,11 +502,36 @@ describe("users with local dynamodB support", function () {
             })
         })
         describe("updateApplicationList", function () {
-            it("shall succeed with a valid application List", done => {
-            done()
+            const userToUpdate = new User
+            let userToUpdateDetails = {
+                'login': 'userToUpdateLogin',
+                userApplication: {
+                     Users: "Root" ,
+                     Todo: "Viewer" ,
+                     Expenses: "Manager" 
+                }
+            }
+            before((done) => {
+                userToUpdate.createLogin(userToUpdateDetails.login, done)
             })
-            it.skip("shall fail with an invalif application List", done => {
-            done()
+            after((done) => {
+                userToUpdate.deleteLogin(userToUpdateDetails.login, done)
+            })
+            it("shall succeed with a valid application List", done => {
+                const ValidAppUser = new User()
+                ValidAppUser.getLogin(userToUpdateDetails.login, (e1, d1) => {
+                    ValidAppUser.updateApplicationList(userToUpdateDetails.userApplication, (e2, d2) => {
+                        ValidAppUser.getLogin(userToUpdateDetails.login, (e3, d3) => {
+                            expect(ValidAppUser.version).to.eq(1)
+                            expect(ValidAppUser.login).to.eq(userToUpdateDetails.login)
+                            expect(ValidAppUser.userApplication).to.deep.eq(userToUpdateDetails.userApplication)
+                            done()
+                        })
+                    })
+                })
+            })
+            it.skip("shall fail with an invalid application List", done => {
+                done()
             })
         })
         // updateLoginDetails
