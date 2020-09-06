@@ -7,7 +7,7 @@
         "start": "node ./bin/www",
         "test": "mocha --watch",
         "test:coverage": "nyc --reporter=text mocha -r mocha.env.js ",
-        "test:utils": "mocha --config utils/__tests__/.mocharc.js",
+        "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
         "test:dev": "mocha  -r mocha.env.js --watch",
         "dev": "set NODE_ENV=development &nodemon ./bin/www",
         "createTable": "node lib/dynamodb/createTable.js",
