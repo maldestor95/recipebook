@@ -19,19 +19,12 @@
 var constants = require('../definition')
 var dynamo_error_msg = require('./definition_dynamodb').error_msg
 var AWS = require("aws-sdk");
+var AWSSetup= require('./aws_setup')
+AWSSetup.setup()
+
 const { json } = require('body-parser');
 var GroupRole = require('./GroupAndRoles').Manager
 
-AWS.config.update({
-    region: "eu-west-3",
-    maxRetries: 1,
-    httpOptions: {
-        timeout: 1000
-    }
-});
-if (process.env.NODE_ENV=="development") {
-    AWS.config.update({endpoint: "http://localhost:8000"})
-}
 
 let dynamodb = new AWS.DynamoDB(AWS.config);
 
@@ -358,6 +351,13 @@ class User {
         };
     }
     updateApplicationList(applicationList = null, callback) {
+        /* application list is an array of object, e.g
+        [
+            { Users: "Root" },
+            { Todo: "Viewer" },
+            { Expenses: "Manager" }
+          ]*/
+
         if (this.login == null) {
             callback("missing login", null)
         } else {
