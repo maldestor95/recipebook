@@ -19,10 +19,12 @@
 var constants = require('../definition')
 var dynamo_error_msg = require('./definition_dynamodb').error_msg
 var AWS = require("aws-sdk");
-var AWSSetup= require('./aws_setup')
+var AWSSetup = require('./aws_setup')
 AWSSetup.setup()
 
-const { json } = require('body-parser');
+const {
+    json
+} = require('body-parser');
 var GroupRole = require('./GroupAndRoles').Manager
 
 
@@ -99,7 +101,9 @@ class User {
         }
     }
     getLogin(login, callback) {
-        if (login==null | login==undefined) return callback({message:'invalid input'},null)
+        if (login == null | login == undefined) return callback({
+            message: 'invalid input'
+        }, null)
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
             "TableName": this.tableName,
@@ -108,28 +112,25 @@ class User {
             }
         }
         documentDB.get(params, (err, data) => {
-            if (data == null ) {
-                callback({message:'not found'}, null)
-            } else {
-                if (!err & Object.keys(data).length > 0) {
-                    this.login = data.Item.login
-                    this.pwd = data.Item.pwd
-                    this.group = data.Item.group
-                    if (data.Item.hasOwnProperty('details')) {
-                        this.details = {
-                            address: data.Item.details.address,
-                            email: data.Item.details.email,
-                            phone: data.Item.details.phone
-                        }
+            if (!err & Object.keys(data).length > 0) {
+                this.login = data.Item.login
+                this.pwd = data.Item.pwd
+                this.group = data.Item.group
+                if (data.Item.hasOwnProperty('details')) {
+                    this.details = {
+                        address: data.Item.details.address,
+                        email: data.Item.details.email,
+                        phone: data.Item.details.phone
                     }
-                    if (data.Item.hasOwnProperty('userApplication')) {
-                        this.userApplication = data.Item.userApplication
-                    }
-
-                    this.version = data.Item.version
                 }
-                callback(err, data.Item)
+                if (data.Item.hasOwnProperty('userApplication')) {
+                    this.userApplication = data.Item.userApplication
+                }
+
+                this.version = data.Item.version
             }
+            callback(err, data.Item)
+
         })
     }
     /**
@@ -168,7 +169,9 @@ class User {
     }
 
     deleteLogin(login, callback) {
-        if (login==null | login==undefined) callback({message:'The conditional request failed'})
+        if (login == null | login == undefined) callback({
+            message: 'The conditional request failed'
+        })
         let documentDB = new AWS.DynamoDB.DocumentClient()
         let params = {
             "TableName": this.tableName,
@@ -200,8 +203,8 @@ class User {
     }
     updateLoginPwd(data = null, callback) {
         //data={pwd:newpwd,version:version}!
-        if (data==null |data==undefined) return callback("missing data", null)
-        if (this.login == null || data.pwd ==null || data.pwd ==undefined) {
+        if (data == null | data == undefined) return callback("missing data", null)
+        if (this.login == null || data.pwd == null || data.pwd == undefined) {
             return callback("invalid login and pwd", null)
         } else {
             let documentDB = new AWS.DynamoDB.DocumentClient()
@@ -256,9 +259,9 @@ class User {
                     "#v": "version",
                 },
                 ExpressionAttributeValues: {
-                    ':address': data.details.address ? data.details.address :  this.details.address,
-                    ':phone':   data.details.phone   ? data.details.phone :  this.details.phone,
-                    ':email':   data.details.email   ? data.details.email :  this.details.email,
+                    ':address': data.details.address ? data.details.address : this.details.address,
+                    ':phone': data.details.phone ? data.details.phone : this.details.phone,
+                    ':email': data.details.email ? data.details.email : this.details.email,
                     ":version": Number(data.version),
                     ":newversion": Number(data.version) + 1
                 },
@@ -302,7 +305,7 @@ class User {
 
         let app = new GroupRole(Object.values(constants._application))
         let auth = new GroupRole(Object.values(constants._role))
-        if ((!app.isvalid(applicationName)) || (!auth.isvalid(authorisation))||!(['DEL','ADD'].includes(operation))) {
+        if ((!app.isvalid(applicationName)) || (!auth.isvalid(authorisation)) || !(['DEL', 'ADD'].includes(operation))) {
             callback(constants._errorMessage.InvalidParam, null)
         } else {
             auth.add(authorisation)
@@ -313,11 +316,7 @@ class User {
                     tempUserApplication[applicationName] = authorisation
                     break;
                 case 'DEL':
-                    if (!Object.keys(tempUserApplication).includes(applicationName)) {
-                        callback(constants._errorMessage.InvalidParam, null)
-                    } else {
-                        delete tempUserApplication[applicationName]
-                    }
+                    delete tempUserApplication[applicationName]
                     break;
             }
 
@@ -344,7 +343,7 @@ class User {
 
 
             documentDB.update(params, (err, res) => {
-                this.version +=1
+                this.version += 1
                 this.userApplication[applicationName] = authorisation
                 callback(err, res);
             })
@@ -358,9 +357,7 @@ class User {
             { Expenses: "Manager" }
         }*/
 
-        if (this.login == null) {
-            callback("missing login", null)
-        } else {
+        if (!this.login == null) return callback("missing login", null)
             // TODO check application list is valid
             let documentDB = new AWS.DynamoDB.DocumentClient()
 
@@ -382,11 +379,11 @@ class User {
 
             }
             documentDB.update(params, (err, res) => {
-                this.version +=1
+                this.version += 1
                 this.userApplication = applicationList
                 callback(err, res);
             })
-        }
+        
     }
 }
 //TODO SCAN USER
@@ -413,7 +410,7 @@ var self = (module.exports = {
     delete_userTable,
     scan_userTable,
     // scanUsers,
-    
+
 })
 
 // FEATURE error management when dynamoDB is not accessible

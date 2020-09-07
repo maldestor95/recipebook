@@ -322,7 +322,28 @@ describe("users with local dynamodB support", function () {
                         })
                     })
                 })
-                // })
+                it("shall fail updating an empty login", done => {
+                    let newdetails = {
+
+                        phone: "123",
+                        address: "ici",
+                        email: "tre@tre.com"
+
+                    }
+                    const emptyLog = new User()
+                    emptyLog.updateLoginDetails(newdetails,(err,res)=>{
+                        expect(err).to.not.eq(null)
+                        done()
+                    })
+                })
+                it("shall fail updating with undefined details", done => {
+                    let newdetails
+                    const emptyDetails = new User('tt')
+                    emptyDetails.updateLoginDetails(newdetails,(err,res)=>{
+                        expect(err).to.eq('missing details')
+                        done()
+                    })
+                })
 
                 it("shall change one pwd", done => {
                     let newpwd = "newpwd"
@@ -528,6 +549,14 @@ describe("users with local dynamodB support", function () {
                             done()
                         })
                     })
+                })
+            })
+            it("shall fail updating an empty login", done => {
+
+                const emptyLog = new User()
+                emptyLog.updateLoginDetails(userToUpdateDetails.userApplication,(err,res)=>{
+                    expect(err).to.eq('missing login')
+                    done()
                 })
             })
             it.skip("shall fail with an invalid application List", done => {

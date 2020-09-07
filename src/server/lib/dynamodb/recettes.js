@@ -21,6 +21,8 @@ var dynamo_error_msg = require('./definition_dynamodb').error_msg
 var AWS = require("aws-sdk");
 var uuid = require('uuid');
 
+
+// TODO include aws_setup.js in recette.js , document.js
 AWS.config.update({
     region: "eu-west-3",
     maxRetries: 1,
