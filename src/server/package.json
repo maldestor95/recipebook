@@ -4,7 +4,7 @@
     "description": "nodejs server",
     "main": "app",
     "scripts": {
-        "start": "npm run build && node ./bin/www",
+        "start": "npm run build && node ./build/bin/www",
         "lint": "eslint . --ext .ts",
         "test": "mocha --watch",
         "test:coverage": "nyc --reporter=text mocha -r mocha.env.js ",
@@ -21,6 +21,7 @@
     "author": "maldestor95",
     "license": "ISC",
     "dependencies": {
+        "aws-sdk": "^2.632.0",
         "body-parser": "^1.19.0",
         "connect-dynamodb": "^2.0.4",
         "connect-history-api-fallback": "^1.6.0",
@@ -36,7 +37,6 @@
         "validate.js": "^0.13.1"
     },
     "devDependencies": {
-        "aws-sdk": "^2.632.0",
         "axios": "^0.19.2",
         "chai": "^4.2.0",
         "concurrently": "^5.3.0",
@@ -51,6 +51,7 @@
         "@types/chai": "^4.2.12",
         "@types/mocha": "^8.0.3",
         "@types/node": "^14.6.2",
+        "@types/async": "^3.2.3",
         "@typescript-eslint/eslint-plugin": "^3.10.1",
         "@typescript-eslint/parser": "^3.10.1",
         "eslint": "^7.7.0",

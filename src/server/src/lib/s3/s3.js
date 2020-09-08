@@ -5,7 +5,7 @@ let multerS3 = require('multer-s3')
 var AWS = require('aws-sdk');
 AWS.config.update(definition.AWSconfigS3);
 
-s3 = new AWS.S3({
+const s3 = new AWS.S3({
     apiVersion: '2006-03-01'
 });
 
