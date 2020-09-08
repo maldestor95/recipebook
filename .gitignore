@@ -8,6 +8,8 @@ node_modules
 /out
 # code coverage report
 /src/server/.nyc_output
+/src/server/build
+/src/server/build
 
 
 
