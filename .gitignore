@@ -9,7 +9,7 @@ node_modules
 # code coverage report
 /src/server/.nyc_output
 /src/server/build
-/src/server/build
+/src/server/tsconfig.tsbuildinfo
 
 
 
