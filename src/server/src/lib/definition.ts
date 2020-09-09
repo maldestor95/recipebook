@@ -1,12 +1,12 @@
 
 
-const _role = {
+export const _role = {
     Root: 'Root',
     Manager: 'Manager',
     Editor: 'Editor',
     Viewer: 'Viewer'
 }
-const _application ={
+export const _application ={
     User:'Users',
     Todo: 'Todo',
     Expenses: 'Expenses',
@@ -22,7 +22,7 @@ const _errorMessage = {
     InvalidParam:"Invalid parameter"
 }
 
-const AWSconfigS3=
+export const AWSconfigS3=
 {
     region: "eu-west-3",
     maxRetries: 1,
@@ -30,10 +30,3 @@ const AWSconfigS3=
         timeout: 1000
     }
 }
-
-var self = (module.exports = {
-    _role,
-    _application,
-    _errorMessage,
-    AWSconfigS3
-})

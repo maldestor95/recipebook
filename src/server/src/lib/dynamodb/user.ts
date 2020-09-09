@@ -16,9 +16,11 @@
  * use or other dealings in this Software without prior written authorization from Maldestor.
  */
 "use strict"
-var constants = require('../definition')
-var dynamo_error_msg = require('./definition_dynamodb').error_msg
-var AWS = require("aws-sdk");
+import * as constants from '../definition'
+
+import {error_msg as dynamo_error_msg, error_msg}  from './definition_dynamodb'
+
+import AWS from 'aws-sdk'
 var AWSSetup = require('./aws_setup')
 AWSSetup.setup()
 
