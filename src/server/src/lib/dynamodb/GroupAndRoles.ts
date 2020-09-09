@@ -18,7 +18,7 @@
 "use strict"
 import constants from '../definition'
 
-class Manager {
+export class Manager {
     /**
      * Create a manager
      * @param {Array} list - list of possible options
@@ -80,7 +80,7 @@ class Manager {
  * class managing Roles corresponding to autrhorisation user
  * @extends Manager
  */
-class RoleClass extends Manager {
+export class RoleClass extends Manager {
     roleList:Array<string>
     constructor() {
         super(Object.values(constants._role))
@@ -91,16 +91,10 @@ class RoleClass extends Manager {
  * class managing groups corresponding to functionality of the application
  * @extends Manager
  */
-class GroupClass extends Manager {
+export class GroupClass extends Manager {
     groupList:Array<string>
     constructor() {
         super(Object.values(constants._application))
         this.groupList = this.Option
     }
 }
-
-var self = (module.exports = {
-    RoleClass,
-    GroupClass,
-    Manager
-})
