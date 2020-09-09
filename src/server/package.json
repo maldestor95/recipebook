@@ -7,16 +7,16 @@
         "start": "npm run build && node ./build/bin/www",
 
         "lint": "eslint . --ext .ts",
-        "dynamodblocal": "powershell.exe \"./utils/launchdynamodblocal.ps1\"",
+        "dynamodblocal": "powershell.exe \"./src/utils/launchdynamodblocal.ps1\"",
         "start:dev": "nodemon" ,
         "dev": "set NODE_ENV=development &nodemon ./bin/www",
 
         "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
 
-        "test": "mocha --watch",
+        "test": "mocha -r mocha.env.js -r ts-node/register ",
         "test:coverage": "nyc --reporter=text mocha -r mocha.env.js ",
         "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
-        "test:dev": "mocha  -r mocha.env.js --watch",
+        "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch",
         "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors"
     },
     "author": "maldestor95",

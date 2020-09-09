@@ -8,7 +8,7 @@
     ui: 'bdd',
     bail:true,
     colors:true,
-    // 'recursive':['./lib/**/*.spec.js'],
-    'watch-files': ['./lib/**/*.js', 'src/**/*.spec.js','src/**/*.spec.ts'],
+    'recursive':['./src/**/*.spec.js','./src/**/*.spec.ts'],
+    'watch-files': ['src/**/*.spec.js','src/**/*.spec.ts','src/**/*.ts','src/**/*.js'],
     'watch-ignore': ['utils']
 })
