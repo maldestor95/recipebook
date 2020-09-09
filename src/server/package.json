@@ -5,18 +5,19 @@
     "main": "app",
     "scripts": {
         "start": "npm run build && node ./build/bin/www",
+
         "lint": "eslint . --ext .ts",
+        "dynamodblocal": "powershell.exe \"./utils/launchdynamodblocal.ps1\"",
+        "start:dev": "nodemon" ,
+        "dev": "set NODE_ENV=development &nodemon ./bin/www",
+
+        "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
+
         "test": "mocha --watch",
         "test:coverage": "nyc --reporter=text mocha -r mocha.env.js ",
         "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
         "test:dev": "mocha  -r mocha.env.js --watch",
-        "test:ts": "mocha -r ts-node/register tests/**/*.spec.ts --colors",
-        "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
-        "dev": "set NODE_ENV=development &nodemon ./bin/www",
-        "createTable": "node lib/dynamodb/createTable.js",
-        "deleteTable": "node lib/dynamodb/deleteTable.js",
-        "scanTable": "node lib/dynamodb/scanTable.js",
-        "dynamodblocal": "powershell.exe \"./utils/launchdynamodblocal.ps1\""
+        "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors"
     },
     "author": "maldestor95",
     "license": "ISC",

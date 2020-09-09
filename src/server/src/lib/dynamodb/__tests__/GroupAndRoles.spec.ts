@@ -18,7 +18,7 @@ describe("Manager", function () {
     it("shall add role", done => {
         let testList = [1, 2, 3]
         let res
-        mger = new Manager(testList)
+        let mger = new Manager(testList)
         res = mger.add(1)
         expect(mger.Option).to.deep.eq([1])
         expect(res).to.deep.eq(null)
@@ -27,7 +27,7 @@ describe("Manager", function () {
         expect(mger.Option).to.deep.eq([1])
         expect(res).to.deep.eq("unknown")
 
-        testList = null
+        testList = []
         mger = new Manager(testList)
         res = mger.add(1)
         expect(mger.Option).to.deep.eq([])
@@ -36,21 +36,21 @@ describe("Manager", function () {
     let testData=[null,undefined]
     testData.forEach(data => {
         it(`shall check if role is valid for the dataset ${data}`, done => {
-            mger = new Manager(data)
+            const mger = new Manager(data)
             expect(mger.isvalid(1)).to.eq(false)
             done()
         })
         it(`shall return unknown for deletion for the dataset ${data}`, done => {
-            mger = new Manager(data)
+            const mger = new Manager(data)
             expect(mger.delete(1)).to.eq("unknown")
             expect(mger.delete(null)).to.eq("unknown")
             expect(mger.delete(undefined)).to.eq("unknown")
             done()
         })
     });
-    data=[1,2,3]
+    const data=[1,2,3]
     it(`shall check if role is valid for the dataset ${data}`, done => {
-        mger = new Manager(data)
+        const mger = new Manager(data)
         expect(mger.isvalid(1)).to.eq(true)
         expect(mger.isvalid(4)).to.eq(false)
         expect(mger.isvalid(undefined)).to.eq(false)
@@ -58,7 +58,7 @@ describe("Manager", function () {
         done()
     })
     it(`shall delete and check list for the dataset ${data}`, done => {
-        mger = new Manager(data)
+        const mger = new Manager(data)
         mger.add(1)
         mger.add(2)
         mger.add(3)
@@ -76,7 +76,7 @@ describe("GroupClass and RoleClass", function () {
         rc.add(constants._role.Root)
         rc.add(constants._role.Editor)
         expect(rc.list()).deep.eq([constants._role.Root,constants._role.Editor])
-        expect(rc.role).deep.eq([constants._role.Root,constants._role.Editor])
+        expect(rc.roleList).deep.eq([constants._role.Root,constants._role.Editor])
         done()
     })
     it("shall construct GroupClass", done => {
@@ -84,7 +84,7 @@ describe("GroupClass and RoleClass", function () {
         rc.add(constants._application.User)
         rc.add(constants._application.Todo)
         expect(rc.list()).deep.eq([constants._application.User,constants._application.Todo])
-        expect(rc.group).deep.eq([constants._application.User,constants._application.Todo])
+        expect(rc.groupList).deep.eq([constants._application.User,constants._application.Todo])
         done()
     })
 })

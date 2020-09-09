@@ -16,14 +16,16 @@
  * use or other dealings in this Software without prior written authorization from Maldestor.
  */
 "use strict"
-var constants = require('../definition')
+import constants from '../definition'
 
 class Manager {
     /**
      * Create a manager
      * @param {Array} list - list of possible options
      */
-    constructor(list) {
+    OptionList:Array<string>
+    Option:Array<string>
+    constructor(list:Array<string>) {
         this.OptionList = list
         this.Option = []
     }
@@ -32,7 +34,7 @@ class Manager {
      * @param {role} role 
      * @returns {string} - null if no error; "unknown" if fail
      */
-    add(role) {
+    add(role:string) {
         if (this.OptionList==null) return ("unknown")
         if (this.OptionList.includes(role)) {
             this.Option.push(role)
@@ -42,7 +44,7 @@ class Manager {
             return ("unknown")
         }
     }
-    isvalid(role) {
+    isvalid(role:string) {
         if (this.OptionList==null) return false
         if (this.OptionList.includes(role)) {
             return true
@@ -55,7 +57,7 @@ class Manager {
      * @param {role} role 
      * @returns {string} - null if no error; "unknown" if fail
      */
-    delete(role) {
+    delete(role:string) {
         if (this.OptionList==null) return "unknown"
         if (this.OptionList.includes(role)) {
             this.Option = this.Option.filter((rr) => {
@@ -79,9 +81,10 @@ class Manager {
  * @extends Manager
  */
 class RoleClass extends Manager {
+    roleList:Array<string>
     constructor() {
         super(Object.values(constants._role))
-        this.role = this.Option
+        this.roleList = this.Option
     }
 }
 /**
@@ -89,9 +92,10 @@ class RoleClass extends Manager {
  * @extends Manager
  */
 class GroupClass extends Manager {
+    groupList:Array<string>
     constructor() {
         super(Object.values(constants._application))
-        this.group = this.Option
+        this.groupList = this.Option
     }
 }
 
