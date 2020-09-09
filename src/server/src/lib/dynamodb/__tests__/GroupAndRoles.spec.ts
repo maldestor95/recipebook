@@ -64,10 +64,10 @@ describe("GroupClass and RoleClass", function () {
     })
     it("shall construct GroupClass", done => {
         let rc= new GroupClass()
-        rc.add(constants._application.User)
+        rc.add(constants._application.Users)
         rc.add(constants._application.Todo)
-        expect(rc.list()).deep.eq([constants._application.User,constants._application.Todo])
-        expect(rc.groupList).deep.eq([constants._application.User,constants._application.Todo])
+        expect(rc.list()).deep.eq([constants._application.Users,constants._application.Todo])
+        expect(rc.groupList).deep.eq([constants._application.Users,constants._application.Todo])
         done()
     })
 })

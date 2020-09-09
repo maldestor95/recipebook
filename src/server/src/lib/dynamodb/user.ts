@@ -84,6 +84,10 @@ function scan_userTable(callback: (err: object, res: object) => void): void {
     });
 
 }
+interface applicationOption {
+    key:constants._application
+    role:constants._role
+}
 export interface UserInterface {
     login: string
     group: []
@@ -94,11 +98,33 @@ export interface UserInterface {
         email?: string
         phone?: string
     }
+    userApplication:applicationOption
+    pwd:string
 
 }
-class User  implements UserInterface{
+class User implements UserInterface{
+    login: string
+    group: []
+    version: number,
+    tableName: string
+    details: {
+        address?: string
+        email?: string
+        phone?: string
+    }
+    userApplication:Array<>
+    pwd:string
     constructor(login: string) {
-        this.login = login
+            this.login=login,
+            this.group= [],
+            this.version= 0,
+            this.tableName= "Users",
+            this.details= {},
+            this.userApplication = {} // Object of applicationName:authorisation  (e.g "ToDo": "Viewer"`
+            this.pwd = ""
+    
+        }
+        // this.login = login
         this.group = []
         this.version = 0
         this.tableName = "Users"
