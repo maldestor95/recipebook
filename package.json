@@ -1,6 +1,6 @@
 {
     "name": "nodejs",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "- [ExpressJS](https://expressjs.com/) Maldestor95 Application",
     "main": "gulp.js",
     "scripts": {
@@ -36,7 +36,9 @@
         "passport-local": "^1.0.0",
         "qs": "^6.9.1",
         "uuid": "^7.0.3",
-        "validate.js": "^0.13.1"
+        "validate.js": "^0.13.1",
+        "multer": "^1.4.2",
+        "multer-s3": "^2.9.0"
     },
     "bugs": {
         "url": "https://github.com/maldestor95/nodejs/issues"

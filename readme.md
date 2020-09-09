@@ -1,4 +1,11 @@
 # Maldestor95 Application
+## V0.2.1  - 25/08/2020
+
+* Add Build documentation for [cv](./src/cv/readme.md)
+* Fix cv style and update Data
+
+## V0.2.0  - 25/08/2020
+* Integration d'une WebApp [cv](./src/cv/readme.md)
 
 ## V0.1.1 - 29/05/2020
 * Nouveau applet "Cave" et "Boisson" toujours en cours de développement
@@ -23,7 +30,7 @@
 <img src="https://wac-cdn.atlassian.com/dam/jcr:a9cea7b7-23c3-41a7-a4e0-affa053d9ea7/04%20(1).svg?cdnVersion=1040" width="800">
 
  * pour deployer en production, cela se fait avec `EB CLI`d'ElasticBeanStalk dans la branche `master`
-
+ * En cas d'erreur, consulter les logs Elastic, recuperer le zip de l'installation et exécuter `npm install`. Une cause possible est une librairie manquante dans /Package.json  qui doit reproduire celle de /src/server/Package.json
 ## Arborescence
 Le répertoire `src` est composé de composants pour le server expressJS ou pour le client VueJS
 * src
