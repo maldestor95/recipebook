@@ -30,3 +30,9 @@ export const AWSconfigS3=
         timeout: 1000
     }
 }
+export default {
+    _errorMessage,
+    _application,
+    _role,
+    AWSconfigS3
+}
