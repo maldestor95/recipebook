@@ -2,12 +2,15 @@ node_modules
 
 /test
 /zip
-/src/client/dist
+/src/client/dist 
 /src/client/out
 /dist
 /out
-# code coverage report
+
+# server folder
+## code coverage report
 /src/server/.nyc_output
+
 /src/server/build
 /src/server/tsconfig.tsbuildinfo
 
