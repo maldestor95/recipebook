@@ -41,3 +41,6 @@ let docClient = new AWS.DynamoDB.DocumentClient( {
     convertEmptyValues: true
 }); 
 */
+export default {
+    serviceConfigOptions
+}
