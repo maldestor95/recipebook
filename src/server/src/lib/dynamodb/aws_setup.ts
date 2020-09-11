@@ -8,6 +8,7 @@
 
 import  AWS from "aws-sdk";
 import {ServiceConfigurationOptions} from 'aws-sdk/lib/service';
+// export {Converter as AWSConverter} from 'aws-sdk/lib/dynamodb/converter';
 
 export function serviceConfigOptions(developmentMode:boolean=false):ServiceConfigurationOptions{
     let developmentServiceConfigOptions : ServiceConfigurationOptions = {
@@ -24,23 +25,6 @@ export function serviceConfigOptions(developmentMode:boolean=false):ServiceConfi
     return developmentServiceConfigOptions
 }
 
-// export function setup(developmentPort=8000) {
-//         const localEndPoint:string =`http://localhost:${developmentPort}`
-//         let configOption: AWS.ConfigService
-//         AWS.config.update(developmentServiceConfigOptions);
-//     }
-
-
-
-/*
-let dynamodb = new AWS.DynamoDB(serviceConfigOptions);
-
-let docClient = new AWS.DynamoDB.DocumentClient( {
-    region: "us-west-2",
-    endpoint: "http://localhost:8000",
-    convertEmptyValues: true
-}); 
-*/
 export default {
     serviceConfigOptions
 }

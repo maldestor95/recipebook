@@ -4,27 +4,18 @@ safety.test()
 
 import {
     User,
-    create_userTable,
-    delete_userTable,
-    scan_userTable,
     userError,
     UserInterface
 } from '../user'
+import {
+    create_userTable,
+    delete_userTable,
+    scan_userTable,
+} from '../usertable'
 
-const {
-    expect,
-    assert
-} = require('chai')
+const { expect } = require('chai')
 
 const constants = require('../../definition')
-
-const user = require('../user')
-
-const {
-    forEach
-} = require('lodash')
-
-
 
 describe("users with local dynamodB support", function () {
     before((done) => {
@@ -84,7 +75,7 @@ describe("users with local dynamodB support", function () {
         })
         describe.only("create", function () {
             it("shall create 2 different login", async () => {
-                const res1= {
+                const res1 = {
                     login: 'toto',
                     version: 0,
                     tableName: "Users",
@@ -101,7 +92,7 @@ describe("users with local dynamodB support", function () {
                 const p2 = await User2.createLogin('tata')
 
                 expect(p1.err).to.eq(undefined)
-                if (p1.res){
+                if (p1.res) {
                     expect(p1.res.login).to.deep.eq(res1.login)
                 }
             })
@@ -116,16 +107,16 @@ describe("users with local dynamodB support", function () {
 
             })
         })
-        
+
         describe("delete", function () {
 
-                it(`shall fail deleting an non existing login : `, async() => {
-                    const User2 = new User('tataToDel')
-                    const p2C = await User2.createLogin('tataToDel')
-                    // const p2D = await User2.deleteLogin(p2C.res['login'])
-                    console.log(p2C)
-                    // expect(p2.err).to.not.eq(undefined)
-                    // expect(p2.res).to.eq(null)
+            it(`shall fail deleting an non existing login : `, async () => {
+                const User2 = new User('tataToDel')
+                const p2C = await User2.createLogin('tataToDel')
+                // const p2D = await User2.deleteLogin(p2C.res['login'])
+                console.log(p2C)
+                // expect(p2.err).to.not.eq(undefined)
+                // expect(p2.res).to.eq(null)
             })
             /*it("shall  deleting a login", done => {
                 deleteLoginPromise('toto2')

@@ -1,89 +1,19 @@
-/**
- * Copyright © 2020, Maldestor
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
- * and associated documentation files (the “Software”), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
- * subject to the following conditions: 
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
- * The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties
- *  of merchantability, fitness for a particular purpose and noninfringement. 
- * In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, 
- * whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or 
- * other dealings in the Software. 
- * Except as contained in this notice, the name of Maldestor shall not be used in advertising or otherwise to promote the sale,
- * use or other dealings in this Software without prior written authorization from Maldestor.
- */
 "use strict"
+
 import * as constants from '../definition'
 
-import { error_msg as dynamo_error_msg, error_msg } from './definition_dynamodb'
-
 import AWS from 'aws-sdk'
-import AWSSetup, { serviceConfigOptions } from './aws_setup'
+import AWSSetup from './aws_setup'
 
-const {
-    json
-} = require('body-parser');
+import {create_userTable, delete_userTable, scan_userTable} from './usertable'
+
+
 var GroupRole = require('./GroupAndRoles').Manager
 
-let dynamodb = new AWS.DynamoDB(AWSSetup.serviceConfigOptions());
 export interface userError extends AWS.AWSError {
     err_msg?: string
 }
-export function create_userTable(callback: (err: userError | null, res: object) => void): void {
 
-    let params = {
-        TableName: "Users",
-        KeySchema: [{
-            AttributeName: "login",
-            KeyType: "HASH"
-        } //Partition key
-
-        ],
-        AttributeDefinitions: [{
-            AttributeName: "login",
-            AttributeType: "S"
-        }],
-        ProvisionedThroughput: {
-            ReadCapacityUnits: 10,
-            WriteCapacityUnits: 10
-        }
-    };
-
-    dynamodb.createTable(params, (err, data) => {
-        if (err) return callback({ ...err, err_msg: 'could not create database' }, data);
-        else return callback(null, data)
-    })
-}
-
-/**
- * delete_userTable
- * @param {function} callback 
- */
-export function delete_userTable(callback: (err: userError | null, res: object) => void): void {
-
-    let params = {
-        TableName: "Users"
-    };
-    dynamodb.deleteTable(params, (err, data) => {
-        callback(err, data)
-    });
-
-}
-
-export function scan_userTable(callback: (err: userError, res: object) => void): void {
-
-    let params = {
-        TableName: "Users"
-    };
-    dynamodb.scan(params, (err, data) => {
-        // this.connectionStatus = !err ? err : err.message
-        callback(err, data)
-    });
-
-}
 // export interface applicationOption {
 //     key: constants._application
 //     role: constants._role
@@ -466,14 +396,14 @@ export class User implements UserInterface {
     });
 }*/
 
-var self = (module.exports = {
-    User,
-    create_userTable,
-    delete_userTable,
-    scan_userTable,
-    // scanUsers,
+// var self = (module.exports = {
+//     User,
+//     create_userTable,
+//     delete_userTable,
+//     scan_userTable,
+//     // scanUsers,
 
-})
+// })
 
 // FEATURE error management when dynamoDB is not accessible
 // FEATURE error msg to be meaningful (login do not exist...)
