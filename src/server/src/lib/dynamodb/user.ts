@@ -1,11 +1,16 @@
 "use strict"
+const merge = require('deepmerge')
 
 import * as constants from '../definition'
 
 import AWS from 'aws-sdk'
-import AWSSetup from './aws_setup'
 
-import {create_userTable, delete_userTable, scan_userTable} from './usertable'
+import {
+    serviceConfigOptions
+    // ,     AWSConverter
+} from './aws_setup'
+
+import { create_userTable, delete_userTable, scan_userTable } from './usertable'
 
 
 var GroupRole = require('./GroupAndRoles').Manager
@@ -18,54 +23,47 @@ export interface userError extends AWS.AWSError {
 //     key: constants._application
 //     role: constants._role
 // }
+
 export interface UserInterface {
-    login: string
+    login: string | null
     group?: []
     version: number,
-    tableName: string
-    details: {
+    details: Details
+    userApplication: constants.AppList
+    pwd: string | null
+}
+type Details =
+    {
         address?: string
         email?: string
         phone?: string
     }
-    userApplication: constants.AppList
-    pwd: string
-
-}
 export enum userUpdateOperation {
     ADD = 'ADD',
     DEL = 'DEL',
 }
-export type DBPromiseResult = { err: object | undefined, res: UserInterface | null }
+export type DBPromiseResult = { err: object | null, res: UserInterface | null }
 
 export class User implements UserInterface {
-    login: string
-    version: number
-    tableName: string
-    details: {
-        address?: string
-        email?: string
-        phone?: string
-    }
-    userApplication: constants.AppList
-    pwd: string
-    documentdb: AWS.DynamoDB.DocumentClient
+    login: string | null = null
+    version: number = 0
+    details: Details = {}
+    userApplication: constants.AppList = {}
+    pwd: string | null = null
+    invalid?: boolean = false
+    readonly tableName: string = "Users"
+    private documentdb: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions())
+
     constructor(login: string) {
+        if (login.length == 0 || login.length > 20) this.invalid = true
+        else {
         this.login = login
-        this.version = 0
-        this.tableName = "Users"
-        this.details = {}
-        this.userApplication = {} // Object of applicationName:authorisation  (e.g "ToDo": "Viewer"`
-        this.pwd = ""
-        this.documentdb = new AWS.DynamoDB.DocumentClient(AWSSetup.serviceConfigOptions());
-
-
+    }
     }
     getUser(): UserInterface {
-        const res= {
+        const res = {
             login: this.login,
             version: this.version,
-            tableName: this.tableName,
             details: {
                 address: this.details.address,
                 email: this.details.email,
@@ -76,53 +74,37 @@ export class User implements UserInterface {
         }
         return res
     }
-    getLogin(login: string, callback: (err: userError, res: object | null) => void) {
-        let documentDB = new AWS.DynamoDB.DocumentClient()
+ 
+    async get(login?: string | null): Promise<DBPromiseResult> {
+        if (!login) return ({ err: null, res: null })
         let params = {
             "TableName": this.tableName,
             "Key": {
-                "login": login
+                "login": login ? login : this.login
             }
         }
-        documentDB.get(params, (err, data) => {
-            if (!err && data.Item) {
-                this.login = data.Item.login
-                this.pwd = data.Item.pwd
-                if (data.Item.hasOwnProperty('details')) {
-                    this.details = {
-                        address: data.Item.details.address,
-                        email: data.Item.details.email,
-                        phone: data.Item.details.phone
-                    }
+        return new Promise((resolve, reject) => {
+            this.documentdb.get(params, (err, data) => {
+                if (err) reject({ err, res: null }) //TODO change to resolve?
+                if (data.Item) {
+                    let resultUser = <UserInterface>data.Item
+                    const resultkeys = Object.keys(resultUser)
+                    this.assignRestultToThis(resultkeys, resultUser)
+                    resolve({ err: null, res: resultUser })
                 }
-                if (data.Item.hasOwnProperty('userApplication')) {
-                    this.userApplication = data.Item.userApplication
-                }
-
-                this.version = data.Item.version
-            }
-            callback(err, data.Item ? data.Item : data)
-
+            })
         })
     }
-    /**
-     * method create login
-     * @param {string} login  - shall be less than 12 chars longs, unique
-     * @param {function} callback  - returns (err,res) where
-     *  err= dynamoDB result
-     * data = // COMMENT error msg of method create login to describe
-     */
 
-    // async (userlogin: string):Promise<{data:User,err:userError}> => {
-    async createLogin(login: string): Promise<DBPromiseResult> {
-        // async createLogin (login: string):Promise<{err:object|undefined, res: object | null}>  {
+    async createLogin(): Promise<DBPromiseResult> {
         let params = {
             "TableName": this.tableName,
             Item: {
-                "login": login,
+                "login": this.login,
                 "details": {},
                 "userApplication": {},
-                "version": 0
+                "version": 0,
+                "pwd": "new"
             },
             ConditionExpression: "attribute_not_exists(#u)",
             ExpressionAttributeNames: {
@@ -132,31 +114,19 @@ export class User implements UserInterface {
             ReturnItemCollectionMetrics: "SIZE",
             ReturnValues: "ALL_OLD"
         }
-
-        const putOrderPromise = (): Promise<UserInterface> => {
-            return new Promise((resolve, reject) => {
-                this.documentdb.put(params, (err: object, data: object) => {
-                    if (err) reject(err)
-                    resolve( this.getUser() )
+        return new Promise((resolve) => {
+            this.documentdb.put(params, (err, data) => {
+                if (err) resolve({ err, res: null })
+                resolve({ err: null, res: this.getUser() })
                 })
-            });
-        }
-        try {
-            const putOrder = await putOrderPromise()
-            return ({ err: undefined, res: putOrder })
-        }
-        catch (error) {
-            return ({ err: error, res: null })
+        })
         }
 
-    }
-
-    async deleteLogin(login: string): Promise<DBPromiseResult> {
-        // deleteLogin(login: string, callback: (err: userError, res: object | null) => void) {
+    async deleteLogin(): Promise<DBPromiseResult> {
         let params = {
             "TableName": this.tableName,
             Key: {
-                "login": login
+                "login": this.login
             },
             ConditionExpression: "attribute_exists(#u)",
             ExpressionAttributeNames: {
@@ -164,22 +134,15 @@ export class User implements UserInterface {
             },
             ReturnValues: "ALL_OLD"
         }
-        // this.documentdb.delete(params, callback)
-        const documentPromise = (fn = this.documentdb.delete): Promise<DBPromiseResult> => {
+        const documentPromise = (): Promise<UserInterface> => {
             return new Promise((resolve, reject) => {
-                fn(params, (err: object, data: object) => {
+                this.documentdb.delete(params, (err, data) => {
                     if (err) reject(err)
                     resolve()
                 })
             });
         }
-        try {
-            const Order = await documentPromise()
-            return ({ err: undefined, res: null })
-        }
-        catch (error) {
-            return ({ err: error, res: null })
-        }
+        return await returnPromise(documentPromise)
 
     }
     /**
@@ -377,6 +340,25 @@ export class User implements UserInterface {
         })
 
     }
+
+    private assignRestultToThis(resultkeys: string[], resultUser: UserInterface): void {
+        resultkeys.forEach(k => {
+            switch (k) {
+                case 'login': this.login = <string>resultUser[k]
+                    break
+                case 'version': this.version = resultUser[k]
+                    break
+                case 'details': this.details = JSON.parse(JSON.stringify(resultUser[k]))
+                    break
+                case 'userApplication': JSON.parse(JSON.stringify(this.userApplication = resultUser[k]))
+                    break
+                case 'pwd': this.pwd = resultUser[k]
+                    break
+                default:
+                    break
+            }
+        })
+    }
 }
 //TODO SCAN USER
 /*function scanUsers(lastlogin = null, callback) {
@@ -408,3 +390,14 @@ export class User implements UserInterface {
 // FEATURE error management when dynamoDB is not accessible
 // FEATURE error msg to be meaningful (login do not exist...)
 // FEATURE transform class to function returning promises
+async function returnPromise(method: Function): Promise<DBPromiseResult> {
+    try {
+        const result = await method()
+        // some methods such as delete don't expect to return a UserInterface but a null
+        return ({ err: null, res: result ? result : null })
+    }
+    catch (error) {
+        return ({ err: error, res: null })
+    }
+
+}

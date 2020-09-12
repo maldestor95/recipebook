@@ -17,7 +17,7 @@ const { expect } = require('chai')
 
 const constants = require('../../definition')
 
-describe("users with local dynamodB support", function () {
+describe.only("users with local dynamodB support", function () {
     before((done) => {
         create_userTable((err, data) => {
             if (err) {
@@ -58,22 +58,26 @@ describe("users with local dynamodB support", function () {
     it("shall scan user table", done => {
         scan_userTable((err, data) => {
             expect(err).to.eq(null)
-            console.log(data)
+            // console.log(data)
             // expect(Array.isArray(data.Items)).to.eq(true)
             // expect(data.Count).to.eq(0)
             done()
         })
     })
-    describe.only("class User", function () {
+    describe("class User", function () {
         this.timeout(4000)
         it("shall check constructor", done => {
             const User1 = new User('User1login')
             expect(User1.login).to.eq('User1login')
-            expect(User1.pwd).to.eq('')
+            expect(User1.pwd).to.eq(null)
             expect(Array.isArray(User1.userApplication)).to.eq(false)
+            const User3 = new User("")
+            expect(User3.invalid).to.eq(true)
+            expect(User3.login).to.eq(null)
+
             done()
         })
-        describe.only("create", function () {
+        describe("create", function () {
             it("shall create 2 different login", async () => {
                 const res1 = {
                     login: 'toto',
@@ -88,21 +92,27 @@ describe("users with local dynamodB support", function () {
 
                 const User2 = new User('tata')
 
-                const p1 = await User1.createLogin(res1.login)
-                const p2 = await User2.createLogin('tata')
+                const p1 = await User1.createLogin()
+                const p2 = await User2.createLogin()
 
-                expect(p1.err).to.eq(undefined)
+                expect(p1.err).to.eq(null)
                 if (p1.res) {
                     expect(p1.res.login).to.deep.eq(res1.login)
+                }
+                expect(p2.err).to.eq(null)
+                if (p2.res) {
+                    expect(p2.res.login).to.eq('tata')
+                    expect(User2.invalid).to.eq(false)
+                    expect(User2.version).to.eq(0)
                 }
             })
 
             it("shall fail creating an existing login", async () => {
                 const User2 = new User('tata')
 
-                const p2 = await User2.createLogin('tata')
+                const p2 = await User2.createLogin()
                 // console.log(p2)
-                expect(p2.err).to.not.eq(undefined)
+                expect(p2.err).to.not.eq(null)
                 expect(p2.res).to.eq(null)
 
             })
@@ -110,55 +120,67 @@ describe("users with local dynamodB support", function () {
 
         describe("delete", function () {
 
-            it(`shall fail deleting an non existing login : `, async () => {
+            it(`shall succeed with an existing login : `, async () => {
                 const User2 = new User('tataToDel')
-                const p2C = await User2.createLogin('tataToDel')
-                // const p2D = await User2.deleteLogin(p2C.res['login'])
-                console.log(p2C)
-                // expect(p2.err).to.not.eq(undefined)
-                // expect(p2.res).to.eq(null)
+                const p2C = await User2.createLogin()
+                if (p2C.res) {
+                    const p2D = await User2.deleteLogin()
+                    expect(p2D.err).to.eq(null)
+                    expect(p2D.res).to.eq(null)
+                }
             })
-            /*it("shall  deleting a login", done => {
-                deleteLoginPromise('toto2')
-                    .then((res) => {
-                        expect(res.Attributes.login).to.eq('toto2')
-                        done()
-                    })
-                    .catch((err) => {
-                        // console.log(err)
-                        expect(err).to.eq(null)
-                        done()
-                    })
-            })*/
-        })/*
-        describe("getLogin", function () {
-            let invalidDataSet = [null, undefined, 'unknow1111']
-            invalidDataSet.forEach(dataset => {
-                it(`shall getting an non existing login : ${dataset}`, done => {
-                    const userlogin = dataset
-                    const newUser = new User()
-                    newUser.getLogin(userlogin, (err, data) => {
-                        if (err) {
-                            expect(err).to.not.eq(null)
-                            expect(data).to.eq(null)
-                            expect(err).to.not.eq(undefined)
-                        } else {
-                            expect(data).to.eq(undefined)
-                        }
-                        done()
-                    })
-                })
-            })
-            it("shall  get a login", done => {
-                const userlogin = 'toto'
-                const newUser = new User()
-                newUser.getLogin(userlogin, (err, data) => {
-                    expect(err).to.eq(null)
-                    expect(areKeysPresent(['login', 'version'], Object.keys(data))).to.eq(1)
-                    done()
-                })
+            it(`shall fail with a non existing login : `, async () => {
+                const User2 = new User('tataToDelo')
+                const p2D = await User2.deleteLogin()
+                expect(p2D.err).to.not.eq(null)
+                expect(p2D.res).to.eq(null)
             })
         })
+        describe("getLogin", function () {
+            const dummyUser: UserInterface = {
+                login: 'dummy',
+                pwd: 'dummypwd',
+                details: {},
+                userApplication: {},
+                version: 1000,
+            }
+            it(`an existing login`, async () => {
+                let newUser = new User('existingUser')
+                // force write wrong data
+
+                let existingUser = await newUser.createLogin()
+
+                if (existingUser.res) {
+                    expect(newUser.pwd).to.eq(null) //check creation
+
+                    newUser.login = dummyUser.login
+                    newUser.pwd = dummyUser.pwd
+                    newUser.details = dummyUser.details
+                    newUser.userApplication = dummyUser.userApplication
+                    newUser.version = dummyUser.version
+
+                    expect(newUser.pwd).to.eq(dummyUser.pwd) //check dummyfy
+
+                    let getExistingUSer = await newUser.get(existingUser.res.login)
+
+                    expect(getExistingUSer.err).to.eq(null)
+                    if (getExistingUSer.res) { //check newUser.get
+                        const FinalUser = getExistingUSer.res
+                        expect(FinalUser.pwd).to.eq('new')
+                        expect(FinalUser.details).to.deep.eq({})
+                        // expect(FinalUser.details).to.deep.eq({address:undefined,email:undefined,phone:undefined})
+                    }
+                }
+            })
+            it(`an unknown login`, async () => {
+                let newUser = new User('unknownUser789')
+                let getExistingUSer = await newUser.get()
+                expect(getExistingUSer.err).to.eq(null)
+                expect(getExistingUSer.res).to.eq(null)
+            })
+        })
+
+    })/*
         describe("print", function () {
             it("shall print", done => {
                 const userToPrint = new User()
@@ -554,21 +576,21 @@ describe("users with local dynamodB support", function () {
         })
         // updateLoginDetails
     */
-    })
+})
 
-    describe("support tests fonction", function () {
-        it("areKeysPresent", done => {
-            const source = ['34', '78', '89']
-            const refB = ['78', '67', '34', '99', '56', '89'] //true
-            const refC = ['78', '67', '99', '56', '89'] //false
-            const refD = ['78', '67', '99', '56', '89'] //false
-            expect(areKeysPresent(source, refB)).to.eq(true)
-            expect(areKeysPresent(source, refC)).to.eq(false)
-            expect(areKeysPresent(source, refD)).to.eq(false)
-            done()
-        })
+describe("support tests fonction", function () {
+    it("areKeysPresent", done => {
+        const source = ['34', '78', '89']
+        const refB = ['78', '67', '34', '99', '56', '89'] //true
+        const refC = ['78', '67', '99', '56', '89'] //false
+        const refD = ['78', '67', '99', '56', '89'] //false
+        expect(areKeysPresent(source, refB)).to.eq(true)
+        expect(areKeysPresent(source, refC)).to.eq(false)
+        expect(areKeysPresent(source, refD)).to.eq(false)
+        done()
     })
 })
+
 let areKeysPresent = function (sourceArray: Array<string>, referenceArray: Array<string>) {
     return sourceArray.reduce((acc, current) => acc && referenceArray.includes(current), true)
 }
