@@ -57,8 +57,8 @@ export class User implements UserInterface {
     constructor(login: string) {
         if (login.length == 0 || login.length > 20) this.invalid = true
         else {
-        this.login = login
-    }
+            this.login = login
+        }
     }
     getUser(): UserInterface {
         const res = {
@@ -74,7 +74,7 @@ export class User implements UserInterface {
         }
         return res
     }
- 
+
     async get(login?: string | null): Promise<DBPromiseResult> {
         if (!login) return ({ err: null, res: null })
         let params = {
@@ -118,9 +118,9 @@ export class User implements UserInterface {
             this.documentdb.put(params, (err, data) => {
                 if (err) resolve({ err, res: null })
                 resolve({ err: null, res: this.getUser() })
-                })
+            })
         })
-        }
+    }
 
     async deleteLogin(): Promise<DBPromiseResult> {
         let params = {
@@ -145,46 +145,35 @@ export class User implements UserInterface {
         return await returnPromise(documentPromise)
 
     }
-    /**
-     * print outputs to console the user
-     * @param {string} pre 
-     * @param {string} post 
-     */
-    print(pre = null, post = null) {
-        if (pre) {
-            console.log(pre)
-        }
-        console.log(JSON.stringify(this))
-        if (post) {
-            console.log(post)
-        }
-    }
-    updateLoginPwd(inputData: UserInterface, callback: (err: userError, res: object | null) => void) {
 
-        let documentDB = new AWS.DynamoDB.DocumentClient()
-        let params = {
-            TableName: this.tableName,
-            Key: {
-                "login": this.login
-            },
-            ConditionExpression: "attribute_exists(#u) and #V = :version",
-            UpdateExpression: "set #A = :mypwd ,  #V =:newvers",
-            ExpressionAttributeNames: {
-                '#A': "pwd",
-                '#V': "version",
-                "#u": "login",
-            },
-            ExpressionAttributeValues: {
-                ":mypwd": inputData.pwd,
-                ":version": Number(inputData.version),
-                ":newvers": Number(inputData.version) + 1,
+
+    async updatePwd(newPwd: string): Promise<DBPromiseResult> {
+        return new Promise((resolve, reject) => {
+            if (newPwd.length==0) reject({message:'invalid password'})
+            let params = {
+                TableName: this.tableName,
+                Key: {
+                    "login": this.login
+                },
+                ConditionExpression: "attribute_exists(#u) and #V = :version",
+                UpdateExpression: "set #A = :mypwd ,  #V =:newvers",
+                ExpressionAttributeNames: {
+                    '#A': "pwd",
+                    '#V': "version",
+                    "#u": "login",
+                },
+                ExpressionAttributeValues: {
+                    ":mypwd": newPwd,
+                    ":version": Number(this.version),
+                    ":newvers": Number(this.version) + 1,
+                }
             }
-        }
-        documentDB.update(params, (err, data) => {
-            if (!err) {
-                this.version = Number(inputData.version) + 1
-            }
-            callback(err, data)
+            this.documentdb.update(params, (err, data) => {
+                if (err) resolve({ err, res: null })
+                this.version += 1
+                this.pwd = newPwd
+                resolve({ err: null, res: this.getUser() })
+            })
         })
 
 

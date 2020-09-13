@@ -12,6 +12,8 @@ import {
     delete_userTable,
     scan_userTable,
 } from '../usertable'
+import { ResourceGroupsTaggingAPI } from 'aws-sdk'
+import { UV_FS_O_FILEMAP } from 'constants'
 
 const { expect } = require('chai')
 
@@ -179,66 +181,43 @@ describe.only("users with local dynamodB support", function () {
                 expect(getExistingUSer.res).to.eq(null)
             })
         })
+    })
 
-    })/*
-        describe("print", function () {
-            it("shall print", done => {
-                const userToPrint = new User()
-                userToPrint.createLogin('userToPrint', (err, data) => {
-                    userToPrint
-                        .getLogin('userToPrint', (err, data) => {
-                            userToPrint.print()
-                            userToPrint.print('pre', 'post')
-                            done()
-                        })
+    describe("update", function () {
+        const MochaTestUser = new User('MochaTesUser')
+
+        before((done) => {
+            MochaTestUser.createLogin()
+                .then((res) => {
+                    if (res.err) throw "unable to create login, check that database is running"
+                    done()
+                })
+                .catch((err) => {
+                    if (err) throw "unable to create login, check that database is running"
+                })
+        })
+        describe("LoginPwd", () => {
+            it(`shall change valid  password: `, async () => {
+                const getL = await MochaTestUser.get()
+                const updateP = await MochaTestUser.updatePwd('testPwd')
+                if (getL) {
+                    if (updateP) {
+                        expect(MochaTestUser.pwd).to.eq('testPwd')
+                        expect(MochaTestUser.version).to.eq(1)
+                    }
+                }
+            })
+            it(`shall fail invalid  password: `, async () => {
+                const getL = await MochaTestUser.get()
+                const updateP =  MochaTestUser.updatePwd('')
+                await updateP.catch(error=>{
+                    expect(error.message).to.eq("invalid password")
                 })
             })
         })
-        describe("update", function () {
-            const MochaTestUser = new User('updateUser')
 
-            before((done) => {
-                MochaTestUser.createLogin(MochaTestUser.login, (err, data) => {
-                    if (err) {
-                        MochaTestUser.getLogin(MochaTestUser.login, (err, data) => {
-                            done()
-                        })
-                    } else {
-                        done()
-                    }
-                })
-            })
-            describe("LoginPwd", function () {
-                let testPwd = 'validPwd'
-                it(`shall change valid  password: ${testPwd}`, done => {
-                    MochaTestUser.updateLoginPwd({
-                        "pwd": 'testPwd',
-                        "version": MochaTestUser.pwd
-                    }, (err, data) => {
-                        MochaTestUser.getLogin(MochaTestUser.login, (e2, d2) => {
-                            expect(e2).to.eq(null)
-                            expect(d2.pwd).to.eq('testPwd')
-                        })
-                        done()
-                    })
-                })
 
-                testPwd = [null, undefined]
-                testPwd.forEach(pwd => {
-                    it(`shall change invalid  password: ${pwd}`, done => {
-                        MochaTestUser.getLogin(MochaTestUser.login, (err, data) => {
-                            MochaTestUser.updateLoginPwd({
-                                pwd: pwd,
-                                version: MochaTestUser.version,
-                            }, (err, data) => {
-                                expect(typeof err).to.eq('string')
-                                expect(typeof data).to.eq('object')
-                                done()
-                            })
-                        })
-                    })
-                })
-            })
+            /*
             describe("updateLoginDetails", function () {
                 var V = new User()
                 const MochaTestUser = "MochaUpdate"
@@ -364,14 +343,14 @@ describe.only("users with local dynamodB support", function () {
 
                     V.getLogin(V.login, (e1, d1) => {
                         let initialversion = V.version
-                        V.updateLoginPwd({
+                        V.updatePwd({
                             pwd: newpwd,
                             version: V.version
                         }, (err, data) => {
                             assert.isNull(err, "[message]");
                             V.getLogin(MochaTestUser, (err, data) => {
                                 assert.deepEqual(V.pwd, newpwd, "verification pwd1");
-                                V.updateLoginPwd({
+                                V.updatePwd({
                                     pwd: newpwd2,
                                     version: V.version
                                 }, (err, data) => {
@@ -532,7 +511,7 @@ describe.only("users with local dynamodB support", function () {
                 })
 
             })
-        })
+        */})/*
         describe("updateApplicationList", function () {
             const userToUpdate = new User
             let userToUpdateDetails = {
