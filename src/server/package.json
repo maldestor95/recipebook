@@ -5,14 +5,11 @@
     "main": "app",
     "scripts": {
         "start": "npm run build && node ./build/bin/www",
-
         "lint": "eslint . --ext .ts",
         "dynamodblocal": "powershell.exe \"./src/utils/launchdynamodblocal.ps1\"",
-        "start:dev": "nodemon" ,
+        "start:dev": "nodemon",
         "dev": "set NODE_ENV=development &nodemon ./bin/www",
-
         "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
-
         "test": "mocha -r mocha.env.js -r ts-node/register ",
         "test:coverage": "nyc --reporter=text mocha -r mocha.env.js ",
         "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",

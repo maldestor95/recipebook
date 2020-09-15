@@ -33,6 +33,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/variables.scss";
 .outerBox {
     border-radius: 10px;
     border: solid 1px;

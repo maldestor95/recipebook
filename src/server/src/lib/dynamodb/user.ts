@@ -1,154 +1,110 @@
-/**
- * Copyright © 2020, Maldestor
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
- * and associated documentation files (the “Software”), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
- * subject to the following conditions: 
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
- * The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties
- *  of merchantability, fitness for a particular purpose and noninfringement. 
- * In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, 
- * whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or 
- * other dealings in the Software. 
- * Except as contained in this notice, the name of Maldestor shall not be used in advertising or otherwise to promote the sale,
- * use or other dealings in this Software without prior written authorization from Maldestor.
- */
 "use strict"
-var constants = require('../definition')
-var dynamo_error_msg = require('./definition_dynamodb').error_msg
-var AWS = require("aws-sdk");
-var AWSSetup = require('./aws_setup')
-AWSSetup.setup()
+const merge = require('deepmerge')
 
-const {
-    json
-} = require('body-parser');
+import * as constants from '../definition'
+
+import AWS from 'aws-sdk'
+
+import {
+    serviceConfigOptions
+    // ,     AWSConverter
+} from './aws_setup'
+
+import { create_userTable, delete_userTable, scan_userTable } from './usertable'
+
+
 var GroupRole = require('./GroupAndRoles').Manager
 
-
-let dynamodb = new AWS.DynamoDB(AWS.config);
-
-function create_userTable(callback) {
-
-    let params = {
-        TableName: "Users",
-        KeySchema: [{
-                AttributeName: "login",
-                KeyType: "HASH"
-            } //Partition key
-
-        ],
-        AttributeDefinitions: [{
-            AttributeName: "login",
-            AttributeType: "S"
-        }],
-        ProvisionedThroughput: {
-            ReadCapacityUnits: 10,
-            WriteCapacityUnits: 10
-        }
-    };
-
-    dynamodb.createTable(params, (err, data) => {
-        // if (err) throw err;
-        callback(err, data);
-    })
+export interface userError extends AWS.AWSError {
+    err_msg?: string
 }
 
-/**
- * delete_userTable
- * @param {function} callback 
- */
-function delete_userTable(callback) {
+// export interface applicationOption {
+//     key: constants._application
+//     role: constants._role
+// }
 
-    let params = {
-        TableName: "Users"
-    };
-    dynamodb.deleteTable(params, (err, data) => {
-        callback(err, data)
-    });
-
+export interface UserInterface {
+    login: string | null
+    group?: []
+    version: number,
+    details: Details
+    userApplication: constants.AppList
+    pwd: string | null
 }
-
-function scan_userTable(callback) {
-
-    let params = {
-        TableName: "Users"
-    };
-    dynamodb.scan(params, (err, data) => {
-        // this.connectionStatus = !err ? err : err.message
-        callback(err, data)
-    });
-
+type Details =
+    {
+        address?: string
+        email?: string
+        phone?: string
+    }
+export enum userUpdateOperation {
+    ADD = 'ADD',
+    DEL = 'DEL',
 }
+export type DBPromiseResult = { err: object | null, res: UserInterface | null }
 
-class User {
-    constructor(login = null) {
-        this.login = login
-        this.group = []
-        this.version = 0
-        this.tableName = "Users"
-        this.details = {
-            address: undefined,
-            email: undefined,
-            phone: undefined
-        }
-        this.userApplication = {} // Object of applicationName:authorisation  (e.g "ToDo": "Viewer"`
-        this.pwd = ""
-        this.defaultDynamoParam = {
+export class User implements UserInterface {
+    login: string | null = null
+    version: number = 0
+    details: Details = {}
+    userApplication: constants.AppList = {}
+    pwd: string | null = null
+    invalid?: boolean = false
+    readonly tableName: string = "Users"
+    private documentdb: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions())
 
+    constructor(login: string) {
+        if (login.length == 0 || login.length > 20) this.invalid = true
+        else {
+            this.login = login
         }
     }
-    getLogin(login, callback) {
-        if (login == null | login == undefined) return callback({
-            message: 'invalid input'
-        }, null)
-        let documentDB = new AWS.DynamoDB.DocumentClient()
+    getUser(): UserInterface {
+        const res = {
+            login: this.login,
+            version: this.version,
+            details: {
+                address: this.details.address,
+                email: this.details.email,
+                phone: this.details.phone
+            },
+            userApplication: this.userApplication,
+            pwd: this.pwd,
+        }
+        return res
+    }
+
+    async get(login?: string | null): Promise<DBPromiseResult> {
+        if (!login) return ({ err: null, res: null })
         let params = {
             "TableName": this.tableName,
             "Key": {
-                "login": login
+                "login": login ? login : this.login
             }
         }
-        documentDB.get(params, (err, data) => {
-            if (!err & Object.keys(data).length > 0) {
-                this.login = data.Item.login
-                this.pwd = data.Item.pwd
-                this.group = data.Item.group
-                if (data.Item.hasOwnProperty('details')) {
-                    this.details = {
-                        address: data.Item.details.address,
-                        email: data.Item.details.email,
-                        phone: data.Item.details.phone
-                    }
+        return new Promise((resolve, reject) => {
+            this.documentdb.get(params, (err, data) => {
+                if (err) reject({ err, res: null }) //TODO change to resolve?
+                if (data.Item) {
+                    let resultUser = <UserInterface>data.Item
+                    const resultkeys = Object.keys(resultUser)
+                    this.assignRestultToThis(resultkeys, resultUser)
+                    resolve({ err: null, res: resultUser })
                 }
-                if (data.Item.hasOwnProperty('userApplication')) {
-                    this.userApplication = data.Item.userApplication
-                }
-
-                this.version = data.Item.version
-            }
-            callback(err, data.Item)
-
+            })
         })
     }
-    /**
-     * method create login
-     * @param {string} login  - shall be less than 12 chars longs, unique
-     * @param {function} callback  - returns (err,res) where
-     *  err= dynamoDB result
-     * data = // COMMENT error msg of method create login to describe
-     */
-    createLogin(login, callback) {
-        let documentDB = new AWS.DynamoDB.DocumentClient()
+
+    async createLogin(): Promise<DBPromiseResult> {
         let params = {
             "TableName": this.tableName,
             Item: {
-                "login": login,
+                "login": this.login,
                 "details": {},
                 "userApplication": {},
-                "version": 0
+                "version": 0,
+                "pwd": "new"
             },
             ConditionExpression: "attribute_not_exists(#u)",
             ExpressionAttributeNames: {
@@ -158,25 +114,19 @@ class User {
             ReturnItemCollectionMetrics: "SIZE",
             ReturnValues: "ALL_OLD"
         }
-        documentDB.put(params, (err, data) => {
-            if (err) {
-                callback(err, dynamo_error_msg.loginAlreadyExist)
-            } else {
-                this.login = login
-                callback(err, data)
-            }
+        return new Promise((resolve) => {
+            this.documentdb.put(params, (err, data) => {
+                if (err) resolve({ err, res: null })
+                resolve({ err: null, res: this.getUser() })
+            })
         })
     }
 
-    deleteLogin(login, callback) {
-        if (login == null | login == undefined) callback({
-            message: 'The conditional request failed'
-        })
-        let documentDB = new AWS.DynamoDB.DocumentClient()
+    async deleteLogin(): Promise<DBPromiseResult> {
         let params = {
             "TableName": this.tableName,
             Key: {
-                "login": login
+                "login": this.login
             },
             ConditionExpression: "attribute_exists(#u)",
             ExpressionAttributeNames: {
@@ -184,30 +134,22 @@ class User {
             },
             ReturnValues: "ALL_OLD"
         }
-        documentDB.delete(params, callback)
+        const documentPromise = (): Promise<UserInterface> => {
+            return new Promise((resolve, reject) => {
+                this.documentdb.delete(params, (err, data) => {
+                    if (err) reject(err)
+                    resolve()
+                })
+            });
+        }
+        return await returnPromise(documentPromise)
 
     }
-    /**
-     * print outputs to console the user
-     * @param {string} pre 
-     * @param {string} post 
-     */
-    print(pre = null, post = null) {
-        if (pre) {
-            console.log(pre)
-        }
-        console.log(JSON.stringify(this))
-        if (post) {
-            console.log(post)
-        }
-    }
-    updateLoginPwd(data = null, callback) {
-        //data={pwd:newpwd,version:version}!
-        if (data == null | data == undefined) return callback("missing data", null)
-        if (this.login == null || data.pwd == null || data.pwd == undefined) {
-            return callback("invalid login and pwd", null)
-        } else {
-            let documentDB = new AWS.DynamoDB.DocumentClient()
+
+
+    async updatePwd(newPwd: string): Promise<DBPromiseResult> {
+        return new Promise((resolve, reject) => {
+            if (newPwd.length==0) reject({message:'invalid password'})
             let params = {
                 TableName: this.tableName,
                 Key: {
@@ -221,26 +163,27 @@ class User {
                     "#u": "login",
                 },
                 ExpressionAttributeValues: {
-                    ":mypwd": data.pwd,
-                    ":version": Number(data.version),
-                    ":newvers": Number(data.version) + 1,
+                    ":mypwd": newPwd,
+                    ":version": Number(this.version),
+                    ":newvers": Number(this.version) + 1,
                 }
             }
-            documentDB.update(params, (err, data) => {
-                if (!err) {
-                    this.version = Number(data.version) + 1
-                }
-                callback(err, data)
+            this.documentdb.update(params, (err, data) => {
+                if (err) resolve({ err, res: null })
+                this.version += 1
+                this.pwd = newPwd
+                resolve({ err: null, res: this.getUser() })
             })
-        }
+        })
+
 
     }
-    updateLoginDetails(data = null, callback) {
+    updateLoginDetails(inputData: UserInterface, callback: (err: object, res: object | null) => void) {
         if (this.login == null) {
-            callback("missing login", null)
+            callback({ error_msg: "missing login" }, null)
         }
-        if (data == null) {
-            return callback("missing details", null)
+        if (inputData == null) {
+            return callback({ error_msg: "missing details" }, null)
         } else {
             let documentDB = new AWS.DynamoDB.DocumentClient()
             let params = {
@@ -259,28 +202,28 @@ class User {
                     "#v": "version",
                 },
                 ExpressionAttributeValues: {
-                    ':address': data.details.address ? data.details.address : this.details.address,
-                    ':phone': data.details.phone ? data.details.phone : this.details.phone,
-                    ':email': data.details.email ? data.details.email : this.details.email,
-                    ":version": Number(data.version),
-                    ":newversion": Number(data.version) + 1
+                    ':address': inputData.details.address ? inputData.details.address : this.details.address,
+                    ':phone': inputData.details.phone ? inputData.details.phone : this.details.phone,
+                    ':email': inputData.details.email ? inputData.details.email : this.details.email,
+                    ":version": Number(inputData.version),
+                    ":newversion": Number(inputData.version) + 1
                 },
                 ReturnConsumedCapacity: "TOTAL",
                 ReturnItemCollectionMetrics: "SIZE",
                 ReturnValues: "ALL_OLD"
             }
             documentDB.update(params, (err, res) => {
-                if (data.details.address) {
-                    this.details.address = data.details.address
+                if (inputData.details.address) {
+                    this.details.address = inputData.details.address
                 }
-                if (data.details.phone) {
-                    this.details.phone = data.details.phone
+                if (inputData.details.phone) {
+                    this.details.phone = inputData.details.phone
                 }
-                if (data.details.email) {
-                    this.details.email = data.details.email
+                if (inputData.details.email) {
+                    this.details.email = inputData.details.email
                 }
                 if (!err) {
-                    this.version = Number(data.version) + 1
+                    this.version = Number(inputData.version) + 1
                 }
                 callback(err, res)
             })
@@ -296,27 +239,27 @@ class User {
      * @example
      * //updateApplication{applicationName:"ToDo", authorisation: "Viewer", operation:"ADD"}, (err,data)=>{console.log(err)}
      */
-    updateApplication({
+    updateApplication(inputData: {
 
-        applicationName = null,
-        authorisation = constants._role.Viewer,
-        operation = null
-    }, callback) {
+        applicationName: constants._application,
+        authorisation: constants._role,
+        operation: userUpdateOperation
+    }, callback: (err: object, res: object | null) => void) {
 
         let app = new GroupRole(Object.values(constants._application))
         let auth = new GroupRole(Object.values(constants._role))
-        if ((!app.isvalid(applicationName)) || (!auth.isvalid(authorisation)) || !(['DEL', 'ADD'].includes(operation))) {
-            callback(constants._errorMessage.InvalidParam, null)
+        if ((!app.isvalid(inputData.applicationName)) || (!auth.isvalid(inputData.authorisation)) || !inputData.operation) {
+            callback({ error_msg: constants._errorMessage.InvalidParam }, null)
         } else {
-            auth.add(authorisation)
+            auth.add(inputData.authorisation)
 
             let tempUserApplication = this.userApplication
-            switch (operation) {
+            switch (inputData.operation) {
                 case 'ADD':
-                    tempUserApplication[applicationName] = authorisation
+                    tempUserApplication[inputData.applicationName] = inputData.authorisation
                     break;
                 case 'DEL':
-                    delete tempUserApplication[applicationName]
+                    delete tempUserApplication[inputData.applicationName]
                     break;
             }
 
@@ -344,12 +287,13 @@ class User {
 
             documentDB.update(params, (err, res) => {
                 this.version += 1
-                this.userApplication[applicationName] = authorisation
+                this.userApplication[inputData.applicationName] = inputData.authorisation
                 callback(err, res);
             })
         };
     }
-    updateApplicationList(applicationList = {}, callback) {
+
+    updateApplicationList(applicationList = {}, callback: (err: object, res: object | null) => void) {
         /* application list is an  object, e.g
         {
             { Users: "Root" },
@@ -357,33 +301,52 @@ class User {
             { Expenses: "Manager" }
         }*/
 
-        if (!this.login == null) return callback("missing login", null)
-            // TODO check application list is valid
-            let documentDB = new AWS.DynamoDB.DocumentClient()
+        if (!this.login == null) return callback({ error_msg: "missing login" }, null)
+        // TODO check application list is valid
+        let documentDB = new AWS.DynamoDB.DocumentClient()
 
-            let params = {
-                TableName: this.tableName,
-                Key: {
-                    "login": this.login
-                },
-                ConditionExpression: "version < :newvers",
-                UpdateExpression: "set #UserApplication =:userApplication , #V =:newvers ",
-                ExpressionAttributeNames: {
-                    '#UserApplication': "userApplication",
-                    '#V': "version"
-                },
-                ExpressionAttributeValues: {
-                    ':userApplication': applicationList,
-                    ":newvers": Number(this.version) + 1,
-                }
-
+        let params = {
+            TableName: this.tableName,
+            Key: {
+                "login": this.login
+            },
+            ConditionExpression: "version < :newvers",
+            UpdateExpression: "set #UserApplication =:userApplication , #V =:newvers ",
+            ExpressionAttributeNames: {
+                '#UserApplication': "userApplication",
+                '#V': "version"
+            },
+            ExpressionAttributeValues: {
+                ':userApplication': applicationList,
+                ":newvers": Number(this.version) + 1,
             }
-            documentDB.update(params, (err, res) => {
-                this.version += 1
-                this.userApplication = applicationList
-                callback(err, res);
-            })
-        
+
+        }
+        documentDB.update(params, (err, res) => {
+            this.version += 1
+            this.userApplication = applicationList
+            callback(err, res);
+        })
+
+    }
+
+    private assignRestultToThis(resultkeys: string[], resultUser: UserInterface): void {
+        resultkeys.forEach(k => {
+            switch (k) {
+                case 'login': this.login = <string>resultUser[k]
+                    break
+                case 'version': this.version = resultUser[k]
+                    break
+                case 'details': this.details = JSON.parse(JSON.stringify(resultUser[k]))
+                    break
+                case 'userApplication': JSON.parse(JSON.stringify(this.userApplication = resultUser[k]))
+                    break
+                case 'pwd': this.pwd = resultUser[k]
+                    break
+                default:
+                    break
+            }
+        })
     }
 }
 //TODO SCAN USER
@@ -404,15 +367,26 @@ class User {
     });
 }*/
 
-var self = (module.exports = {
-    User,
-    create_userTable,
-    delete_userTable,
-    scan_userTable,
-    // scanUsers,
+// var self = (module.exports = {
+//     User,
+//     create_userTable,
+//     delete_userTable,
+//     scan_userTable,
+//     // scanUsers,
 
-})
+// })
 
 // FEATURE error management when dynamoDB is not accessible
 // FEATURE error msg to be meaningful (login do not exist...)
 // FEATURE transform class to function returning promises
+async function returnPromise(method: Function): Promise<DBPromiseResult> {
+    try {
+        const result = await method()
+        // some methods such as delete don't expect to return a UserInterface but a null
+        return ({ err: null, res: result ? result : null })
+    }
+    catch (error) {
+        return ({ err: error, res: null })
+    }
+
+}
