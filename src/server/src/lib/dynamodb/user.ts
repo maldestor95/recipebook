@@ -1,5 +1,5 @@
 "use strict"
-const merge = require('deepmerge')
+// const merge = require('deepmerge')
 
 import * as constants from '../definition'
 
@@ -42,7 +42,7 @@ export enum userUpdateOperation {
     ADD = 'ADD',
     DEL = 'DEL',
 }
-export type DBPromiseResult = { err: object | null, res: UserInterface | null }
+export type DBPromiseResult = { err: Partial<AWS.AWSError> | null, res: UserInterface | null }
 
 export class User implements UserInterface {
     login: string | null = null
@@ -60,7 +60,7 @@ export class User implements UserInterface {
             this.login = login
         }
     }
-    getUser(): UserInterface {
+    print(): UserInterface {
         const res = {
             login: this.login,
             version: this.version,
@@ -117,7 +117,7 @@ export class User implements UserInterface {
         return new Promise((resolve) => {
             this.documentdb.put(params, (err, data) => {
                 if (err) resolve({ err, res: null })
-                resolve({ err: null, res: this.getUser() })
+                resolve({ err: null, res: this.print() })
             })
         })
     }
@@ -149,7 +149,7 @@ export class User implements UserInterface {
 
     async updatePwd(newPwd: string): Promise<DBPromiseResult> {
         return new Promise((resolve, reject) => {
-            if (newPwd.length==0) reject({message:'invalid password'})
+            if (newPwd.length==0) resolve({err:{message:'invalid password'},res:null})
             let params = {
                 TableName: this.tableName,
                 Key: {
@@ -172,7 +172,7 @@ export class User implements UserInterface {
                 if (err) resolve({ err, res: null })
                 this.version += 1
                 this.pwd = newPwd
-                resolve({ err: null, res: this.getUser() })
+                resolve({ err: null, res: this.print() })
             })
         })
 

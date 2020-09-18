@@ -19,8 +19,9 @@ const { expect } = require('chai')
 
 const constants = require('../../definition')
 
-describe.only("users with local dynamodB support", function () {
+describe("users with local dynamodB support", function () {
     before((done) => {
+        process.env.NODE_ENV = 'development'
         create_userTable((err, data) => {
             if (err) {
                 switch (err.err_msg) {
@@ -35,7 +36,10 @@ describe.only("users with local dynamodB support", function () {
                         break;
                 }
             } else {
-                done()
+                scan_userTable((err, data) => {
+                    console.log(`\ttable Users initiated with \n \t\t${JSON.stringify(data, null, 2)}`)
+                    done()
+                })
             }
         })
     })
@@ -94,26 +98,26 @@ describe.only("users with local dynamodB support", function () {
 
                 const User2 = new User('tata')
 
-                const p1 = await User1.createLogin()
-                const p2 = await User2.createLogin()
+                const p1 = User1.createLogin()
+                const p2 = User2.createLogin()
 
-                expect(p1.err).to.eq(null)
-                if (p1.res) {
-                    expect(p1.res.login).to.deep.eq(res1.login)
-                }
-                expect(p2.err).to.eq(null)
-                if (p2.res) {
-                    expect(p2.res.login).to.eq('tata')
+                await Promise.all([p1, p2]).then(values => {
+                    expect(values[0]!.err).to.eq(null)
+                    expect(values[0]!.res!.login).to.deep.eq(res1.login)
+
+                    expect(values[1]!.err).to.eq(null)
+                    expect(values[1]!.res!.login).to.eq('tata')
                     expect(User2.invalid).to.eq(false)
                     expect(User2.version).to.eq(0)
-                }
+                })
+                    .catch(err => { console.log(err.message) })
+
             })
 
             it("shall fail creating an existing login", async () => {
                 const User2 = new User('tata')
 
                 const p2 = await User2.createLogin()
-                // console.log(p2)
                 expect(p2.err).to.not.eq(null)
                 expect(p2.res).to.eq(null)
 
@@ -138,7 +142,7 @@ describe.only("users with local dynamodB support", function () {
                 expect(p2D.res).to.eq(null)
             })
         })
-        describe("getLogin", function () {
+        describe("get Login", function () {
             const dummyUser: UserInterface = {
                 login: 'dummy',
                 pwd: 'dummypwd',
@@ -181,8 +185,23 @@ describe.only("users with local dynamodB support", function () {
                 expect(getExistingUSer.res).to.eq(null)
             })
         })
-    })
+        describe("print", () => {
+            it('return user as an object', done => {
+                let user = new User('Paul')
+                user.details = { phone: '1234' }
 
+                expect(user.print()).to.have.property('login')
+                expect(user.print()).to.have.property('version')
+                expect(user.print()).to.have.property('details')
+                expect(user.print().details).to.have.property('address')
+                expect(user.print().details).to.have.property('email')
+                expect(user.print().details).to.have.property('phone')
+                expect(user.print()).to.have.property('userApplication')
+                expect(user.print()).to.have.property('pwd')
+            
+                done()
+            })
+    })
     describe("update", function () {
         const MochaTestUser = new User('MochaTesUser')
 
@@ -208,14 +227,16 @@ describe.only("users with local dynamodB support", function () {
                 }
             })
             it(`shall fail invalid  password: `, async () => {
-                const getL = await MochaTestUser.get()
-                const updateP =  MochaTestUser.updatePwd('')
-                await updateP.catch(error=>{
-                    expect(error.message).to.eq("invalid password")
-                })
+                const getL = MochaTestUser.get()
+                const updateP = MochaTestUser.updatePwd('')
+                getL.then(() => updateP)
+                    .then((Result) => {
+                        expect(Result.err!.message).to.eq("invalid password")
+                    })
             })
         })
 
+    })
 
             /*
             describe("updateLoginDetails", function () {
@@ -512,6 +533,7 @@ describe.only("users with local dynamodB support", function () {
 
             })
         */})/*
+        
         describe("updateApplicationList", function () {
             const userToUpdate = new User
             let userToUpdateDetails = {
