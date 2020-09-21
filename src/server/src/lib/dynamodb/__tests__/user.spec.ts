@@ -172,7 +172,7 @@ describe("users with local dynamodB support", function () {
 
                     expect(newUser.pwd).to.eq(dummyUser.pwd) //check dummyfy
 
-                    let getExistingUSer = await newUser.get(existingUser.res.login)
+                    let getExistingUSer = await newUser.get()
 
                     expect(getExistingUSer.err).to.eq(null)
                     if (getExistingUSer.res) { //check newUser.get

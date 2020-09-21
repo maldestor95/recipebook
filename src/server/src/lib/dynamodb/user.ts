@@ -64,8 +64,7 @@ export class User implements UserInterface {
         return res
     }
 
-    async get(login?: string | null): Promise<DBPromiseResult> {
-        if (!login) return ({ err: null, res: null })
+    async get(login?: string): Promise<DBPromiseResult> {
         let params = {
             "TableName": this.tableName,
             "Key": {
@@ -74,13 +73,14 @@ export class User implements UserInterface {
         }
         return new Promise((resolve, reject) => {
             this.documentdb.get(params, (err, data) => {
-                if (err) reject({ err, res: null }) //TODO change to resolve?
+                if (err) return resolve({ err, res: null }) 
                 if (data.Item) {
                     let resultUser = <UserInterface>data.Item
                     const resultkeys = Object.keys(resultUser)
                     this.assignRestultToThis(resultkeys, resultUser)
-                    resolve({ err: null, res: resultUser })
+                    return resolve({ err: null, res: resultUser })
                 }
+                else return resolve({ err: null, res: null })
             })
         })
     }
