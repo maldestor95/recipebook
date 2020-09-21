@@ -210,17 +210,8 @@ export class User implements UserInterface {
             if ((!app.isvalid(newApplication.application)) || (!auth.isvalid(newApplication.role))) reject({ err: "invalig application or role", res: null })
 
             let tempUserApplication = { ...this.userApplication }
-            switch (operation) {
-                case 'ADD':
-                    tempUserApplication[newApplication.application] = newApplication.role
-                    break;
-                case 'DEL':
-                    delete tempUserApplication[newApplication.application]
-                    break;
-                default:
-                    reject({ err: "invalig operation", res: null })
-                    break;
-            }
+            if (operation=='ADD') tempUserApplication[newApplication.application] = newApplication.role
+            if (operation=='DEL') delete tempUserApplication[newApplication.application]
 
             let params = {
                 TableName: this.tableName,
@@ -294,8 +285,8 @@ export class User implements UserInterface {
                     break
                 case 'pwd': this.pwd = resultUser[k]
                     break
-                default:
-                    break
+                // default:
+                //     break
             }
         })
     }
