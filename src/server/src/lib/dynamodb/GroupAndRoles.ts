@@ -35,7 +35,6 @@ export class Manager {
      * @returns {string} - null if no error; "unknown" if fail
      */
     add(role:string) {
-        if (this.OptionList==null) return ("unknown")
         if (this.OptionList.includes(role)) {
             this.Option.push(role)
             return null
@@ -45,7 +44,6 @@ export class Manager {
         }
     }
     isvalid(role:string) {
-        if (this.OptionList==null) return false
         if (this.OptionList.includes(role)) {
             return true
         } else {
@@ -58,7 +56,6 @@ export class Manager {
      * @returns {string} - null if no error; "unknown" if fail
      */
     delete(role:string) {
-        if (this.OptionList==null) return "unknown"
         if (this.OptionList.includes(role)) {
             this.Option = this.Option.filter((rr) => {
                 return rr != role

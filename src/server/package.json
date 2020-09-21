@@ -11,7 +11,7 @@
         "dev": "set NODE_ENV=development &nodemon ./bin/www",
         "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
         "test": "mocha -r mocha.env.js -r ts-node/register ",
-        "test:coverage": "nyc --reporter=text mocha -r mocha.env.js ",
+        "test:coverage": "nyc --reporter=text mocha -r mocha.env.js -r ts-node/register",
         "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
         "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch",
         "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors"

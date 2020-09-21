@@ -34,6 +34,15 @@ describe("Manager", function () {
         expect(mger.Option).to.deep.eq([])
         done()
     })
+    it('shall test with null optionList',()=>{
+        let nullList=new Manager([])
+        let res = nullList.add('4')
+        expect(nullList.Option).to.deep.eq([])
+        expect(res).to.deep.eq("unknown")
+        res = nullList.delete('4')
+        expect(nullList.Option).to.deep.eq([])
+        expect(res).to.deep.eq("unknown")
+    })
     const data=['1','2','3']
     it(`shall check if role is valid for the dataset ${data}`, done => {
         const mger = new Manager(data)
@@ -49,6 +58,8 @@ describe("Manager", function () {
         expect(mger.isvalid('1')).to.eq(true)
         expect(mger.delete('1')).to.eq(null)
         expect(mger.list()).to.deep.eq(['2','3'])
+        expect(mger.delete('10')).to.eq("unknown")
+
         done()
     })
 })

@@ -3,10 +3,7 @@ import * as constants from '../definition'
 import AWS from 'aws-sdk'
 import { serviceConfigOptions } from './aws_setup'
 
-import { create_userTable, delete_userTable, scan_userTable } from './usertable'
-import { UserDetail } from 'aws-sdk/clients/iam'
 import { GroupClass, RoleClass } from './GroupAndRoles'
-// var GroupRole = require('./GroupAndRoles').Manager
 
 export interface userError extends AWS.AWSError {
     err_msg?: string
@@ -320,15 +317,6 @@ async function returnPromise(method: Function): Promise<DBPromiseResult> {
 
 }
 
-
-/**
- *  Convert Enum to Array
- * @param enumme 
- */
-function ToArray(enumme: any) {
-    return Object.keys(enumme)
-        .map(key => enumme[key]);
-}
 
 /**
  * Convert Record<string,string> to  an application
