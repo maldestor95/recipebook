@@ -210,8 +210,8 @@ export class User implements UserInterface {
             if ((!app.isvalid(newApplication.application)) || (!auth.isvalid(newApplication.role))) reject({ err: "invalig application or role", res: null })
 
             let tempUserApplication = { ...this.userApplication }
-            if (operation=='ADD') tempUserApplication[newApplication.application] = newApplication.role
-            if (operation=='DEL') delete tempUserApplication[newApplication.application]
+            if (operation == 'ADD') tempUserApplication[newApplication.application] = newApplication.role
+            if (operation == 'DEL') delete tempUserApplication[newApplication.application]
 
             let params = {
                 TableName: this.tableName,
@@ -324,4 +324,10 @@ export function convertApplist(newAppList: Record<string, string>): Partial<Reco
     if (!isValid) return {}
     Object.keys(newAppList).map((k) => output[<constants._application>k] = <constants._role>newAppList[k])
     return output
+}
+
+export function scanUsers(startIdUser: string | undefined): Promise<Array<User> | null> { //TODO
+    return new Promise((resolve, reject) => {
+        resolve(null)
+    });
 }
