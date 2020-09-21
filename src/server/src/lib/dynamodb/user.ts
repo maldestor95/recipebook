@@ -1,61 +1,53 @@
 "use strict"
-// const merge = require('deepmerge')
-
 import * as constants from '../definition'
-
 import AWS from 'aws-sdk'
-
-import {
-    serviceConfigOptions
-    // ,     AWSConverter
-} from './aws_setup'
+import { serviceConfigOptions } from './aws_setup'
 
 import { create_userTable, delete_userTable, scan_userTable } from './usertable'
-
-
-var GroupRole = require('./GroupAndRoles').Manager
+import { UserDetail } from 'aws-sdk/clients/iam'
+import { GroupClass, RoleClass } from './GroupAndRoles'
+// var GroupRole = require('./GroupAndRoles').Manager
 
 export interface userError extends AWS.AWSError {
     err_msg?: string
 }
-
-// export interface applicationOption {
-//     key: constants._application
-//     role: constants._role
-// }
-
+export interface applicationOption {
+    application: constants._application
+    role: constants._role
+}
 export interface UserInterface {
     login: string | null
     group?: []
     version: number,
-    details: Details
+    details: userDetails
     userApplication: constants.AppList
     pwd: string | null
 }
-type Details =
-    {
-        address?: string
-        email?: string
-        phone?: string
-    }
+export interface userDetails {
+    address: string | null
+    email: string | null
+    phone: string | null
+}
 export enum userUpdateOperation {
     ADD = 'ADD',
     DEL = 'DEL',
 }
 export type DBPromiseResult = { err: Partial<AWS.AWSError> | null, res: UserInterface | null }
-
 export class User implements UserInterface {
     login: string | null = null
     version: number = 0
-    details: Details = {}
+    details: userDetails = { phone: null, email: null, address: null }
     userApplication: constants.AppList = {}
     pwd: string | null = null
     invalid?: boolean = false
     readonly tableName: string = "Users"
     private documentdb: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions())
-
+    /**
+     * 
+     * @param login shall have a length between 1 and 79 characters
+     */
     constructor(login: string) {
-        if (login.length == 0 || login.length > 20) this.invalid = true
+        if (login.length == 0 || login.length > 80) this.invalid = true
         else {
             this.login = login
         }
@@ -114,9 +106,9 @@ export class User implements UserInterface {
             ReturnItemCollectionMetrics: "SIZE",
             ReturnValues: "ALL_OLD"
         }
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.documentdb.put(params, (err, data) => {
-                if (err) resolve({ err, res: null })
+                if (err) reject({ err, res: null })
                 resolve({ err: null, res: this.print() })
             })
         })
@@ -149,7 +141,7 @@ export class User implements UserInterface {
 
     async updatePwd(newPwd: string): Promise<DBPromiseResult> {
         return new Promise((resolve, reject) => {
-            if (newPwd.length==0) resolve({err:{message:'invalid password'},res:null})
+            if (newPwd.length == 0) resolve({ err: { message: 'invalid password' }, res: null })
             let params = {
                 TableName: this.tableName,
                 Key: {
@@ -169,7 +161,7 @@ export class User implements UserInterface {
                 }
             }
             this.documentdb.update(params, (err, data) => {
-                if (err) resolve({ err, res: null })
+                if (err) reject({ err, res: null })
                 this.version += 1
                 this.pwd = newPwd
                 resolve({ err: null, res: this.print() })
@@ -178,158 +170,120 @@ export class User implements UserInterface {
 
 
     }
-    updateLoginDetails(inputData: UserInterface, callback: (err: object, res: object | null) => void) {
-        if (this.login == null) {
-            callback({ error_msg: "missing login" }, null)
-        }
-        if (inputData == null) {
-            return callback({ error_msg: "missing details" }, null)
-        } else {
-            let documentDB = new AWS.DynamoDB.DocumentClient()
+    updateDetails(newDetails: userDetails): Promise<DBPromiseResult> {
+        return new Promise((resolve, reject) => {
+
             let params = {
                 TableName: this.tableName,
                 Key: {
                     "login": this.login
                 },
                 ConditionExpression: "attribute_exists(#u) and #v = :version",
-                UpdateExpression: "set #Details.#Address = :address, #Details.#Phone=:phone , #Details.#Email=:email, #v =:newversion",
+                UpdateExpression: "set #Details = :details, #v =:newversion",
                 ExpressionAttributeNames: {
-                    '#Address': "address",
-                    '#Phone': "phone",
                     '#Details': "details",
-                    '#Email': "email",
                     "#u": "login",
                     "#v": "version",
                 },
                 ExpressionAttributeValues: {
-                    ':address': inputData.details.address ? inputData.details.address : this.details.address,
-                    ':phone': inputData.details.phone ? inputData.details.phone : this.details.phone,
-                    ':email': inputData.details.email ? inputData.details.email : this.details.email,
-                    ":version": Number(inputData.version),
-                    ":newversion": Number(inputData.version) + 1
+                    ":details": newDetails,
+                    ":version": Number(this.version),
+                    ":newversion": Number(this.version) + 1
                 },
-                ReturnConsumedCapacity: "TOTAL",
-                ReturnItemCollectionMetrics: "SIZE",
-                ReturnValues: "ALL_OLD"
             }
-            documentDB.update(params, (err, res) => {
-                if (inputData.details.address) {
-                    this.details.address = inputData.details.address
-                }
-                if (inputData.details.phone) {
-                    this.details.phone = inputData.details.phone
-                }
-                if (inputData.details.email) {
-                    this.details.email = inputData.details.email
-                }
-                if (!err) {
-                    this.version = Number(inputData.version) + 1
-                }
-                callback(err, res)
+            this.documentdb.update(params, (err, data) => {
+                if (err) reject({ err, res: null })
+                this.version += 1
+                this.details = { ...newDetails }
+                resolve({ err: null, res: this.print() })
             })
-        }
+        })
     }
     /**
      * 
-     * @param {Object} param 
-     * @param {string} param.applicationName - Name of the application
-     * @param {string} param.authorisation -  Authorisation
-     * @param {string} param. operation - shall be `ADD` or `DEL`
-     * @param {*} callback 
-     * @example
-     * //updateApplication{applicationName:"ToDo", authorisation: "Viewer", operation:"ADD"}, (err,data)=>{console.log(err)}
-     */
-    updateApplication(inputData: {
+     * Update one application for one user
+     * @param {applicationOption} newApplication - application & role
+     * @param {userUpdateOperation} operation - shall be `ADD` or `DEL`
+    */
+    updateApplication(newApplication: applicationOption, operation: userUpdateOperation): Promise<DBPromiseResult> {
+        return new Promise((resolve, reject) => {
+            let app = new GroupClass()
+            let auth = new RoleClass()
 
-        applicationName: constants._application,
-        authorisation: constants._role,
-        operation: userUpdateOperation
-    }, callback: (err: object, res: object | null) => void) {
+            if ((!app.isvalid(newApplication.application)) || (!auth.isvalid(newApplication.role))) reject({ err: "invalig application or role", res: null })
 
-        let app = new GroupRole(Object.values(constants._application))
-        let auth = new GroupRole(Object.values(constants._role))
-        if ((!app.isvalid(inputData.applicationName)) || (!auth.isvalid(inputData.authorisation)) || !inputData.operation) {
-            callback({ error_msg: constants._errorMessage.InvalidParam }, null)
-        } else {
-            auth.add(inputData.authorisation)
-
-            let tempUserApplication = this.userApplication
-            switch (inputData.operation) {
+            let tempUserApplication = { ...this.userApplication }
+            switch (operation) {
                 case 'ADD':
-                    tempUserApplication[inputData.applicationName] = inputData.authorisation
+                    tempUserApplication[newApplication.application] = newApplication.role
                     break;
                 case 'DEL':
-                    delete tempUserApplication[inputData.applicationName]
+                    delete tempUserApplication[newApplication.application]
+                    break;
+                default:
+                    reject({ err: "invalig operation", res: null })
                     break;
             }
-
-            let documentDB = new AWS.DynamoDB.DocumentClient()
 
             let params = {
                 TableName: this.tableName,
                 Key: {
                     "login": this.login
                 },
-                ConditionExpression: "version < :newvers",
-                UpdateExpression: "set #UserApplication =:userApplication ,  #V =:newvers",
+                ConditionExpression: "attribute_exists(#u) and #v = :version",
+                UpdateExpression: "set #UserApplication =:userApplication ,  #v =:newversion",
                 ExpressionAttributeNames: {
                     '#UserApplication': "userApplication",
-                    '#V': "version"
+                    "#u": "login",
+                    '#v': "version"
                 },
                 ExpressionAttributeValues: {
                     ':userApplication': tempUserApplication,
-                    ":newvers": Number(this.version) + 1,
-                    // ":version": Number(this.version)
+                    ":version": Number(this.version),
+                    ":newversion": Number(this.version) + 1
                 }
-
             }
-
-
-            documentDB.update(params, (err, res) => {
+            this.documentdb.update(params, (err, res) => {
+                if (err) reject({ err, res: null })
                 this.version += 1
-                this.userApplication[inputData.applicationName] = inputData.authorisation
-                callback(err, res);
+                this.userApplication = { ...tempUserApplication }
+                resolve({ err: null, res: this.print() })
             })
-        };
+        });
+
     }
+    updateApplicationList(newApplication: Record<string, string>): Promise<DBPromiseResult> {
+        return new Promise((resolve, reject) => {
+            const tempUserApplication = convertApplist(newApplication)
+            if (Object.keys(tempUserApplication).length == 0) reject({ err: "invalid application or role", res: null })
 
-    updateApplicationList(applicationList = {}, callback: (err: object, res: object | null) => void) {
-        /* application list is an  object, e.g
-        {
-            { Users: "Root" },
-            { Todo: "Viewer" },
-            { Expenses: "Manager" }
-        }*/
-
-        if (!this.login == null) return callback({ error_msg: "missing login" }, null)
-        // TODO check application list is valid
-        let documentDB = new AWS.DynamoDB.DocumentClient()
-
-        let params = {
-            TableName: this.tableName,
-            Key: {
-                "login": this.login
-            },
-            ConditionExpression: "version < :newvers",
-            UpdateExpression: "set #UserApplication =:userApplication , #V =:newvers ",
-            ExpressionAttributeNames: {
-                '#UserApplication': "userApplication",
-                '#V': "version"
-            },
-            ExpressionAttributeValues: {
-                ':userApplication': applicationList,
-                ":newvers": Number(this.version) + 1,
+            let params = {
+                TableName: this.tableName,
+                Key: {
+                    "login": this.login
+                },
+                ConditionExpression: "attribute_exists(#u) and #v = :version",
+                UpdateExpression: "set #UserApplication =:userApplication ,  #v =:newversion",
+                ExpressionAttributeNames: {
+                    '#UserApplication': "userApplication",
+                    "#u": "login",
+                    '#v': "version"
+                },
+                ExpressionAttributeValues: {
+                    ':userApplication': tempUserApplication,
+                    ":version": Number(this.version),
+                    ":newversion": Number(this.version) + 1
+                }
             }
-
-        }
-        documentDB.update(params, (err, res) => {
-            this.version += 1
-            this.userApplication = applicationList
-            callback(err, res);
-        })
+            this.documentdb.update(params, (err, res) => {
+                if (err) reject({ err, res: null })
+                this.version += 1
+                this.userApplication = { ...tempUserApplication }
+                resolve({ err: null, res: this.print() })
+            })
+        });
 
     }
-
     private assignRestultToThis(resultkeys: string[], resultUser: UserInterface): void {
         resultkeys.forEach(k => {
             switch (k) {
@@ -349,32 +303,7 @@ export class User implements UserInterface {
         })
     }
 }
-//TODO SCAN USER
-/*function scanUsers(lastlogin = null, callback) {
-    var params = {
-        TableName: 'Users',
-        ExclusiveStartKey: lastlogin ? {
-            "login": lastlogin
-        } : null
-    };
 
-    let documentClient = new AWS.DynamoDB.DocumentClient();
-
-    documentClient.scan(params, function (err, data) {
-        if (err) console.log(err);
-        // else console.log(data);
-        callback(err, data)
-    });
-}*/
-
-// var self = (module.exports = {
-//     User,
-//     create_userTable,
-//     delete_userTable,
-//     scan_userTable,
-//     // scanUsers,
-
-// })
 
 // FEATURE error management when dynamoDB is not accessible
 // FEATURE error msg to be meaningful (login do not exist...)
@@ -389,4 +318,31 @@ async function returnPromise(method: Function): Promise<DBPromiseResult> {
         return ({ err: error, res: null })
     }
 
+}
+
+
+/**
+ *  Convert Enum to Array
+ * @param enumme 
+ */
+function ToArray(enumme: any) {
+    return Object.keys(enumme)
+        .map(key => enumme[key]);
+}
+
+/**
+ * Convert Record<string,string> to  an application
+ * returns {} is the input is not valid
+ * @param newAppList 
+ */
+export function convertApplist(newAppList: Record<string, string>): Partial<Record<constants._application, constants._role>> {
+    let output: Partial<Record<constants._application, constants._role>> = {}
+    let isValid = true
+    Object.keys(newAppList).map((k) => {
+        if (!(k in constants._application)) isValid = false
+        if (!(newAppList[k] in constants._role)) isValid = false
+    })
+    if (!isValid) return {}
+    Object.keys(newAppList).map((k) => output[<constants._application>k] = <constants._role>newAppList[k])
+    return output
 }

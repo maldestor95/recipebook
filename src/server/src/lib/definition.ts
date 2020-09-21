@@ -1,12 +1,5 @@
 /**
- * TList is a object where the keys are listed in the enum _application and the value are listed in the enum _role
- * 
- * definition
- * const myVar:Tlist={}
- * 
- * Access to the variable
- * myVar.User=_role.Root
- * 
+ * Applist is an object {'Users':'Manager','Recettes':'Editor' ....}
  */
 export type AppList=Partial<Record<keyof typeof _application,keyof typeof _role>>
 
