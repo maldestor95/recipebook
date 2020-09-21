@@ -9,10 +9,10 @@ import {
     delete_userTable,
     scan_userTable,
 } from '../../lib/dynamodb/usertable'
-import {User} from "../../lib/dynamodb/user"
+import { User } from "../../lib/dynamodb/user"
 import UserRouter from "../Users_router"
 const testServer: express.Application = express()
-testServer.use('/',UserRouter.router)
+testServer.use('/', UserRouter.router)
 
 let serverRef, httpTerminator: any
 
@@ -47,8 +47,8 @@ describe('users router', () => {
         httpTerminator = createHttpTerminator({ server: serverRef });
 
     })
-    after( (done) => {
-         httpTerminator.terminate();
+    after((done) => {
+        httpTerminator.terminate();
         delete_userTable((err, data) => {
             if (err) {
                 switch (err.err_msg) {
@@ -67,42 +67,67 @@ describe('users router', () => {
     })
     it('test get', (done) => {
         chai.request('http://localhost:3000')
-        .get('/lui')
-        .end((err, res)=> {
-            expect(res).to.have.status(200);
-            expect(res.text).to.eq('lui bien reçu');
-            done(); 
-          });
+            .get('/lui')
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.text).to.eq('lui bien reçu');
+                done();
+            });
     })
-    describe.skip('scan users',()=>{
-        it('from beginning',async()=>{})
-        it('from specific id',async()=>{})
+    describe.skip('scan users', () => {
+        it('from beginning', async () => { })
+        it('from specific id', async () => { })
     })
-    describe(':login_id',()=>{
-        it('create User POST',(done)=>{
-            chai.request('http://localhost:3000')
-            .post('/createlogin')
+    describe('/:login_id', function () {
+        this.timeout(5000)
+        it('create User POST', async () => {
+            const createLogin = await chai.request('http://localhost:3000')
+                .post('/createlogin')
             // .set('content-type', 'application/x-www-form-urlencoded')
             // .send({ login: 'createlogin'})
-            .end(async (err, res)=> {
-                const checkUser= new User('createlogin')
-                await checkUser.get('createlogin')
-                .then((dataCheckUser)=>{
-                    expect(dataCheckUser.res!.login).to.eq('createlogin')
-                    console.log(checkUser.print())
-                })
+            // console.log(createLogin)
+            expect(createLogin.status).to.eq(200);
+            expect(createLogin.text).to.eq('success');
 
-                expect(res).to.have.status(200);
-                expect(res.text).to.eq('success');
-                done(); 
-              });
+            const checkUser = new User('createlogin')
+            await checkUser.get('createlogin')
+                .then((dataCheckUser) => {
+                    expect(dataCheckUser.res!.login).to.eq('createlogin')
+                    // console.log(checkUser.print())
+                });
         })
-        it.skip('get User GET',async()=>{})
-        it.skip('delete User DELETE',async()=>{})
+        it('get User GET', async () => {
+            const getLogin = await chai.request('http://localhost:3000')
+                .get('/createlogin')
+
+            const data = JSON.parse(getLogin.text)
+            expect(getLogin.status).to.eq(200);
+            expect(data.login).to.eq('createlogin');
+            expect(data.pwd).to.eq('new');
+
+            const getUnknownLogin = await chai.request('http://localhost:3000')
+                .get('/ukn')
+            expect(getUnknownLogin.status).to.eq(404);
+            expect(getUnknownLogin.text).to.eq('/ukn not found')
+        });
+
+        it('delete User DELETE', async () => {
+            const tempLogin = await chai.request('http://localhost:3000')
+                .post('/loginToDelete')
+            const loginToDelete = await chai.request('http://localhost:3000')
+                .delete('/loginToDelete')
+            expect(loginToDelete.status).to.eq(200);
+            expect(loginToDelete.text).to.eq('');
+
+            const getUnknownLogin = await chai.request('http://localhost:3000')
+                .delete('/ukn')
+            expect(getUnknownLogin.status).to.eq(404);
+            expect(getUnknownLogin.text).to.eq('/ukn not found')
+        })
     })
-    describe.skip('/:login_id/:action',()=>{
-        it('/:login_id/pwd PUT',async()=>{})
-        it('/:login_id/details PUT',async()=>{})
-        it('/:login_id/application PUT',async()=>{})
-    })
+})
+describe.skip('/:login_id/:action', () => {
+    it('/:login_id/pwd PUT', async () => { })
+    it('/:login_id/details PUT', async () => { })
+    it('/:login_id/application PUT', async () => { })
 })

@@ -16,32 +16,32 @@ router.get('/lui', (req, res) => {
 router.route('/:login_id')
     .get(async (req, res) => {
         let newUser = new User(req.params.login_id)
-        await newUser.get(req.params.login_id)
+        await newUser.get()
             .then(data => {
-                res.send(data)
+                if (data.res) res.send(data.res)
+                else res.status(404).send(req.originalUrl + " not found")
             })
             .catch(error => {
-                res.status(404).send(req.originalUrl + " not found")
+                res.status(404).send(req.originalUrl + " not found with method GET")
             })
     })
     .post(async (req, res) => {
-        // if (!validate(req.body, validLogin)) {
-        let newUser = new User(req.originalUrl.replace(/\//g,''))
+        let newUser = new User(req.originalUrl.replace(/\//g, ''))
         await newUser.createLogin()
             .catch((err) => res.send(JSON.stringify(err)))
             .then(() => res.send("success"))
-        // } else {
-        //     res.send("bad login")
-        // }
+
     })
     .delete(async (req, res) => {
-        let newUser = new User(req.params.login_id)
-        await newUser.deleteLogin()
+        let userToDelete = new User(req.params.login_id)
+        await userToDelete.deleteLogin()
             .then(data => {
-                res.send(`success`)
+                // console.log(data)
+                if (data.err) return res.status(404).send(req.originalUrl + " not found")
+                else res.send(data.res)
             })
             .catch(error => {
-                res.send(error)
+                res.status(404).send(req.originalUrl + " not found with method DELETE")
             })
     })
 
