@@ -4,7 +4,7 @@ import AWS from 'aws-sdk'
 import { serviceConfigOptions } from './aws_setup'
 
 import { GroupClass, RoleClass } from './GroupAndRoles'
-
+const TableName = "Users"
 export interface userError extends AWS.AWSError {
     err_msg?: string
 }
@@ -37,7 +37,7 @@ export class User implements UserInterface {
     userApplication: constants.AppList = {}
     pwd: string | null = null
     invalid?: boolean = false
-    readonly tableName: string = "Users"
+    readonly tableName: string = TableName
     private documentdb: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions())
     /**
      * 
@@ -73,7 +73,7 @@ export class User implements UserInterface {
         }
         return new Promise((resolve, reject) => {
             this.documentdb.get(params, (err, data) => {
-                if (err) return resolve({ err, res: null }) 
+                if (err) return resolve({ err, res: null })
                 if (data.Item) {
                     let resultUser = <UserInterface>data.Item
                     const resultkeys = Object.keys(resultUser)
@@ -326,8 +326,21 @@ export function convertApplist(newAppList: Record<string, string>): Partial<Reco
     return output
 }
 
-export function scanUsers(startIdUser: string | undefined): Promise<Array<User> | null> { //TODO
+export function scanUsers(startIdUser?: string): Promise<Array<User> | null> { //TODO
+    // for reference https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html
+    const documentdb: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions())
+
     return new Promise((resolve, reject) => {
-        resolve(null)
+        let params:any = { TableName: TableName }
+        if (startIdUser) {
+            params = { TableName: TableName,
+                "ExclusiveStartKey":{"login":startIdUser}
+            }
+        }
+
+        documentdb.scan(params, (err, res) => {
+            if (err) reject({ err, res: null })
+            resolve(<Array<User>>res)
+        })
     });
 }
