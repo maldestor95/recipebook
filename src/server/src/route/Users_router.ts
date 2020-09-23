@@ -1,12 +1,7 @@
 "use strict"
 import express from 'express';
-// var User = require('../lib/dynamodb/user').User
 import { scanUsers, User } from "../lib/dynamodb/user"
 var router = express.Router();
-var validate = require("validate.js");
-var qs = require("qs")
-const auth = require('./auth')
-const validLogin = { login: { presence: true, type: "string" } }
 
 const areLoginVersionPresent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const version = req.body.version
@@ -18,13 +13,9 @@ const areLoginVersionPresent = (req: express.Request, res: express.Response, nex
 
     if (version != undefined && login ? true : false) return next()
     return res.status(404).send(`${req.method} ${req.originalUrl} "missing login or version"`)
-    next()
 }
 
-// TODO update middleware
-// router.use('/users',(req, res, next)=> { auth.checkAuth(req,res,next,'Users') });
-
-router.route('/users')
+router.route('/')
     .get((req, res) => {
         scanUsers(req.body.start)
             .then(data => res.send(data))
@@ -65,35 +56,27 @@ router.put('/:login_id/application', areLoginVersionPresent, async (req, res) =>
     let applicationList = { ...req.body.applicationList }
     let newUser = new User(req.params.login_id)
     newUser.version = req.body.version
-    // console.log(applicationList);
     const isAppListvalid = /""/g.test(JSON.stringify(applicationList))
-    // console.log(isAppListvalid)
-    //TODO gerer la version et le constructor à parametrer
     await newUser.updateApplicationList(applicationList)
-
         .then(data => {
             if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
             else res.send(data.res)
         })
         .catch(error => {
-            // console.log(`err ${req.method} ${req.originalUrl}: ${error.err}`);
             res.status(404).send(req.originalUrl + " not found with method PUT")
         })
 })
 router.put('/:login_id/details', areLoginVersionPresent, async (req, res) => {
     let details = req.body.details
-    // console.log(details);
     if (details == undefined) return res.status(404).send(`${req.method} ${req.originalUrl} "YEAH"`)
     let newUser = new User(req.params.login_id)
     newUser.version = req.body.version
-    //TODO gerer la version et le constructor à parametrer
     await newUser.updateDetails(details)
         .then(data => {
             if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
             else res.send(data.res)
         })
         .catch(error => {
-            // console.log(`err ${req.method} ${req.originalUrl}: ${error.err.message}`);
             res.status(404).send(req.originalUrl + " not found with method PUT")
         })
 })
@@ -102,7 +85,6 @@ router.put('/:login_id/pwd', areLoginVersionPresent, async (req, res) => {
     if (!Object.keys(req.body).includes('pwd')) return res.status(404).send(`${req.method} ${req.originalUrl} "invalid password"`)
     let newUser = new User(req.params.login_id)
     newUser.version = req.body.version
-    //TODO gerer la version et le constructor à parametrer
     await newUser.updatePwd(newPwd)
         .then(data => {
             if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
@@ -113,9 +95,4 @@ router.put('/:login_id/pwd', areLoginVersionPresent, async (req, res) => {
         })
 })
 
-
-
-
-export default {
-    router
-}
+export =router

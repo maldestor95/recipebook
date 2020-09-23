@@ -93,7 +93,11 @@ app.get('/lok', (req, res, next) => {
     res.send('success')
 })
 
-app.use(require("./route/Users_router"));
+app.use('/users/',
+    ((req, res, next) => auth.checkAuth(req, res, next, 'Users')),
+    require("./route/Users_router")
+);
+
 app.use(require("./route/login"));
 app.use(require("./route/auth").router);
 app.use(require("./route/recette"))
@@ -104,7 +108,10 @@ app.use('/', express.static(__dirname + '/static'))
 app.use('/tt', (req, res) => res.sendFile(__dirname + '/static'))
 
 const cvFolder = __dirname.replace('server', 'cv/dist')
-app.use('/cv', (req,res,next)=>{console.log(cvFolder);next()},express.static(cvFolder))
+app.use('/cv', (req, res, next) => {
+    console.log(cvFolder);
+    next()
+}, express.static(cvFolder))
 
 app.use('/test', (req, res) => res.send({
     dirname: __dirname,

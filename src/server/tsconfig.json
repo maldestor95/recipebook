@@ -63,7 +63,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
   "include":["src/**/*"],
-  "exclude": [ //TODO folder to clean
+  "exclude": [ 
     "tests","build","commitlint.config.js","**/__tests__/**/*",
     "mocha.env.js",".mocharc.js"
   ]

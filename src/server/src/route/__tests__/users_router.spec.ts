@@ -16,7 +16,7 @@ import UserRouter from "../Users_router"
 const testServer: express.Application = express()
 testServer.use(express.json())
 testServer.use(express.urlencoded({ extended: true }))
-testServer.use('/', UserRouter.router)
+testServer.use('/', UserRouter)
 
 let serverRef, httpTerminator: any
 
@@ -77,33 +77,36 @@ describe('--- users router ---', () => {
         })
         it('from beginning', async () => {
             await chai.request('http://localhost:3000')
-                .get('/users')
+                .get('/')
                 .then(data => {
                     expect(data.status).to.eq(200)
                     const result = data.body
                     expect(result.Items.length).to.eq(4)
                     expect(result.Count).to.eq(4)
                 })
-                .catch(err => {console.log(err)})
+                .catch(err => {
+                    console.log(err)
+                    expect(err).to.be.null
+                })
         })
         it('from specific id', async () => {
-            const startString=await chai.request('http://localhost:3000')
-            .get('/users').then(data=> data.body )
+            const startString = await chai.request('http://localhost:3000')
+                .get('/').then(data => data.body)
             expect(startString.Count).to.eq(4);
-            
+
             await chai.request('http://localhost:3000')
-            .get('/users')
-            .set('content-type', 'application/json')
-            // WARNING Items in scan are not given in alphabetical order!
-            .send({ start: startString.Items[1].login })  // we then chose the 2nd item
-            .then(data => {
-                expect(data.status).to.eq(200)
-                const result = data.body
-                expect(result.Items.length).to.eq(2)
-                expect(result.Count).to.eq(2)
-            })
-            .catch(err => {console.log(err)})
-         })
+                .get('/')
+                .set('content-type', 'application/json')
+                // WARNING Items in scan are not given in alphabetical order!
+                .send({ start: startString.Items[1].login })  // we then chose the 2nd item
+                .then(data => {
+                    expect(data.status).to.eq(200)
+                    const result = data.body
+                    expect(result.Items.length).to.eq(2)
+                    expect(result.Count).to.eq(2)
+                })
+                .catch(err => { console.log(err) })
+        })
     })
     describe('/:login_id', function () {
         this.timeout(5000)

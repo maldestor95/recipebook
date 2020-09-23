@@ -326,7 +326,7 @@ export function convertApplist(newAppList: Record<string, string>): Partial<Reco
     return output
 }
 
-export function scanUsers(startIdUser?: string): Promise<Array<User> | null> { //TODO
+export function scanUsers(startIdUser?: string): Promise<Array<User> | null> { 
     // for reference https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html
     const documentdb: AWS.DynamoDB.DocumentClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions())
 
