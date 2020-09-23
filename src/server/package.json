@@ -2,6 +2,10 @@
     "name": "ludoserver",
     "version": "0.0.1",
     "description": "nodejs server",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/maldestor95/nodejs.git"
+    },
     "main": "app",
     "scripts": {
         "start": "npm run build && node ./build/bin/www",
@@ -26,7 +30,8 @@
         "connect-history-api-fallback": "^1.6.0",
         "express": "^4.17.1",
         "express-session": "^1.17.0",
-        "lodash": "^4.17.15",
+        "express-validator": "^6.6.1",
+        "lodash": "^4.17.20",
         "multer": "^1.4.2",
         "multer-s3": "^2.9.0",
         "passport": "^0.4.1",
@@ -37,7 +42,7 @@
     },
     "devDependencies": {
         "@commitlint/cli": "^9.1.2",
-        "@commitlint/config-conventional": "^9.1.2",
+        "@commitlint/config-conventional": "^11.0.0",
         "@types/async": "^3.2.3",
         "@types/chai": "^4.2.12",
         "@types/chai-http": "^4.2.0",
