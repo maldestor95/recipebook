@@ -1,6 +1,8 @@
 "use strict"
 import express from 'express';
 import { scanUsers, User } from "../lib/dynamodb/user"
+import { body, oneOf, validationResult } from "express-validator"
+import { _role, _application } from "../lib/definition"
 var router = express.Router();
 
 const areLoginVersionPresent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -52,47 +54,90 @@ router.route('/:login_id')
             })
     })
 
-router.put('/:login_id/application', areLoginVersionPresent, async (req, res) => {
-    let applicationList = { ...req.body.applicationList }
-    let newUser = new User(req.params.login_id)
-    newUser.version = req.body.version
-    const isAppListvalid = /""/g.test(JSON.stringify(applicationList))
-    await newUser.updateApplicationList(applicationList)
-        .then(data => {
-            if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
-            else res.send(data.res)
-        })
-        .catch(error => {
-            res.status(404).send(req.originalUrl + " not found with method PUT")
-        })
-})
-router.put('/:login_id/details', areLoginVersionPresent, async (req, res) => {
-    let details = req.body.details
-    if (details == undefined) return res.status(404).send(`${req.method} ${req.originalUrl} "YEAH"`)
-    let newUser = new User(req.params.login_id)
-    newUser.version = req.body.version
-    await newUser.updateDetails(details)
-        .then(data => {
-            if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
-            else res.send(data.res)
-        })
-        .catch(error => {
-            res.status(404).send(req.originalUrl + " not found with method PUT")
-        })
-})
-router.put('/:login_id/pwd', areLoginVersionPresent, async (req, res) => {
-    let newPwd = req.body.pwd
-    if (!Object.keys(req.body).includes('pwd')) return res.status(404).send(`${req.method} ${req.originalUrl} "invalid password"`)
-    let newUser = new User(req.params.login_id)
-    newUser.version = req.body.version
-    await newUser.updatePwd(newPwd)
-        .then(data => {
-            if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
-            else res.send(data.res)
-        })
-        .catch(error => {
-            res.status(404).send(req.originalUrl + " not found with method PUT")
-        })
-})
+router.put('/:login_id/application',
+    [body("version").isNumeric(),
+    body("applicationList").custom(v => Object.keys(v).length > 0).bail()
+        .custom(appList => {
+            const isAppIn_application = Object.keys(appList).filter(appName => {
+                return Object.values(_application).includes(<_application>appName)
+            })
+            return isAppIn_application.length != 0
+        }).bail()
+        .custom(appList => {
+            const isRoleIn_role = Object.values(appList).filter(appRole => {
+                return Object.values(_role).includes(<_role>appRole)
+            })
+            return isRoleIn_role.length != 0
+        }),
+    ]
+    , async (req: express.Request, res: express.Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).send("error in params, body or cookie")
+        }
+
+        let applicationList = { ...req.body.applicationList }
+        let newUser = new User(req.params.login_id)
+        newUser.version = req.body.version
+        const isAppListvalid = /""/g.test(JSON.stringify(applicationList))
+        await newUser.updateApplicationList(applicationList)
+            .then(data => {
+                if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
+                else res.send(data.res)
+            })
+            .catch(error => {
+                res.status(404).send(req.originalUrl + " not found with method PUT")
+            })
+    })
+router.put('/:login_id/details',
+    [body("version").isNumeric(),
+    oneOf([
+        body("details.address").isString().isLength({ min: 1 }),
+        body("details.email").isString().isLength({ min: 1 }),
+        body("details.phone").isString().isLength({ min: 1 })
+    ])
+    ],
+    async (req: express.Request, res: express.Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // console.log(JSON.stringify(errors.array(),null,2));
+            return res.status(400).send("error in params, body or cookie")
+        }
+
+        let details = req.body.details
+        if (details == undefined) return res.status(404).send(`${req.method} ${req.originalUrl} "YEAH"`)
+        let newUser = new User(req.params.login_id)
+        newUser.version = req.body.version
+        await newUser.updateDetails(details)
+            .then(data => {
+                if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
+                else res.send(data.res)
+            })
+            .catch(error => {
+                res.status(404).send(req.originalUrl + " not found with method PUT")
+            })
+    })
+router.put('/:login_id/pwd',
+    [
+        body("pwd").isString().isLength({ min: 1 }),
+        body("version").isNumeric()
+    ]
+    , async (req: express.Request, res: express.Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return res.status(400).send("error in params, body or cookie")
+
+        let newUser = new User(req.params.login_id)
+        newUser.version = req.body.version
+        await newUser.updatePwd(req.body.pwd)
+            .then(data => {
+                if (data.err) return res.status(404).send(`${req.method} ${req.originalUrl} "${data.err.message}"`)
+                else res.send(data.res)
+            })
+            .catch(error => {
+                // console.log(error.err ? error.err.message : 'noError')
+                if (error.err.message == "The conditional request failed") res.status(400).send("invalid params")
+                else res.status(404).send(req.originalUrl + " not found with method PUT")
+            })
+    })
 
 export =router

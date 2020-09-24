@@ -165,8 +165,6 @@ describe('--- users router ---', () => {
                 expect(createPwdPUTUser.status).to.eq(200);
                 const tempLogin = await chai.request('http://localhost:3000')
                     .put('/pwdPUT/pwd')
-                    // .set('content-type', 'application/x-www-form-urlencoded')
-                    // .send(JSON.stringify({ pwd: 'modifiedPassword' }))
                     .set('content-type', 'application/json')
                     .send({ version: 0, pwd: 'modifiedPassword' })
                 expect(tempLogin.status).to.eq(200);
@@ -174,31 +172,23 @@ describe('--- users router ---', () => {
                 expect(resultOfChangePwd!.pwd).to.eq('modifiedPassword');
                 expect(resultOfChangePwd!.login).to.eq('pwdPUT');
             })
-            it('unknown login', async () => {
 
-                const putPwdUnknownLogin = await chai.request('http://localhost:3000')
-                    .put('/ukn/pwd')
-                    .set('content-type', 'application/json')
-                    .send({ version: 0, pwd: 'modifiedPassword' })
-                expect(putPwdUnknownLogin.status).to.eq(404);
-                expect(putPwdUnknownLogin.text).to.eq('/ukn/pwd not found with method PUT')
-            })
-            it('no pwd given', async () => {
-                const putPwdnokeyw = await chai.request('http://localhost:3000')
-                    .put('/pwdPUT/pwd')
-                    .set('content-type', 'application/json')
-                    .send({ version: 0, nokeyw: 'modifiedPassword' })
-                expect(putPwdnokeyw.status).to.eq(404);
-                expect(putPwdnokeyw.text).to.eq('PUT /pwdPUT/pwd "invalid password"')
-            })
-            it('invalid pwd given', async () => {
-                const putPwdBadPwd = await chai.request('http://localhost:3000')
-                    .put('/pwdPUT/pwd')
-                    .set('content-type', 'application/json')
-                    .send({ version: 1, pwd: '' })
-                expect(putPwdBadPwd.status).to.eq(404);
-                expect(putPwdBadPwd.text).to.eq('PUT /pwdPUT/pwd "with params {"version":1,"pwd":""} can\'t contain empty string (but null is authorised)"')
-            })
+            const testParams = [
+                { name: "invalid pwd", address: '/pwdPUT/pwd', params: { version: 1, pwd: '' }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "missing version", address: '/pwdPUT/pwd', params: { pwd: 'tt' }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "invalid version", address: '/pwdPUT/pwd', params: { version: 100, pwd: 'tt' }, returns: { status: 400, text: "invalid params" } },
+                { name: "unknown login", address: '/ukn/pwd', params: { version: 1, pwd: 'tt' }, returns: { status: 400, text: "invalid params" } }
+            ]
+            for (let tparam in testParams) {
+                it(`${testParams[tparam].name}`, async () => {
+                    const putPwdBadPwd = await chai.request('http://localhost:3000')
+                        .put(testParams[tparam].address)
+                        .set('content-type', 'application/json')
+                        .send(testParams[tparam].params)
+                    expect(putPwdBadPwd.status).to.eq(testParams[tparam].returns.status);
+                    expect(putPwdBadPwd.text).to.eq(testParams[tparam].returns.text)
+                })
+            }
         })
         describe('/:login_id/details PUT', () => {
             it('nominal case', async () => {
@@ -219,33 +209,25 @@ describe('--- users router ---', () => {
                 expect(resultOfChangeDetails!.details!.phone).to.eq(undefined);
                 expect(resultOfChangeDetails!.login).to.eq('detailsPUT');
             })
-            it('unknown login', async () => {
-                const putDetailsUnknownLogin = await chai.request('http://localhost:3000')
-                    .put('/ukn/details')
-                    .set('content-type', 'application/json')
-                    .send({ version: 0, details: { address: 'newAddress', email: 'mymail@test.com', toto: '27' } })
-                expect(putDetailsUnknownLogin.status).to.eq(404);
-                expect(putDetailsUnknownLogin.text).to.eq('/ukn/details not found with method PUT')
-            })
-            it('no details given', async () => {
-                const putDetailsnokeyw = await chai.request('http://localhost:3000')
-                    .put('/detailsPUT/details')
-                    .set('content-type', 'application/json')
-                    .send({ version: 1, details: { toto: '27' } })
-                expect(putDetailsnokeyw.status).to.eq(200);
-                expect(JSON.parse(putDetailsnokeyw.text).details).to.deep.eq({})
-                expect(JSON.parse(putDetailsnokeyw.text).version).to.deep.eq(2)
-            })
-            it('empty strings', async () => {
+            const testParams = [
+                { name: "empty details", address: '/pwdPUT/details', params: { version: 1, details: {} }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "no details", address: '/pwdPUT/details', params: { version: 1 }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "all details", address: '/pwdPUT/details', params: { version: 1, details: { 'phone': '123', address: 'ici', email: 'voila@tt.fr' } }, returns: { status: 200, text: `{"login":"pwdPUT","version":2,"details":{"address":"ici","email":"voila@tt.fr","phone":"123"},"userApplication":{},"pwd":null}` } },
+                { name: "missing version", address: '/pwdPUT/details', params: { details: { 'phone': '123' } }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "invalid version", address: '/pwdPUT/details', params: { version: 100, details: { 'phone': '123' } }, returns: { status: 404, text: "/pwdPUT/details not found with method PUT" } },
+                { name: "unknown login", address: '/ukn/details', params: { version: 1, details: { 'phone': '123' } }, returns: { status: 404, text: "/ukn/details not found with method PUT" } }
+            ]
+            for (let tparam in testParams) {
+                it(`${testParams[tparam].name}`, async () => {
+                    const putPwdBadPwd = await chai.request('http://localhost:3000')
+                        .put(testParams[tparam].address)
+                        .set('content-type', 'application/json')
+                        .send(testParams[tparam].params)
+                    expect(putPwdBadPwd.status).to.eq(testParams[tparam].returns.status);
+                    expect(putPwdBadPwd.text).to.eq(testParams[tparam].returns.text)
+                })
+            }
 
-                const putDetailsEmptyString = await chai.request('http://localhost:3000')
-                    .put('/detailsPUT/details')
-                    .set('content-type', 'application/json')
-                    .send({ version: 2, details: { phone: '' } })
-                expect(putDetailsEmptyString.status).to.eq(404);
-                expect(putDetailsEmptyString.text)
-                    .to.eq(`PUT /detailsPUT/details "with params {"version":2,"details":{"phone":""}} can\'t contain empty string (but null is authorised)"`)
-            })
         })
         describe('/:login_id/application PUT', () => {
             it('nominal case', async () => {
@@ -264,32 +246,25 @@ describe('--- users router ---', () => {
                 expect(resultOfChangeDetails!.userApplication).to.deep.eq({ 'Users': 'Manager', 'Recettes': 'Editor' });
                 expect(resultOfChangeDetails!.login).to.eq('applicationPUT');
             })
-            it('unknown login', async () => {
-                const putApplicationUnknownLogin = await chai.request('http://localhost:3000')
-                    .put('/ukn/application')
-                    .set('content-type', 'application/json')
-                    .send({ version: 0, applicationList: { 'Users': 'Manager', 'Recettes': 'Editor' } })
-                expect(putApplicationUnknownLogin.status).to.eq(404);
-                expect(putApplicationUnknownLogin.text).to.eq('/ukn/application not found with method PUT')
-            })
-            it('no details given', async () => {
-                const putApplicationNokeyw = await chai.request('http://localhost:3000')
-                    .put('/detailsPUT/application')
-                    .set('content-type', 'application/json')
-                    .send({ version: 1, toto: '27' })
-                expect(putApplicationNokeyw.status).to.eq(404);
-                expect(putApplicationNokeyw.text).to.eq(`/detailsPUT/application not found with method PUT`)
-            })
-            it('empty strings', async () => {
-
-                const putDetailsEmptyString = await chai.request('http://localhost:3000')
-                    .put('/detailsPUT/application')
-                    .set('content-type', 'application/json')
-                    .send({ version: 2, applicationList: { 'Users': 'Manager', 'Recettes': '' } })
-                expect(putDetailsEmptyString.status).to.eq(404);
-                expect(putDetailsEmptyString.text)
-                    .to.eq(`PUT /detailsPUT/application "with params {"version":2,"applicationList":{"Users":"Manager","Recettes":""}} can\'t contain empty string (but null is authorised)"`)
-            })
+            const testParams = [
+                { name: "unknown login", address: '/ukn/application', params: { version: 1, applicationList: { 'Users': 'Manager' } }, returns: { status: 404, text: "/ukn/application not found with method PUT" } },
+                { name: "missing version", address: '/pwdPUT/application', params: { applicationList: { 'Users': 'Manager' } }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "invalid version", address: '/pwdPUT/application', params: { version: 100, applicationList: { 'Users': 'Manager' } }, returns: { status: 404, text: "/pwdPUT/application not found with method PUT" } },
+                { name: "empty application", address: '/pwdPUT/application', params: { version: 1, applicationList: {} }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "no application", address: '/pwdPUT/application', params: { version: 1 }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "bad Application", address: '/pwdPUT/application', params: { version: 1, applicationList: { 'BADAPP': 'Manager' } }, returns: { status: 400, text: "error in params, body or cookie" } },
+                { name: "bad Role", address: '/pwdPUT/application', params: { version: 1, applicationList: { 'Users': 'BadRole' } }, returns: { status: 400, text: "error in params, body or cookie" } },
+            ]
+            for (let tparam in testParams) {
+                it(`${testParams[tparam].name}`, async () => {
+                    const putPwdBadPwd = await chai.request('http://localhost:3000')
+                        .put(testParams[tparam].address)
+                        .set('content-type', 'application/json')
+                        .send(testParams[tparam].params)
+                    expect(putPwdBadPwd.status).to.eq(testParams[tparam].returns.status);
+                    expect(putPwdBadPwd.text).to.eq(testParams[tparam].returns.text)
+                })
+            }
         })
     })
 
