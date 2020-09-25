@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+import app from '../app'
 var debug = require('debug')('testeb:server');
 // var http = require('http');
 import {createServer} from "http"
@@ -28,6 +28,8 @@ var server = createServer(app);
 
 server.listen(port,()=>{
   console.log(`server has started on port:${port}`)
+  if (process.env.NODE_ENV) console.log(`environment mode: ${process.env.NODE_ENV}`);
+  
 });
 server.on('error', onError);
 server.on('listening', onListening);
@@ -36,7 +38,7 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val:number) {
+function normalizePort(val:number):number|boolean {
   var port = parseInt(<string><unknown>val, 10);
 
   if (isNaN(port)) {
