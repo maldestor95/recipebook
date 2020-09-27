@@ -6,7 +6,6 @@
  */
 
 
-import  AWS from "aws-sdk";
 import {ServiceConfigurationOptions} from 'aws-sdk/lib/service';
 // export {Converter as AWSConverter} from 'aws-sdk/lib/dynamodb/converter';
 

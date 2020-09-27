@@ -15,11 +15,9 @@ import {
     scan_userTable,
 } from '../usertable'
 import { _application, _role } from '../../definition'
-import { ResourceGroupsTaggingAPI } from 'aws-sdk'
-import { UV_FS_O_FILEMAP } from 'constants'
 
 const { expect } = require('chai')
-
+ 
 const constants = require('../../definition')
 
 describe("users with local dynamodB support", function () {
