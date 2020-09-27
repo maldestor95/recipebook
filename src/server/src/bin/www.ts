@@ -27,8 +27,10 @@ var server = createServer(app);
  */
 
 server.listen(port,()=>{
-  console.log(`server has started on port:${port}`)
-  if (process.env.NODE_ENV) console.log(`environment mode: ${process.env.NODE_ENV}`);
+  console.log(`server has started on port:${port} at ${new Date().toLocaleTimeString()}`)
+  if (process.env.NODE_ENV) {
+    console.log(`environment mode: ${process.env.NODE_ENV} `)
+  }
   
 });
 server.on('error', onError);
