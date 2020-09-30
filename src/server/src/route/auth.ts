@@ -1,10 +1,10 @@
 /** Express router providing user related routes
  * @module routers/auth
  */
-var express = require('express');
-let def=require('../lib/definition')
+import express from 'express'
+import * as definition from '../lib/definition'
 
-var router = express.Router();
+export const router = express.Router();
 
 
 
@@ -44,14 +44,14 @@ router.get('/notAuthorised', (req, res) => {
  * @param {String} topic (voir definition.js)
  * @param {String} role (voir definition.js)
  */
-let checkLevelClearance = function (req, topic,role=null) {
-    if (req.session.hasOwnProperty('passport')) {
-        if (Object.keys(req.session.passport.user.userApplication).includes(topic)) {
-            let userLevel=req.session.passport.user.userApplication[topic]
+export const  checkLevelClearance = function (req:express.Request, topic:definition._application,role:definition._role) {
+    if (req.session!.hasOwnProperty('passport')) {
+        if (Object.keys(req.session!.passport.user.userApplication).includes(topic)) {
+            let userLevel=req.session!.passport.user.userApplication[topic]
             if (role==null) {return userLevel}
             else
             {
-                let tempdef=Object.keys(def._role)
+                let tempdef=Object.keys(definition._role)
                 let r=tempdef.indexOf(role)+1
                 let temprole=tempdef.splice(0,r)
                 let rr= temprole.includes(userLevel)
@@ -84,7 +84,7 @@ let checkLevelClearance = function (req, topic,role=null) {
  * 
  * .put(recetteAuthEditor, (req, res) => { ...}
  */
-let isAuthorized=function(req,res,next,applicationName,minimumLevelRequired){
+export const  isAuthorized=function(req:express.Request,res:express.Response,next:express.NextFunction,applicationName:definition._application,minimumLevelRequired:definition._role){
     if (checkLevelClearance(req, applicationName, minimumLevelRequired)) {
         next()
     } else {
@@ -100,12 +100,12 @@ let isAuthorized=function(req,res,next,applicationName,minimumLevelRequired){
  * @param {Object} next Express middleware
  * @param {String} userApplicationName Application Name such as "Recettes"
  */
-let checkAuth = function (req, res, next, userApplicationName) {
-    if (!req.session.passport) {
+export const checkAuth = function (req:express.Request,res:express.Response,next:express.NextFunction,applicationName:definition._application) {
+    if (!req.session!.passport) {
         req.app.locals.specialContext = req.path
         res.redirect('/noSession')
     } else {
-        if (Object.keys(req.session.passport.user.userApplication).includes(userApplicationName)) {
+        if (Object.keys(req.session!.passport.user.userApplication).includes(applicationName)) {
             next()
         } else {
             req.app.locals.specialContext = req.path
@@ -115,8 +115,3 @@ let checkAuth = function (req, res, next, userApplicationName) {
 }
 
 
-var self = (module.exports = {
-    isAuthorized,
-    checkAuth,
-    router
-})
