@@ -1,42 +1,57 @@
-/**
- * Required libraries 
- */
-const express = require("express");
+
+import express from "express";
+import * as session from "express-session"
+import * as bodyParser from 'body-parser'
+import * as  AWS from "aws-sdk"
+
+// Development specific setting
+import {initdb } from "./utils/initlocaldb"
+if (process.env.NODE_ENV=="development") {
+    initdb() // initialisation of the local database that has to be started by `npm run dynamodblocal`
+}
+
+// import * as MySession from "./session"
+
 const path = require('path')
 
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
-let auth = require('./route/auth')
 
-var session = require("express-session")
-var AWS = require("aws-sdk");
+// constants and definition
+import * as definition from './lib/definition'
+
+// route handlers
+import * as authRouter from './route/auth'
+
+
+
+//Create Express Server
+const app = express();
+
+// Connect to DynamoDB
 
 var DynamoDBStore = require('connect-dynamodb')({
     session: session
 }); // more doc on https://www.npmjs.com/package/connect-dynamodb
 var DynamoDBStoreOptions = {
     client: new AWS.DynamoDB({
-        endpoint: process.env.NODE_ENV == "developmentLocal" ? new AWS.Endpoint('http://localhost:8000') : null,
+        endpoint: process.env.NODE_ENV == "developmentLocal" ? 'http://localhost:8000' : undefined,
         region: "eu-west-3",
     })
     // AWSConfigPath:'.pathtoCredentials.json' //TODO add credentials when going to production
 }
-if (process.env.NODE_ENV == "developmentLocal") {
-    DynamoDBStoreOptions.client.config.update({
-        endpoint: "http://localhost:8000"
-    })
-}
-const User = require('./lib/dynamodb/user')
+
+// const User = require('./lib/dynamodb/user')
+import { User } from './lib/dynamodb/user'
 
 var history = require('connect-history-api-fallback');
 
-var bodyParser = require('body-parser')
 const port = 3000;
 const dev = process.env.NODE_ENV ? process.env.NODE_ENV : "production";
 
 
 // Logger Function
-var myLogger = function (req, res, next) {
+var myLogger = function (req: express.Request, res: express.Response, next: express.NextFunction) {
     let t = new Date()
     console.log(t, req.path, req.method);
     next();
@@ -44,23 +59,22 @@ var myLogger = function (req, res, next) {
 
 
 //Passport session management
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function (user: any, done: any) {
     done(null, {
         login: user.login,
         userApplication: user.userApplication
     });
 });
 
-passport.deserializeUser(function (login, done) {
-    let U = new User()
-    U.getLogin(login, function (err, user) {
-        done(err, user);
-    });
+passport.deserializeUser(async (login: string, done: any) => {
+    const candidateUser = new User(login)
+    const { err, res } = await candidateUser.get()
+    console.log({ err, res });
+    done(err, res);
 });
 
 
-//APP
-const app = express();
+
 
 app.disable("x-powered-by");
 app.use(myLogger);
@@ -74,7 +88,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.use(passport.initialize())
-app.use(session({
+app.use(session.default({
     store: new DynamoDBStore(DynamoDBStoreOptions),
     secret: 'keyboard cat',
     resave: true,
@@ -88,18 +102,18 @@ app.get("/tot", function (req, res) {
     res.send("Hello World!");
 });
 app.get('/lok', (req, res, next) => {
-    auth.checkAuth(req, res, next, 'Users')
+    authRouter.checkAuth(req, res, next, definition._application.Users)
 }, function (req, res) {
     res.send('success')
 })
 
 app.use('/users/',
-    ((req, res, next) => auth.checkAuth(req, res, next, 'Users')),
+    ((req, res, next) => authRouter.checkAuth(req, res, next, definition._application.Users)),
     require("./route/Users_router")
 );
 
 app.use(require("./route/login"));
-app.use(require("./route/auth").router);
+app.use(authRouter.router);
 app.use(require("./route/recette"))
 app.use(require("./route/document"))
 app.use(require("./route/s3"))
@@ -118,4 +132,4 @@ app.use('/test', (req, res) => res.send({
     cvFolder: cvFolder
 }))
 
-module.exports = app
+export default app

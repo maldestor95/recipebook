@@ -14,23 +14,31 @@ var router = express.Router();
 
 passport.use(new LocalStrategy(
     function (username, password, done) {
-        let U = new BDDUser()
+        let UserToAuthenticate = new BDDUser(username)
+        UserToAuthenticate.get()
+            .then((data) => {
 
-        U.getLogin(username, (err, user) => {
-
-            if (err) {
-                return done(err);
-            }
-            if (!user) {//"unknow user"
-                return done(null, false, { message: 'Incorrect username.' });
-            }
-            if (user.pwd != password) {//"wrong password"
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-            // console.log(`User "${username}" authenticated`)
-            return done(null, user);
-        });
-    }))
+                if (data.err) {
+                    return done(err);
+                }
+                if (!data.res) { //"unknow user"
+                    return done(null, false, {
+                        message: 'Incorrect username.'
+                    });
+                }
+                if (data.res.pwd != password) { //"wrong password"
+                    return done(null, false, {
+                        message: 'Incorrect password.'
+                    });
+                }
+                // console.log(`User "${username}" authenticated`)
+                return done(null, data.res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+))
 
 
 
@@ -62,24 +70,23 @@ let notImplementedYet = function (req, res) {
 
 
 router.route('/login')
+
     .post(passport.authenticate('local', {
-        session: true,
-        failureRedirect: '/fail'
-    }), (req, res) => {
-        console.log(`/login , ${req.sessionID} , ${JSON.stringify(req.body)}`)
-        res.send({
-            Session: req.session,
-            sessionID: req.sessionID,
-            applicationPrivilege:req.user.userApplication,
-            msg: 'login  OK '
+            session: true,
+            failureRedirect: '/fail'
+        }), (req, res) => {
+            res.send({
+                session: req.session,
+                sessionID: req.sessionID,
+                msg: 'login  OK '
+            })
         })
-    })
 router.route('/logout')
     .post((req, res) => {
         console.log('/logout  ' + req.sessionID)
         let sess = req.sessionID
         req.session.destroy()
-        res.clearCookie('connect.sid');  //FIXME need to have the same path for connect.sid when clearing; doesn't work on edge 
+        res.clearCookie('connect.sid'); //FIXME need to have the same path for connect.sid when clearing; doesn't work on edge 
         //more details on https://expressjs.com/en/4x/api.html#res.clearCookie
         res.send({
             sessionID: sess,
@@ -88,8 +95,7 @@ router.route('/logout')
     })
 
 router.get('/fail', (req, res) => {
-    // console.log(res)
-    res.send("authentication Failed")
+    res.send({msg:"auth fail"})
 })
 
 module.exports = router

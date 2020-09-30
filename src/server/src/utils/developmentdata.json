@@ -1,0 +1,32 @@
+[{
+        "table": "Users",
+        "data": [
+            {
+                "login": "Root",
+                "details": {},
+                "pwd": "rootpwd",
+                "userApplication": {
+                    "Cave": "Editor",
+                    "Dev": "Root",
+                    "Expenses": "Root",
+                    "Recettes": "Editor",
+                    "Todo": "Root",
+                    "Users": "Root",
+                    "Vin": "Root"
+                },
+                "version": 0
+            },
+            {
+                "login": "Viewer",
+                "details": {},
+                "pwd": "viewerpwd",
+                "userApplication": {
+                    "Cave": "Viewer",
+                    "Dev": "Viewer",
+                    "Todo": "Root",
+                    "Users": "Viewer"
+                },
+                "version": 0
+            }
+        ]
+    }]
