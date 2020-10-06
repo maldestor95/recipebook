@@ -40,10 +40,10 @@ router.route('/:login_id')
     .post(
         (req, res, next) => { isAuthorized(req, res, next, _application.Users, _role.Editor) },
         async (req, res) => {
-            let newUser = new User(req.originalUrl.replace(/\//g, ''))
+            let newUser = new User(req.path.replace(/\//g, ''))
             await newUser.createLogin()
-                .catch((err) => res.send(JSON.stringify(err)))
-                .then(() => res.send("success"))
+            .then(() => res.send("success"))
+            .catch((err) => res.send(JSON.stringify(err)))
 
         })
     .delete(
@@ -79,6 +79,8 @@ router.put('/:login_id/application',
         }),
     ]
     , async (req: express.Request, res: express.Response) => {
+        console.log('ciic');
+        
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send("error in params, body or cookie")

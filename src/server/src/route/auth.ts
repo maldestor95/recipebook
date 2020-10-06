@@ -50,7 +50,7 @@ export const isAuthorized = function (req: express.Request, res: express.Respons
     if (checkLevelClearance(req, applicationName, minimumLevelRequired)) {
         next()
     } else {
-        res.status(401).send('not authorised')  // TODO add meaningful text
+        res.status(401).send('not authorised') 
     }
 }
 /**

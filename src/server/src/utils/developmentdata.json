@@ -15,11 +15,21 @@
                     "Vin": "Root"
                 },
                 "version": 0
-            },
-            {
+            }, {
                 "login": "Viewer",
                 "details": {},
                 "pwd": "viewerpwd",
+                "userApplication": {
+                    "Cave": "Viewer",
+                    "Dev": "Viewer",
+                    "Todo": "Root",
+                    "Users": "Viewer"
+                },
+                "version": 0
+            }, {
+                "login": "Test",
+                "details": {},
+                "pwd": "testpwd",
                 "userApplication": {
                     "Cave": "Viewer",
                     "Dev": "Viewer",
