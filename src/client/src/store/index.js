@@ -25,8 +25,7 @@ export const store = new Vuex.Store({
                 .then(res => {
                     state.logged = true
                     state.sessionID = res.data.sessionID
-
-                    state.applicationPrivilege = res.data.applicationPrivilege
+                    state.applicationPrivilege = res.data.session.passport.user.userApplication
                     state.username = payload.name
                     sessionStorage.setItem('sessionID', JSON.stringify(store.state));
                 })

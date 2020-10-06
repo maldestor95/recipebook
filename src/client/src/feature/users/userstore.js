@@ -34,11 +34,8 @@ export const userstore = {
     return this.state
   },
   createUser(loginName) {
-    let data = {
-      login: loginName
-    };
     axios
-      .post(`/users/${loginName}`, qs.stringify(data))
+      .post(`/users/${loginName}`)
       .then(res => {
         if (res.data.err) {
           this.state.err = JSON.stringify(res.data.err.message);
@@ -69,7 +66,6 @@ export const userstore = {
           this.state.msg = "succesfully Delete User :" + loginName + " ";
           this.state.err = null;
           this.state.users = this.state.users.filter(x => x.login != loginName)
-
         }
       })
       .catch(err => {
@@ -113,15 +109,15 @@ export const userstore = {
   updatePrivilege: function (login, newAppList) {
     let _this = this
     let data = this.state.users.filter(x => x.login == login)[0]
-    data.userApplication = newAppList
+    data.applicationList = newAppList
     data.version
     axios
-      .put(`/users/${login}/application`, qs.stringify(data))
+      .put(`/users/${login}/application`, data)
       .then((res) => {
         if (res.data.err) {
           this.state.err = JSON.stringify(res.data.err.message);
         } else {
-          this.state.msg = "Password updated for " + login + " "
+          this.state.msg = `Password privilege for ${login} updated`
           this.state.err = null
           this.state.users = this.state.users.map(u => {
             if (u.login != login) {
@@ -146,7 +142,7 @@ export const userstore = {
     data.details = newDetails
     data.version
     axios
-      .put(`/users/${login}/details`, qs.stringify(data))
+      .put(`/users/${login}/details`,data)
       .then((res) => {
         if (res.data.err) {
           this.state.err = JSON.stringify(res.data.err.message);
