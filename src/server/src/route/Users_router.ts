@@ -3,7 +3,9 @@ import express from 'express';
 import { scanUsers, User } from "../lib/dynamodb/user"
 import { body, oneOf, validationResult } from "express-validator"
 import { _role, _application } from "../lib/definition"
+import { isAuthorized } from "./auth"
 var router = express.Router();
+
 
 const areLoginVersionPresent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const version = req.body.version
@@ -24,7 +26,7 @@ router.route('/')
             .catch(err => res.status(500).send(`${req.originalUrl}: error during scan \n${err}`))
     })
 router.route('/:login_id')
-    .get(async (req, res) => {
+    .get(async (req, res) => { 
         let newUser = new User(req.params.login_id)
         await newUser.get()
             .then(data => {
@@ -35,26 +37,32 @@ router.route('/:login_id')
                 res.status(404).send(req.originalUrl + " not found with method GET")
             })
     })
-    .post(async (req, res) => {
-        let newUser = new User(req.originalUrl.replace(/\//g, ''))
-        await newUser.createLogin()
-            .catch((err) => res.send(JSON.stringify(err)))
-            .then(() => res.send("success"))
+    .post(
+        (req, res, next) => { isAuthorized(req, res, next, _application.Users, _role.Editor) },
+        async (req, res) => {
+            let newUser = new User(req.originalUrl.replace(/\//g, ''))
+            await newUser.createLogin()
+                .catch((err) => res.send(JSON.stringify(err)))
+                .then(() => res.send("success"))
 
-    })
-    .delete(async (req, res) => {
-        let userToDelete = new User(req.params.login_id)
-        await userToDelete.deleteLogin()
-            .then(data => {
-                if (data.err) return res.status(404).send(req.originalUrl + " not found")
-                else res.send(data.res)
-            })
-            .catch(error => {
-                res.status(404).send(req.originalUrl + " not found with method DELETE")
-            })
-    })
+        })
+    .delete(
+        (req, res, next) => { isAuthorized(req, res, next, _application.Users, _role.Manager) },
+        async (req, res) => {
+            let userToDelete = new User(req.params.login_id)
+            await userToDelete.deleteLogin()
+                .then(data => {
+                    if (data.err) return res.status(404).send(req.originalUrl + " not found")
+                    else res.send(data.res)
+                })
+                .catch(error => {
+                    res.status(404).send(req.originalUrl + " not found with method DELETE")
+                })
+        })
 
 router.put('/:login_id/application',
+    (req: express.Request, res: express.Response, next: express.NextFunction) => { isAuthorized(req, res, next, _application.Users, _role.Editor) },
+    //validation
     [body("version").isNumeric(),
     body("applicationList").custom(v => Object.keys(v).length > 0).bail()
         .custom(appList => {
@@ -90,6 +98,8 @@ router.put('/:login_id/application',
             })
     })
 router.put('/:login_id/details',
+    (req: express.Request, res: express.Response, next: express.NextFunction) => { isAuthorized(req, res, next, _application.Users, _role.Editor) },
+    //validation
     [body("version").isNumeric(),
     oneOf([
         body("details.address").isString().isLength({ min: 1 }),
@@ -118,6 +128,8 @@ router.put('/:login_id/details',
             })
     })
 router.put('/:login_id/pwd',
+    (req: express.Request, res: express.Response, next: express.NextFunction) => { isAuthorized(req, res, next, _application.Users, _role.Editor) },
+    //validation
     [
         body("pwd").isString().isLength({ min: 1 }),
         body("version").isNumeric()

@@ -21,9 +21,8 @@ const LocalStrategy = require("passport-local")
 import * as definition from './lib/definition'
 
 // route handlers
-import * as authRouter from './route/auth'
-
-
+import * as authRouter from './route/auth'  //authentication and authorisation
+import  usersRouter from './route/Users_router'
 
 //Create Express Server
 const app = express();
@@ -109,7 +108,7 @@ app.get('/lok', (req, res, next) => {
 
 app.use('/users/',
     ((req, res, next) => authRouter.checkAuth(req, res, next, definition._application.Users)),
-    require("./route/Users_router")
+    usersRouter
 );
 
 app.use(require("./route/login"));
