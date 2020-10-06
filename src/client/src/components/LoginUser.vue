@@ -78,11 +78,10 @@ export default {
     login() {
       this.$store.commit("login", { name: this.username, pwd: this.password });
       this.dialog = false;
-      this.$router.push("about");
     },
     logout() {
       this.$store.commit("logout");
-      this.$router.push("about");
+      if (this.$router.currentRoute.name!='about') this.$router.push("about");
       this.dialog = false;
     }
   }
