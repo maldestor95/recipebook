@@ -3,7 +3,8 @@ import chai from "chai"
 import chaiHttp from "chai-http"
 chai.use(chaiHttp);
 import express from "express"
-import { createHttpTerminator, HttpTerminatorConfig } from "http-terminator"
+import { createHttpTerminator } from "http-terminator"
+import sinon, { SinonStub } from "sinon"
 
 import {
     create_userTable,
@@ -12,14 +13,21 @@ import {
 } from '../../lib/dynamodb/usertable'
 import { User } from "../../lib/dynamodb/user"
 import UserRouter from "../Users_router"
+import * as auth from "../auth"
+import { _application, _role } from "../../lib/definition"
 
 const testServer: express.Application = express()
+const testServerPort = 3001
+const testServerAddress = `http://localhost:${testServerPort}`;
 testServer.use(express.json())
 testServer.use(express.urlencoded({ extended: true }))
 testServer.use('/', UserRouter)
 
 let serverRef, httpTerminator: any
 
+const fakeauth = function (req: express.Request, res: express.Response, next: express.NextFunction, applicationName: _application, minimumLevelRequired: _role) {
+    return next()
+}
 
 describe('--- users router ---', () => {
     before((done) => {
@@ -45,8 +53,8 @@ describe('--- users router ---', () => {
                 })
             }
         })
-        serverRef = testServer.listen(3000, function () {
-            // console.log('App is listening on port 3000!');
+        serverRef = testServer.listen(testServerPort, function () {
+            // console.log('App is listening on port ${testServerAddress}!');
         });
         httpTerminator = createHttpTerminator({ server: serverRef });
     })
@@ -76,7 +84,7 @@ describe('--- users router ---', () => {
             }
         })
         it('from beginning', async () => {
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .get('/')
                 .then(data => {
                     expect(data.status).to.eq(200)
@@ -90,11 +98,11 @@ describe('--- users router ---', () => {
                 })
         })
         it('from specific id', async () => {
-            const startString = await chai.request('http://localhost:3000')
+            const startString = await chai.request(testServerAddress)
                 .get('/').then(data => data.body)
             expect(startString.Count).to.eq(4);
 
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .get('/')
                 .set('content-type', 'application/json')
                 // WARNING Items in scan are not given in alphabetical order!
@@ -111,7 +119,9 @@ describe('--- users router ---', () => {
     describe('/:login_id', function () {
         this.timeout(5000)
         it('create User POST', async () => {
-            const createLogin = await chai.request('http://localhost:3000')
+
+            const authstub = sinon.stub(auth, "isAuthorized").callsFake(fakeauth)
+            const createLogin = await chai.request(testServerAddress)
                 .post('/createlogin')
             expect(createLogin.status).to.eq(200);
             expect(createLogin.text).to.eq('success');
@@ -120,11 +130,12 @@ describe('--- users router ---', () => {
                 .then((dataCheckUser) => {
                     expect(dataCheckUser.res!.login).to.eq('createlogin')
                 });
+            authstub.restore()
         })
         describe('get User GET', () => {
 
             it('existing user', async () => {
-                const getLogin = await chai.request('http://localhost:3000')
+                const getLogin = await chai.request(testServerAddress)
                     .get('/createlogin')
 
                 const data = JSON.parse(getLogin.text)
@@ -133,7 +144,7 @@ describe('--- users router ---', () => {
                 expect(data.pwd).to.eq('new');
             })
             it('unknown user', async () => {
-                const getUnknownLogin = await chai.request('http://localhost:3000')
+                const getUnknownLogin = await chai.request(testServerAddress)
                     .get('/ukn')
                 expect(getUnknownLogin.status).to.eq(404);
                 expect(getUnknownLogin.text).to.eq('/ukn not found')
@@ -141,29 +152,43 @@ describe('--- users router ---', () => {
         })
         describe("delete User DELETE", function () {
             it('existing user', async () => {
-                const tempLogin = await chai.request('http://localhost:3000')
+                const authstub = sinon.stub(auth, "isAuthorized").callsFake(fakeauth)
+
+                const tempLogin = await chai.request(testServerAddress)
                     .post('/loginToDelete')
-                const loginToDelete = await chai.request('http://localhost:3000')
+                const loginToDelete = await chai.request(testServerAddress)
                     .delete('/loginToDelete')
                 expect(loginToDelete.status).to.eq(200);
                 expect(loginToDelete.text).to.eq('');
+                authstub.restore()
             })
             it("unknown user ", async () => {
-                const getUnknownLogin = await chai.request('http://localhost:3000')
+                const authstub = sinon.stub(auth, "isAuthorized").callsFake(fakeauth)
+
+                const getUnknownLogin = await chai.request(testServerAddress)
                     .delete('/ukn')
                 expect(getUnknownLogin.status).to.eq(404);
                 expect(getUnknownLogin.text).to.eq('/ukn not found')
+                authstub.restore()
+
             })
         })
     })
 
     describe('/:login_id/:action', function () {
+        let authstub: SinonStub
+        beforeEach(() => {
+            authstub = sinon.stub(auth, "isAuthorized").callsFake(fakeauth)
+        })
+        afterEach(() => {
+            authstub.restore()
+        })
         describe("/:login_id/pwd PUT", function () {
             it('nominal case', async () => {
-                const createPwdPUTUser = await chai.request('http://localhost:3000')
+                const createPwdPUTUser = await chai.request(testServerAddress)
                     .post('/pwdPUT')
                 expect(createPwdPUTUser.status).to.eq(200);
-                const tempLogin = await chai.request('http://localhost:3000')
+                const tempLogin = await chai.request(testServerAddress)
                     .put('/pwdPUT/pwd')
                     .set('content-type', 'application/json')
                     .send({ version: 0, pwd: 'modifiedPassword' })
@@ -181,7 +206,7 @@ describe('--- users router ---', () => {
             ]
             for (let tparam in testParams) {
                 it(`${testParams[tparam].name}`, async () => {
-                    const putPwdBadPwd = await chai.request('http://localhost:3000')
+                    const putPwdBadPwd = await chai.request(testServerAddress)
                         .put(testParams[tparam].address)
                         .set('content-type', 'application/json')
                         .send(testParams[tparam].params)
@@ -192,11 +217,11 @@ describe('--- users router ---', () => {
         })
         describe('/:login_id/details PUT', () => {
             it('nominal case', async () => {
-                const createPwdPUTUser = await chai.request('http://localhost:3000')
+                const createPwdPUTUser = await chai.request(testServerAddress)
                     .post('/detailsPUT')
                 expect(createPwdPUTUser.status).to.eq(200);
                 let createdUser
-                const tempLogin = await chai.request('http://localhost:3000')
+                const tempLogin = await chai.request(testServerAddress)
                     .put('/detailsPUT/details')
                     .set('content-type', 'application/json')
                     .send({ version: 0, details: { address: 'newAddress', email: 'mymail@test.com', toto: '27' } })
@@ -219,7 +244,7 @@ describe('--- users router ---', () => {
             ]
             for (let tparam in testParams) {
                 it(`${testParams[tparam].name}`, async () => {
-                    const putPwdBadPwd = await chai.request('http://localhost:3000')
+                    const putPwdBadPwd = await chai.request(testServerAddress)
                         .put(testParams[tparam].address)
                         .set('content-type', 'application/json')
                         .send(testParams[tparam].params)
@@ -231,11 +256,11 @@ describe('--- users router ---', () => {
         })
         describe('/:login_id/application PUT', () => {
             it('nominal case', async () => {
-                const createPwdPUTUser = await chai.request('http://localhost:3000')
+                const createPwdPUTUser = await chai.request(testServerAddress)
                     .post('/applicationPUT')
                 expect(createPwdPUTUser.status).to.eq(200);
                 let createdUser
-                const tempLogin = await chai.request('http://localhost:3000')
+                const tempLogin = await chai.request(testServerAddress)
                     .put('/applicationPUT/application')
                     .set('content-type', 'application/json')
                     .send({ version: 0, applicationList: { 'Users': 'Manager', 'Recettes': 'Editor' } })
@@ -257,7 +282,7 @@ describe('--- users router ---', () => {
             ]
             for (let tparam in testParams) {
                 it(`${testParams[tparam].name}`, async () => {
-                    const putPwdBadPwd = await chai.request('http://localhost:3000')
+                    const putPwdBadPwd = await chai.request(testServerAddress)
                         .put(testParams[tparam].address)
                         .set('content-type', 'application/json')
                         .send(testParams[tparam].params)
@@ -270,12 +295,19 @@ describe('--- users router ---', () => {
 
     describe("full user router sequence", function () {
         const fullTestUser = new User('fullTestUser')
+        let authstub: SinonStub
+        beforeEach(() => {
+            authstub = sinon.stub(auth, "isAuthorized").callsFake(fakeauth)
+        })
+        afterEach(() => {
+            authstub.restore()
+        })
         it("shall create some user and do some initial update", async () => {
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .post(`/${fullTestUser.login}`)
                 .then(data => { expect(data.status).to.eq(200) })
 
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .put(`/${fullTestUser.login}/pwd`)
                 .set('content-type', 'application/json')
                 .send({ version: 0, pwd: '27' })
@@ -283,14 +315,14 @@ describe('--- users router ---', () => {
                     expect(data.status).to.eq(200)
                 })
 
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .put(`/${fullTestUser.login}/details`)
                 .set('content-type', 'application/json')
                 .send({ version: 1, details: { address: 'ici' } })
                 .then(data => {
                     expect(data.status).to.eq(200)
                 })
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .get(`/${fullTestUser.login}`)
                 .then(data => {
                     const resultat = JSON.parse(data.text)
@@ -301,7 +333,7 @@ describe('--- users router ---', () => {
                 })
         })
         it("shall do some more user  update", async () => {
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .put(`/${fullTestUser.login}/pwd`)
                 .set('content-type', 'application/json')
                 .send({ version: 2, pwd: '27' })
@@ -309,7 +341,7 @@ describe('--- users router ---', () => {
                     expect(data.status).to.eq(200)
                 })
 
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .put(`/${fullTestUser.login}/details`)
                 .set('content-type', 'application/json')
                 .send({ version: 3, details: { address: 'labas', phone: '123' } })
@@ -319,7 +351,7 @@ describe('--- users router ---', () => {
                     expect(resultat.version).to.eq(4)
 
                 })
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .get(`/${fullTestUser.login}`)
                 .then(data => {
                     const resultat = JSON.parse(data.text)
@@ -331,13 +363,13 @@ describe('--- users router ---', () => {
                 })
         })
         it("shall delete the user", async () => {
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .delete(`/${fullTestUser.login}`)
                 .then(data => {
                     expect(data.status).to.eq(200)
                     expect(data.text).to.eq("")
                 })
-            await chai.request('http://localhost:3000')
+            await chai.request(testServerAddress)
                 .get(`/${fullTestUser.login}`)
                 .then(data => {
                     expect(data.status).to.eq(404)
