@@ -1,22 +1,18 @@
 <template>
   <v-card raised outlined :max-width="cardWidth">
-    <v-card-title>
-      <span class="headline">
-        <slot name="title">Message Box Title</slot>
-      </span>
-    </v-card-title>
-
-    <v-card-text>
+    <h2 class="title">
+      <slot name="title">Message Box Title</slot>
+    </h2>
+    <p class="text">
       <slot>default content</slot>
-    </v-card-text>
+    </p>
+    <p class='action'>
 
-    <v-card-actions>
       <slot name="actions">
-        <v-spacer></v-spacer>
         <v-btn color="green darken-1" text @click="$emit('cancel')" v-if="cancel">Annuler</v-btn>
         <v-btn color="green darken-1" text @click="$emit('ok')">OK</v-btn>
       </slot>
-    </v-card-actions>
+    </p>
   </v-card>
 </template>
 
@@ -39,4 +35,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.title {
+  text-transform: capitalize;
+  padding: 1rem;
+}
+.title,
+.text {
+  text-align: center;
+  margin: 0px;
+}
+
+.text {
+  padding-top: 0;
+}
+
+.action {
+  text-align: center;
+}
+
 </style>

@@ -13,7 +13,7 @@
       </template>
 
       <msgbox cancel @cancel="dialog=false" @ok="logout" :cardWidth="300">
-        <template v-slot:title>Malestor95 - LOGOUT</template>
+        <template v-slot:title >logout</template>
         Voulez-vous vous vraiment partir?
       </msgbox>
     </v-dialog>
@@ -28,21 +28,14 @@
           <span color="white">login</span>
         </v-btn>
       </template>
-      <msgbox :cardWidth="400">
+      <msgbox :cardWidth="400" cancel @cancel="dialog=false" @ok="login">
         <template v-slot:title>
-          Malestor95 - LOGIN
+          LOGIN
         </template>
-
-        <v-text-field v-model="username" name="username" outlined label="Username"></v-text-field>
-        <v-text-field v-model="password" type="password" name="password" outlined label="password"></v-text-field>
-
-        <template v-slot:actions>
-          <v-spacer></v-spacer>
-          <v-btn rounded color="primary" @click="login" class="d-flex-inline justify-start">Sign in</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn raised rounded color="primary" @click="dialog=false">Cancel</v-btn>
-          <v-spacer></v-spacer>
-        </template>
+          <form class="mx-5">
+            <v-text-field v-model="username" name="username" outlined label="Username" autocomplete="username"></v-text-field>
+            <v-text-field v-model="password" type="password" name="password" outlined label="password" autocomplete="current-password"></v-text-field>
+          </form>
       </msgbox>
     </v-dialog>
   </div>
@@ -92,5 +85,9 @@ export default {
 .borderout {
   border-color: black;
   border-style: solid;
+}
+
+.form {
+  background-color: fuchsia;
 }
 </style>
