@@ -8,6 +8,7 @@ module.exports = {
   ],
   outputDir:'../server/static',
   runtimeCompiler: true, //https: //cli.vuejs.org/config/#runtimecompiler
+
   configureWebpack: {
     // plugins: [new BundleAnalyzerPlugin()],
     resolve: {
@@ -15,7 +16,27 @@ module.exports = {
         /* Use vuetify from the app, not from fence-vue */
         vuetify: path.resolve(__dirname, "node_modules/vuetify"),
       },
-    }
+    },
+     module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          use: [
+            {loader: 'file-loader'},
+            {
+              loader: 'svgo-loader',
+              options: {
+                plugins: [
+                  {removeTitle: true},
+                  {convertColors: {shorthex: false}},
+                  {convertPathData: false}
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
   },
   devServer: {
     proxy:  'http://localhost:3000/',

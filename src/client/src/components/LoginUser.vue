@@ -1,14 +1,29 @@
 <template>
   <div>
-    <!-- @click="$router.push('loginapp')" -->
-    <v-dialog v-model="dialog" v-if="loginstate" max-width="300px">
+
+<v-menu offset-y v-if="loginstate">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          class="blue lighten-1 white--text"
+          v-bind="attrs"
+          v-on="on"
+        >
+        <v-icon >mdi-badge-account</v-icon>
+          {{storeState.username}}
+        </v-btn>
+      </template>
+
+      <v-list class="blue">
+       
+        <!-- <v-divider dark></v-divider> -->
+        <v-dialog v-model="dialog" v-if="loginstate" max-width="300px">
       <template v-slot:activator="{ on }">
-        <v-btn class="blue lighten-1 white--text" v-on="on">
+        <v-btn class="blue white--text" depressed v-on="on">
           <span>
             <v-icon small>mdi-logout</v-icon>
           </span>
           <v-spacer></v-spacer>
-          <span color="white">logout</span>
+          <span color="white">Logout</span>
         </v-btn>
       </template>
 
@@ -17,6 +32,11 @@
         Voulez-vous vous vraiment partir?
       </msgbox>
     </v-dialog>
+      </v-list>
+    </v-menu>
+
+
+    
 
     <v-dialog v-model="dialog" v-if="!loginstate" max-width="300px">
       <template v-slot:activator="{ on }">
@@ -43,6 +63,10 @@
 
 <script>
 import msgbox from "./messagebox";
+  import {
+    store
+  } from "../store/index.js"
+
 export default {
   components: { msgbox },
   props: {
@@ -59,7 +83,14 @@ export default {
     return {
       dialog: false,
       username: "me",
-      password: "tt"
+      password: "tt",
+      storeState: store.state,
+      items: [
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me 2' },
+      ]
     };
   },
   computed: {

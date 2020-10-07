@@ -23,6 +23,8 @@ Vue.use(VueSession)
 import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 
+import {InlineSvgPlugin} from 'vue-inline-svg';
+Vue.use(InlineSvgPlugin);
 
 
 import router from '@/router'

@@ -1,18 +1,11 @@
 <template>
-  <v-app>
-    <v-app-bar dense app hide-on-scroll class="hidden-sm-and-down" color="blue lighten-1" text-color="white">
-      <!-- src="logoMaldestor.svg" -->
-      <img src="logoMaldestor.svg" alt="logo Maldestor" height="50" width="50" @click="navdrawer = !navdrawer" />
-
-      <!-- <v-icon id="menu" @click="navdrawer = !navdrawer" color="white">mdi-menu</v-icon> -->
-
-      <span class="text-uppercase white--text" style="font-family:CoffeeHouse;font-size: x-large;">Maldestor 95</span>
-      <span></span>
-      <v-spacer></v-spacer>
-      <v-chip label color="blue ligthen-1" text-color="white" v-if="storeState.username">User Connected:
-        {{storeState.username}}</v-chip>
-      <v-spacer></v-spacer>
-
+  <v-app >
+    <v-app-bar dense app hide-on-scroll class="hidden-sm-and-down" color="blue" text-color="white">
+      <span>
+        <cog @click.native="navdrawer = !navdrawer"></cog>
+        </span>
+      <span class="title" >LDEPARIS</span>
+ 
       <v-spacer></v-spacer>
       <login-user v-model="logged"></login-user>
     </v-app-bar>
@@ -61,6 +54,7 @@
 
 <script>
   import LoginUser from "./components/LoginUser.vue";
+  import cog from "./components/cog.vue"
   import {
     store
   } from "./store/index.js";
@@ -68,13 +62,13 @@
   export default {
     name: "App",
     components: {
-      LoginUser
+      LoginUser, cog
     },
     data: () => ({
       storeState: store.state,
       logged: false,
       navdrawer: null,
-      item: 1
+      item: 1,
     }),
     methods: {
       navigateTo(it) {
@@ -115,19 +109,44 @@
   };
 </script>
 <style lang="scss">
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800');
   @font-face {
-    font-family: SaucerBB;
+    font-family: 'SaucerBB';
     src: url("./assets/fonts/saucer/SaucerBB.ttf") format("truetype");
   }
 
   @font-face {
-    font-family: CoffeeHouse;
+    font-family: 'CoffeeHouse';
     src: url("./assets/fonts/coffee-house/CoffeeHouse.ttf") format("truetype");
     font-weight: bold;
     font-size: xx-large;
   }
+
+  
 </style>
 <style lang="scss" scoped>
+.COGpath {
+  fill: white;
+  background-color: steelblue;
+  padding: 5 5 5 5;
+  border-radius: 1rem;
+}
+.COGpath:hover {
+  fill: steelblue;
+  background-color: white;
+  border-radius: 1rem;
+}
+.v-application .title {
+  text-transform: capitalize;
+  margin-left: 0.2em;
+
+  color: white;
+font-size: xx-large !important;
+
+  font-family: 'Nunito','sans-serif' !important;//'Courier New', Courier, monospace;
+  // font-size: x-large;
+  // class="text-uppercase white--text" style="font-family:SaucerBB;font-size: x-large;"
+}
   // .v-content{
   //   padding:0px;
   // }

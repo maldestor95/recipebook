@@ -9,8 +9,8 @@
     <p class='action'>
 
       <slot name="actions">
-        <v-btn color="green darken-1" text @click="$emit('cancel')" v-if="cancel">Annuler</v-btn>
-        <v-btn color="green darken-1" text @click="$emit('ok')">OK</v-btn>
+        <v-btn color="blue " text @click="$emit('cancel')" v-if="cancel">Annuler</v-btn>
+        <v-btn color="blue " text @click="$emit('ok')">OK</v-btn>
       </slot>
     </p>
   </v-card>
