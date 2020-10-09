@@ -197,6 +197,50 @@ const router = new VueRouter({
         menu: true,
       },
     },
+    
+    {
+      path: "/politiqueCookie",
+      name: "politiqueCookie",
+      component: () =>
+        import(/* webpackChunkName: "politique-cookie" */ "./feature/politiquecookie.vue"),
+      meta: {
+        requireAuth: false,
+        icon: "mdi-account-tie-outline",
+        text: "politique-cookie",
+        // extLocation: window.location.origin + "/cv",
+        newWindow: false,
+        logrequired: false,
+        menu: false,
+      },
+    },
+    {
+      path: "/politiqueConfidentialite",
+      name: "politiqueConfidentialite",
+      component: () =>
+        import(/* webpackChunkName: "politique-confidentialite" */ "./feature/politiqueconfidentialite.vue"),
+      meta: {
+        requireAuth: false,
+        icon: "mdi-account-tie-outline",
+        text: "politique-cookie",
+        newWindow: false,
+        logrequired: false,
+        menu: false,
+      },
+    },
+    {
+      path: "/politiqueLegale",
+      name: "politiqueLegale",
+      component: () =>
+        import(/* webpackChunkName: "politique-legal" */ "./feature/politiquelegale.vue"),
+      meta: {
+        requireAuth: false,
+        icon: "mdi-account-tie-outline",
+        text: "politique-cookie",
+        newWindow: false,
+        logrequired: false,
+        menu: false,
+      },
+    },
   ],
 });
 router.beforeEach((to, from, next) => {

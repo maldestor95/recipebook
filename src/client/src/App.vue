@@ -1,14 +1,12 @@
 <template>
   <v-app >
-    <v-app-bar dense app hide-on-scroll class="hidden-sm-and-down" color="blue" text-color="white">
-      <span>
+    <v-app-bar dense app color="blue" text-color="white">
         <cog @click.native="navdrawer = !navdrawer"></cog>
-        </span>
-      <span class="title" >LDEPARIS</span>
- 
       <v-spacer></v-spacer>
       <login-user v-model="logged"></login-user>
     </v-app-bar>
+
+
 
     <v-navigation-drawer temporary app v-model="navdrawer">
       <v-list dense>
@@ -38,23 +36,25 @@
       </v-list>
     </v-navigation-drawer>
 
+    
     <!-- style="position:absolute; top:0px;left 20px" -->
     <v-content id="vcontent">
       <router-view></router-view>
     </v-content>
 
-    <v-btn absolute top left fab id="menumobile" class="mt-8 hidden-md-and-up">
-      <!-- color="blue lighten-3" -->
-      <!-- <v-icon @click="navdrawer = !navdrawer">mdi-menu</v-icon> -->
-      <img src="logoMaldestor.svg" alt="triangle with all three sides equal" height="50" width="50"
-        @click="navdrawer = !navdrawer" />
+    <v-btn id="menumobile" color="blue">
+        <cog @click.native="navdrawer = !navdrawer" :showTitle="false"></cog>
     </v-btn>
+  
+    <site-footer></site-footer>
+
   </v-app>
 </template>
 
 <script>
   import LoginUser from "./components/LoginUser.vue";
   import cog from "./components/cog.vue"
+  import siteFooter from "./feature/footer"
   import {
     store
   } from "./store/index.js";
@@ -62,7 +62,7 @@
   export default {
     name: "App",
     components: {
-      LoginUser, cog
+      LoginUser, cog, siteFooter
     },
     data: () => ({
       storeState: store.state,
@@ -125,28 +125,6 @@
   
 </style>
 <style lang="scss" scoped>
-.COGpath {
-  fill: white;
-  background-color: steelblue;
-  padding: 5 5 5 5;
-  border-radius: 1rem;
-}
-.COGpath:hover {
-  fill: steelblue;
-  background-color: white;
-  border-radius: 1rem;
-}
-.v-application .title {
-  text-transform: capitalize;
-  margin-left: 0.2em;
-
-  color: white;
-font-size: xx-large !important;
-
-  font-family: 'Nunito','sans-serif' !important;//'Courier New', Courier, monospace;
-  // font-size: x-large;
-  // class="text-uppercase white--text" style="font-family:SaucerBB;font-size: x-large;"
-}
   // .v-content{
   //   padding:0px;
   // }
@@ -202,22 +180,23 @@ font-size: xx-large !important;
     border-color: black;
     size: A4 landscape;
   }
-
-  @media print {
+  #vcontent {
+          padding: 48px 0px 0px!important;
+  }
+    #menumobile {
+      display: none;
+    }
+@media (max-width: 480px) {
+    #vcontent {
+        padding: 0px 0px 0px!important;
+    }
     .v-app-bar {
       display: none;
       height: 0px;
     }
-
-    .v-content {
-      position: absolute;
-      top: -96px;
-      // padding: 0px;
-      // color:red;
-    }
-
-    #menumobile {
-      display: none;
-    }
+  #menumobile {
+    position: fixed;
+    margin-top: 0!important;
+    display: block;  }
   }
 </style>
