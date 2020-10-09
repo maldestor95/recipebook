@@ -75,7 +75,7 @@ const router = new VueRouter({
       name: "recettes",
       component: () =>
         import(
-          /* webpackChunkName: "recettes" */ "@/feature/recette/recettes.vue"
+          /* webpackChunkName: "recettes" */ "@/feature/recette/index.vue" //TODO
         ),
       meta: {
         requireAuth: false,

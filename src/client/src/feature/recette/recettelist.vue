@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="loading" width="320">
+   <section id="searchRecipe">
     
     <v-text-field
       name="searchRecipe"
@@ -10,15 +10,20 @@
       @focus="selectionVisible=true"
     ></v-text-field>
 
-    <div v-if="selectionVisible">
+<v-container class="d-flex flex-wrap">
+  
       <v-card
         v-for="recette in selectionList"
         :key="recette.id"
-        @click="$emit('getRecipe',recette); searchRecipe=recette; selectionVisible=false"
-      >{{ recette }}
+        @click="$emit('getrecipe',recette); searchRecipe=recette; selectionVisible=false"
+        class="recettesummary"
+        >{{ recette }}
       </v-card>
-    </div>
-  </v-card>
+
+</v-container>
+      {{selectionList}}
+    
+  </section>
 </template>
 
 <script>
@@ -44,14 +49,17 @@ export default {
   data() {
     return {
       searchRecipe: "",
-      selectionVisible: false
+      selectionVisible: false,
+      items: ['foo', 'bar', 'fizz', 'buzz'],
+      values: ['foo', 'bar'],
+      valuevv: null,
     };
   },
   computed: {
     selectionList() {
-      let mapList = this.recettelist.map(x => x.nom).sort();
+      let mapList = this.recettelist.map(x => this.cleanUpSpecialChars(x.nom)).sort();
       if (this.searchRecipe) {
-        let r = this.searchRecipe
+        let r = this.cleanUpSpecialChars(this.searchRecipe)
           .split("")
           .map(x => x.toUpperCase() + ".*")
           .join("");
@@ -62,9 +70,23 @@ export default {
         return mapList;
       }
     }
-  }
+  },
+  methods: {
+    cleanUpSpecialChars(str) {
+      str = str.replace(/é|è|ê/g, "e");
+      str = str.replace(/à|â|Â/g, "a");
+      str = str.replace(/ô/g, "o");
+      str = str.replace(/ù/g, "ù");
+      str = str.replace(/ï/g, "i");
+      return str;
+    }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+.recettesummary {
+  background-color: beige;
+  width: 300px;
+}
 </style>
