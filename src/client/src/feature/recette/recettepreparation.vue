@@ -1,47 +1,24 @@
 <template>
-  <v-card outlined class="d-flex flex-wrap">
-    <v-textarea
-      outlined
-      filled
-      auto-grow
-      :value="processDescription"
-      v-model="processDescription"
-      @keydown="$emit('input',processDescription)"
-      v-if="editable"
-    ></v-textarea>
-    <span v-html="processDescriptionMarked"></span>
-  </v-card>
+  <div class="d-flex flex-wrap ">
+  <h1>
+      Préparation
+    </h1>
+    <section>
+      <div v-html="processDescriptionMarked" />
+    </section>
+  </div>
 </template>
 
 <script>
 import marked from "marked";
-
+import {store} from "../../store/index"
 export default {
-  props: {
-    editable: {
-      type: Boolean,
-      default: false
-    },
-    value: {
-      type: String,
-      default: "# Texte par defaut"
-    }
-  },
-  data() {
-    return {
-      processDescription: this.value
-    };
-  },
   computed: {
     processDescriptionMarked() {
-      return marked(this.value);
-    }
-  },
-  watch: {
-    value(newValue) {
-      this.processDescription = newValue;
+        return marked(store.state.recette.recette.processDescription)
     }
   }
+  
 };
 </script>
 
@@ -51,4 +28,5 @@ export default {
   border-color: blue;
   background-color: lightgray;
 }
+h1 { font-size: large;}
 </style>

@@ -1,81 +1,44 @@
 <template>
-  <v-card outlined >
-    <v-container>
-      <v-row>
-        <v-text-field
-          :flat="!editable"
-          :solo="!editable"
-          :outlined="editable"
-          :dense="!editable"
-          label="Nom"
-          v-model="value.nom"
-          :rules="[rules.required]"
-        >
+  <v-card  flat class="d-md-flex pa-2 justify-space-between " max-width="1024">
 
-        </v-text-field>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-text-field
-            :flat="!editable"
-            :solo="!editable"
-            :outlined="editable"
-            :dense="!editable"
-            label="Temps"
-
-            v-model="value.temps"
-            :rules="[rules.required]"
-          >
-            <template slot="prepend">
-              <v-icon>mdi-clock-outline</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            :flat="!editable"
-            :solo="!editable"
-            :outlined="editable"
-            :dense="!editable"
-            label="nombre de personnes"
-
-            v-model="value.nbPersonnes"
-            :rules="[rules.number]"
-          >
-            <template slot="prepend">
-              <v-icon>mdi-account-group-outline</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
-    </v-container>
+    <h1 class="text-center">
+      {{recette.nom}}
+    </h1>
+    <div class="d-flex justify-space-around justify-md-space-between align-center">
+      <h2>
+      <v-icon >mdi-account-group-outline</v-icon>
+      <span>{{recette.nbPersonnes}} pers</span>
+      </h2>
+      <h2>
+      <v-icon>mdi-clock-outline</v-icon>
+      <span>{{recette.temps}} minutes</span>
+      </h2>
+    </div>
   </v-card>
 </template>
 
 <script>
+import {store} from "../../store"
 export default {
-  props: {
-    value: {
-      type: Object,
-      default: () => {
-        return { nom: "toto", temps: "10min", nbPerssones: "1000" };
-      }
-    },
-    editable: {
-      type: Boolean,
-      default: false
+  computed: {
+    recette() {
+      return store.state.recette.recette
     }
   },
-  data() {
-    return {
-      rules: {
-        required: value => value.length > 0 || "Required.",
-        number: value => value > 0 || "Minimum 1 pers"
-      }
-    };
-  }
 };
 </script>
 
 <style lang="scss" scoped>
+h2{
+  color:inherit;
+  font-size: 1em;
+  margin-right: 1em;
+  }
+h1 {
+  color:inherit;
+    font-size: 1.3em;
+}
+      .v-icon {
+        margin-right: 5px;
+      }  
 </style>

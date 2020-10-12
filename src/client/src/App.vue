@@ -105,6 +105,7 @@
     },
     mounted() {
       this.$store.commit("reinitSession");
+      this.logged=this.storeState.user.logged
     }
   };
 </script>

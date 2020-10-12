@@ -9,7 +9,7 @@
           v-on="on"
         >
         <v-icon >mdi-badge-account</v-icon>
-          {{storeState.username}}
+          {{username}}
         </v-btn>
       </template>
 
@@ -93,9 +93,14 @@ export default {
       ]
     };
   },
+  watch: {
+    loginstate(newValue) {
+      if (newValue) this.username=this.$store.state.user.username 
+    }
+  },
   computed: {
     loginstate() {
-      return this.$store.state.username != null;
+      return(this.$store.state.user.username != null)
     }
   },
   methods: {

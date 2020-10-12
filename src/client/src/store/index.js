@@ -2,20 +2,20 @@ import axios from "axios";
 import Vue from "vue";
 import VueSession from 'vue-session'
 import Vuex from 'vuex'
-
+import recette from "../feature/recette/store"
 
 
 Vue.use(Vuex)
 Vue.use(VueSession)
 
-export const store = new Vuex.Store({
-    state: {
+const user = {
+    state:()=> ({
         // numbers: [1, 2, 3],
         logged: false,
         sessionID: "none yet",
         applicationPrivilege: null,
-        username: null
-    },
+        username: null,
+    }),
     mutations: {
         login(state, payload) {
             axios.post('/login', {
@@ -27,7 +27,7 @@ export const store = new Vuex.Store({
                     state.sessionID = res.data.sessionID
                     state.applicationPrivilege = res.data.session.passport.user.userApplication
                     state.username = payload.name
-                    sessionStorage.setItem('sessionID', JSON.stringify(store.state));
+                    // sessionStorage.setItem('sessionID', JSON.stringify(state));
                 })
                 .catch(() => {
                     state.logged = false
@@ -40,7 +40,7 @@ export const store = new Vuex.Store({
                     state.sessionID = "not logged anymore"
                     state.applicationPrivilege = null
                     state.username = null
-                    sessionStorage.removeItem('sessionID');
+                    // sessionStorage.removeItem('sessionID');
                 })
                 .catch(() => {
                     state.logged = false
@@ -49,23 +49,25 @@ export const store = new Vuex.Store({
         },
 
         reinitSession(state) {
-            if (sessionStorage.getItem('sessionID')) {
+            /*if (sessionStorage.getItem('sessionID')) {
                 let t = JSON.parse(sessionStorage.getItem('sessionID'))
                 Object.keys(t).forEach(x => state[x] = t[x])
-            }
+            }*/
+            // eslint-disable-next-line no-console
+            console.log(state);
         },
     },
     getters: {
         isAuthorised: (state) => (routeName) => {
             if (state.username == null) return false
             else {
-                let routeNameAccess=Object.keys(state.applicationPrivilege).map(x => {
+                let routeNameAccess = Object.keys(state.applicationPrivilege).map(x => {
                     return x.toLowerCase()
                 })
                 return routeNameAccess.includes(routeName) | Object.keys(state.applicationPrivilege).includes('dev')
             }
         },
-        getApplicationAccess:(state)=>(ApplicationName)=> {
+        getApplicationAccess: (state) => (ApplicationName) => {
             let t = Object.keys(state.applicationPrivilege).filter(x => {
                 return x == ApplicationName
             })
@@ -75,7 +77,7 @@ export const store = new Vuex.Store({
                 return state.applicationPrivilege[t[0]]
             }
         },
-        checkAuth: (state)=> (application, levelRequired)=> {
+        checkAuth: (state) => (application, levelRequired) => {
             // let auth = JSON.parse(sessionStorage.getItem('sessionID'))
             if (!state.logged) {
                 return false
@@ -90,7 +92,10 @@ export const store = new Vuex.Store({
                 return order[levelRequired] <= order[sessionLevel] ? true : false
             }
         },
-    },
-
-
+    }
+}
+export const store = new Vuex.Store({
+    modules: {
+        user,recette
+    }
 })

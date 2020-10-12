@@ -1,23 +1,58 @@
 <template>
     <div>
-            <search-recette
-                :recettelist="recetteList"
-                @getRecipe="getRecette($event)"
-                :loading="getLoading">
-            </search-recette>
-            <recherche-recette></recherche-recette>
-            <carousel-recette></carousel-recette>
-            <view-recette></view-recette>
-            <edit-recette></edit-recette>
+      <!-- <v-container block class=""> -->
+
+      <v-card flat class="py-0 py-md-1 d-flex menu justify-space-around ">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-chip color="primary" dark v-bind="attrs" v-on="on">
+              <v-icon small>mdi-book-open-variant</v-icon>
+            </v-chip>
+          </template>
+          <v-list>
+            <v-list-item @click="actionState='recherche'">
+              <v-list-item-title>changer de recette</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="actionState='editRecette'">
+              <v-list-item-title>Editer recette</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="actionState='nouvelleRecette'">
+              <v-list-item-title>Nouvelle recette</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-text-field v-if="actionState=='recherche'"
+          name="searchRecipe" v-model="searchRecipe" 
+          clearable 
+          class=" py-0 my-0 recherche blue lighten-2"
+          label="saisir le nom d'une recette" 
+          single-line
+          @focus="selectionVisible=true" autocomplete="off"
+        ></v-text-field>
+      </v-card>
+      <!-- </v-container> -->
+
+<p class="my-8 my-sm-0  "></p>
+      <recherche-recette v-model="searchRecipe" :recettelist="recetteList" @getRecipe="actionState='voirRecette'"
+      v-if="actionState=='recherche'"
+      class="px-3"
+      >
+      </recherche-recette>
+
+      <!-- <carousel-recette></carousel-recette> -->
+
+      <view-recette v-model="recette" v-if="actionState=='recherche'| actionState=='voirRecette'"></view-recette>
+
+      <edit-recette v-if="actionState=='editRecette'|actionState=='nouvelleRecette'"></edit-recette>
 
     </div>
 </template>
 
 <script>
-import searchRecette from "./recettelist"
-import axios from "axios";
-import qs from "qs";
+import {store} from "../../store/index"
+
 import ingredients from "./ingredients";
+
 import preparation from "./recettepreparation";
 import recetteHeader from "./recettesheader";
 
@@ -28,126 +63,27 @@ import rechercheRecette from './recherche'
     export default {
         components: {
             // eslint-disable-next-line vue/no-unused-components
-            searchRecette, ingredients, preparation, recetteHeader,
+            ingredients, preparation, recetteHeader,
+            // eslint-disable-next-line vue/no-unused-components
             carouselRecette,editRecette,viewRecette,rechercheRecette
             
             },
   data() {
     return {
-      saved: false,
-      editable: false,
-      ingredientsHeaders: [
-        { text: "nom", value: "nom", sortable: true },
-        { text: "quantité", value: "qty" }
-      ],
-      recette: {
-        id: "5512af64-2f2c-4680-9768-3d8d36e051a3",
-        nbPersonnes: 2,
-        nom: "ratatouille",
-        temps: "60min",
-        processDescription: "# T1",
-        ingredients: [
-          { nom: "tomates", qty: 2 },
-          { nom: "ail", qty: 1 },
-          { nom: "poivrons", qty: 2 }
-        ]
-      },
-      definitions: {
-        ingredients: ["tomates", "champignons", "ail"]
-      },
-      newIngredients: {
-        nom: "",
-        qty: 0
-      },
-      newKeyIngredient: "",
-      debug: "",
-      recetteList: [
-        { nom: "ratatouille", id: "5512af64-2f2c-4680-9768-3d8d36e051a3" }
-      ],
-      selectedRecette: "ratatouille",
-
-      searchRecipe: "",
-      updateLoading: false,
-      getLoading: false
+      actionState:"recherche",
+      recetteList:[],
+      recette:{},
+      searchRecipe:""
     };
   },
   mounted() {
-    axios
-      .get("/recettes")
-      .then(data => {
-        this.recetteList = data.data;
-        let rand = Math.floor(Math.random() * this.recetteList.length);
-        this.getRecette(this.recetteList[rand].nom);
-      })
-      .catch(err => {
-        this.debug = err;
-      });
-  },
-  methods: {
-    getRecette(recette) {
-      this.getLoading = true;
-      let recetteId = this.recetteList.filter(x => x.nom == recette)[0].id;
-      axios
-        .get("/recette/" + recetteId)
-        .then(data => {
-          this.recette = data.data;
-          this.getLoading = false;
-        })
-        .catch(err => {
-          this.debug = err;
-          this.getLoading = false;
-        });
-    },
-    updateRecette() {
-      let _this = this;
-      this.updateLoading = true;
-      this.recette.ingredients = this.recette.ingredients
-        .filter(x => x.nom.length > 0)
-        .map(x => {
-          return { nom: x.nom, qty: x.qty };
-        });
-      axios
-        .put("/recette/" + this.recette.id, qs.stringify(this.recette))
-        .then(data => {
-          this.debug = data;
-          if (
-            _this.recetteList.map(x => x.id == _this.recette.id).length == 0
-          ) {
-            _this.recetteList.push([
-              { nom: _this.recetteList.nom, id: _this.recette.id }
-            ]);
-          }
-          this.updateLoading = false;
-          this.editable = false;
-        })
-        .catch(err => {
-          this.debug = err;
-          this.updateLoading = false;
-        });
-    },
-    newRecette() {
-      this.recette = {
-        id: this.$uuid.v4(),
-        nbPersonnes: 1,
-        nom: "",
-        temps: "",
-        processDescription: "",
-        ingredients: []
-      };
-      this.editable = true;
-    },
-    updateIngredientList(event) {
-      this.debug = event;
-      this.$set(this.recette, "ingredients", event);
-    }
+    this.$store.dispatch('getRecettesList')
+    .then(()=>{
+      this.recetteList=store.state.recette.recetteList
+    });
   },
   computed: {
-    recetteListNames() {
-      return this.recetteList.map(x => x.nom);
-    },
-    alreadyChoosen() {
-      return this.recette.ingredients.map(x => x.nom);
-    }
+
   }
 };
 </script>
@@ -157,5 +93,14 @@ import rechercheRecette from './recherche'
   color: red;
   border: red;
   border-style: solid;
+}
+.menu {
+  position:fixed;
+  top:5px;
+  z-index: 105;
+  background-color: cadetblue;
+}
+.recherche {
+  height: 25px!important;
 }
 </style>
