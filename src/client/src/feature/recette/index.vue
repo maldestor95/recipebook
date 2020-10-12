@@ -2,7 +2,7 @@
     <div>
       <!-- <v-container block class=""> -->
 
-      <v-card flat class="py-0 py-md-1 d-flex menu justify-space-around ">
+       <!-- <v-card flat class="py-0 py-md-1 menu d-flex  justify-space-around">
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-chip color="primary" dark v-bind="attrs" v-on="on">
@@ -29,11 +29,11 @@
           single-line
           @focus="selectionVisible=true" autocomplete="off"
         ></v-text-field>
-      </v-card>
+      </v-card> -->
       <!-- </v-container> -->
 
-<p class="my-8 my-sm-0  "></p>
-      <recherche-recette v-model="searchRecipe" :recettelist="recetteList" @getRecipe="actionState='voirRecette'"
+<!-- <p class="my-sm-0  "></p> -->
+      <recherche-recette v-model="searchRecipe" :recettelist="recetteList"
       v-if="actionState=='recherche'"
       class="px-3"
       >
@@ -70,12 +70,13 @@ import rechercheRecette from './recherche'
             },
   data() {
     return {
-      actionState:"recherche",
+      searchRecipe:store.state.recette.searchRecipe,
       recetteList:[],
       recette:{},
-      searchRecipe:""
+      
     };
   },
+
   mounted() {
     this.$store.dispatch('getRecettesList')
     .then(()=>{
@@ -83,7 +84,7 @@ import rechercheRecette from './recherche'
     });
   },
   computed: {
-
+    actionState(){ return store.state.recette.actionState}
   }
 };
 </script>
@@ -95,7 +96,8 @@ import rechercheRecette from './recherche'
   border-style: solid;
 }
 .menu {
-  position:fixed;
+  // position:fixed;
+  display: none;
   top:5px;
   z-index: 105;
   background-color: cadetblue;

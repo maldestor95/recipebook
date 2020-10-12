@@ -2,7 +2,7 @@
 <section id="searchRecipe" class="py-0">
 
     <v-row >
-        <v-card v-for="recette in selectionList" :key="recette.id" class="d-flex flex-wrap recettesummary"
+        <v-card v-for="recette in sList" :key="recette.id" class="d-flex flex-wrap recettesummary"
           @click="getRecette(recette.id) " >{{ recette.nom }}
         </v-card>
     </v-row>
@@ -25,15 +25,24 @@ export default {
   },
   data() {
     return {
-
       selectionVisible: false,
       items: ['foo', 'bar', 'fizz', 'buzz'],
       values: ['foo', 'bar'],
       valuevv: null,
-    };
+      localSearchString:"",
+      sList:[]
+};
   },
+watch: {
+  searchString(newValue) {
+    if (newValue=="") this.sList=this.orderedRecipeList
+    this.localSearchString=newValue
+    this.updateSelectionList()
+  }
+},
 
   computed: {
+    searchString(){return store.state.recette.searchString},
     orderedRecipeList(){
       const capitalise=(nom)=>nom.charAt(0).toUpperCase() + nom.substring(1)
       const recipeList=this.recettelist.map(x=>{return {nom:capitalise(x.nom),id:x.id}})
@@ -44,7 +53,9 @@ export default {
       return orderedRecipeList
     },
     selectionList() {
-      const searchString= this.value==0?"":this.value
+      const searchString= this.value==0?"":this.localSearchString
+      // eslint-disable-next-line no-console
+      console.log(searchString);
       let r = this.cleanUpSpecialChars(searchString)
           .split("")
           .map(x => x.toUpperCase() + ".*")
@@ -71,10 +82,25 @@ export default {
     getRecette(recetteId){
             this.$store.dispatch('getRecette',recetteId)
             .then(()=>{ this.recette=store.state.recette.recette
-                        this.$emit('getRecipe')
+                        this.$store.commit('changeRecetteActionState','voirRecette')
             });
-        }
-  },
+        },
+    updateSelectionList() {
+      const searchString= this.localSearchString.length==0?"":this.localSearchString
+      // eslint-disable-next-line no-console
+      console.log('**',searchString);
+      let r = this.cleanUpSpecialChars(searchString)
+          .split("")
+          .map(x => x.toUpperCase() + ".*")
+          .join("");
+        const regex = new RegExp(r);
+
+      this.sList=this.orderedRecipeList.filter(recipe=> regex.test(recipe.nom.toUpperCase()))
+      // eslint-disable-next-line no-console
+      console.log('***',searchString)
+    }
+
+  }
 };
 </script>
 

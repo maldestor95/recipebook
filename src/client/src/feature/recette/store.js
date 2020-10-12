@@ -20,6 +20,9 @@ const store = {
               { nom: "poivrons", qty: 2 }
             ]
           }
+          ,
+          actionState:'recherche',  // recherche|nouvelleRecette|editRecette,|voirRecette
+          searchString:""
     }),
     getters: {
         recetteListNames: state => {
@@ -32,7 +35,15 @@ const store = {
         },
         loadRecette(state, recette) {
             state.recette = recette
+        },
+        changeRecetteActionState(state, actionState){
+            state.actionState=actionState
+        },
+        updateRecetteSearchString(state, newString){
+            // this.$set(state, 'searchString', newString);
+            state.searchString=newString
         }
+
     },
     actions: {
         getRecettesList: (context) => {

@@ -1,12 +1,13 @@
 <template>
   <v-app >
-    <v-app-bar dense app color="blue" text-color="white">
-        <cog @click.native="navdrawer = !navdrawer"></cog>
+    <v-app-bar  :max-height="56" color="blue" text-color="white" flat>
+      <cog @click.native="navdrawer = !navdrawer"></cog>
+      <v-spacer></v-spacer>
+      <recette-menu v-if="currentRouteName=='recettes'"></recette-menu>
       <v-spacer></v-spacer>
       <login-user v-model="logged"></login-user>
+        <!-- <vappbar vmodel= logged @togglenavdrawer="navdrawer = !navdrawer"></vappbar> -->
     </v-app-bar>
-
-
 
     <v-navigation-drawer temporary app v-model="navdrawer">
       <v-list dense>
@@ -42,9 +43,9 @@
       <router-view></router-view>
     </v-content>
 
-    <v-btn id="menumobile" color="blue">
+    <!-- <v-btn id="menumobile" color="blue">
         <cog @click.native="navdrawer = !navdrawer" :showTitle="false"></cog>
-    </v-btn>
+    </v-btn> -->
   
     <site-footer></site-footer>
 
@@ -52,6 +53,7 @@
 </template>
 
 <script>
+  import recetteMenu from './feature/recette/navmenu'
   import LoginUser from "./components/LoginUser.vue";
   import cog from "./components/cog.vue"
   import siteFooter from "./feature/footer"
@@ -62,7 +64,8 @@
   export default {
     name: "App",
     components: {
-      LoginUser, cog, siteFooter
+      // eslint-disable-next-line vue/no-unused-components
+      LoginUser, cog, siteFooter,recetteMenu
     },
     data: () => ({
       storeState: store.state,
@@ -101,7 +104,10 @@
             return !x.requireAuth | this.$store.getters.isAuthorised(x.link);
           });
         return routeL;
-      }
+      },
+      currentRouteName() {
+            return this.$route.name
+        }
     },
     mounted() {
       this.$store.commit("reinitSession");
@@ -182,7 +188,7 @@
     size: A4 landscape;
   }
   #vcontent {
-          padding: 48px 0px 0px!important;
+          padding: 0px 0px 0px!important;
   }
     #menumobile {
       display: none;
@@ -192,7 +198,7 @@
         padding: 0px 0px 0px!important;
     }
     .v-app-bar {
-      display: none;
+      // display: none;
       height: 0px;
     }
   #menumobile {

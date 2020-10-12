@@ -7,7 +7,7 @@
         :height="height"
         aria-label="My image"    
     ></inline-svg>
-    <span class="title" v-if="showTitle">
+    <span class="title d-none d-sm-block" v-if="showTitle">
         LDEPARIS
     </span>
 </span>
