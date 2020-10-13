@@ -19,21 +19,19 @@
           </v-list>
         </v-menu>
 
-        <v-text-field v-if="actionState=='recherche'"
-          name="searchRecipe" v-model="searchRecipe" 
-          class="blue lighten-2"
-          label="saisir le nom d'une recette" 
-          height="22"
-          @focus="selectionVisible=true" autocomplete="off"
-          @keyup="updateSearchString(searchRecipe)"
-        ></v-text-field>
-
+        <textfield v-model="searchRecipe" @input="updateSearchString(searchRecipe)"/>
     </div>
 </template>
 
 <script>
     import {store} from "../../store/index"
+    import textfield from "../../components/textfield.vue"
+
     export default {
+
+components: {
+    textfield
+},
         data() {
             return {
                 searchRecipe:""
@@ -58,5 +56,13 @@
 </script>
 
 <style lang="scss" scoped>
+.textSearch {
+    background-color: beige;
+}
+.v-input__slot {
 
+    background-color: red;
+}
+.debug {
+background-color: pink;}
 </style>

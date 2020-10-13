@@ -2,10 +2,11 @@
 <section id="searchRecipe" class="py-0">
 
     <v-row >
-        <v-card v-for="recette in sList" :key="recette.id" class="d-flex flex-wrap recettesummary"
+        <v-card v-for="recette in updateSelectionList()" :key="recette.id" class="d-flex flex-wrap recettesummary"
           @click="getRecette(recette.id) " >{{ recette.nom }}
         </v-card>
     </v-row>
+
 </section>
 </template>
 
@@ -26,9 +27,6 @@ export default {
   data() {
     return {
       selectionVisible: false,
-      items: ['foo', 'bar', 'fizz', 'buzz'],
-      values: ['foo', 'bar'],
-      valuevv: null,
       localSearchString:"",
       sList:[]
 };
@@ -51,18 +49,6 @@ watch: {
       const orderedRecipeList=orderedRecipeByName.map(name=> recipeList.filter(x=>x.nom==name)[0])
       
       return orderedRecipeList
-    },
-    selectionList() {
-      const searchString= this.value==0?"":this.localSearchString
-      // eslint-disable-next-line no-console
-      console.log(searchString);
-      let r = this.cleanUpSpecialChars(searchString)
-          .split("")
-          .map(x => x.toUpperCase() + ".*")
-          .join("");
-        const regex = new RegExp(r);
-
-      return this.orderedRecipeList.filter(recipe=> regex.test(recipe.nom.toUpperCase()))
     },
     recettelist(){
       return store.state.recette.recetteList
@@ -95,9 +81,7 @@ watch: {
           .join("");
         const regex = new RegExp(r);
 
-      this.sList=this.orderedRecipeList.filter(recipe=> regex.test(recipe.nom.toUpperCase()))
-      // eslint-disable-next-line no-console
-      console.log('***',searchString)
+      return this.orderedRecipeList.filter(recipe=> regex.test(recipe.nom.toUpperCase()))
     }
 
   }

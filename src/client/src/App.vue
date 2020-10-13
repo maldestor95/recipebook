@@ -5,8 +5,7 @@
       <v-spacer></v-spacer>
       <recette-menu v-if="currentRouteName=='recettes'"></recette-menu>
       <v-spacer></v-spacer>
-      <login-user v-model="logged"></login-user>
-        <!-- <vappbar vmodel= logged @togglenavdrawer="navdrawer = !navdrawer"></vappbar> -->
+      <login-user v-model="logged" class="d-none d-md-flex"></login-user>
     </v-app-bar>
 
     <v-navigation-drawer temporary app v-model="navdrawer">

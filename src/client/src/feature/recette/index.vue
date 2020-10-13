@@ -1,38 +1,6 @@
 <template>
     <div>
-      <!-- <v-container block class=""> -->
-
-       <!-- <v-card flat class="py-0 py-md-1 menu d-flex  justify-space-around">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-chip color="primary" dark v-bind="attrs" v-on="on">
-              <v-icon small>mdi-book-open-variant</v-icon>
-            </v-chip>
-          </template>
-          <v-list>
-            <v-list-item @click="actionState='recherche'">
-              <v-list-item-title>changer de recette</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="actionState='editRecette'">
-              <v-list-item-title>Editer recette</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="actionState='nouvelleRecette'">
-              <v-list-item-title>Nouvelle recette</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-text-field v-if="actionState=='recherche'"
-          name="searchRecipe" v-model="searchRecipe" 
-          clearable 
-          class=" py-0 my-0 recherche blue lighten-2"
-          label="saisir le nom d'une recette" 
-          single-line
-          @focus="selectionVisible=true" autocomplete="off"
-        ></v-text-field>
-      </v-card> -->
-      <!-- </v-container> -->
-
-<!-- <p class="my-sm-0  "></p> -->
+      
       <recherche-recette v-model="searchRecipe" :recettelist="recetteList"
       v-if="actionState=='recherche'"
       class="px-3"

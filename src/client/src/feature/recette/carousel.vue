@@ -1,17 +1,7 @@
 <template>
     <div>
-Carousel
-
-
-
-
-<p>
-    <v-text-field filled label="label" v-model="recetteRefId"></v-text-field>
-<v-btn color="success" @click="getRecette(recetteRefId)">getRecette</v-btn>
-</p>
-
-<h2>Recette</h2>
-
+<h2>Carousel</h2>
+<textfield class="test"></textfield>
 
 
     </div>
@@ -21,7 +11,11 @@ Carousel
   import {
     store
   } from "../../store/index"
+  import textfield from "../../components/textfield.vue"
     export default {
+        components: {
+            textfield,
+        },
     data() {
         return {
             recetteStore: store.state.recette,
@@ -55,5 +49,8 @@ p {
     background-color: bisque;
     margin-top: 10px;
     padding: 10px;
+}
+.test {
+background-color: beige;
 }
 </style>
