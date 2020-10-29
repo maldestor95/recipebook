@@ -1,33 +1,34 @@
 <template>
-    <table>
-        <tr>
-            <td>Nom Ingrédient</td>
-            <td>Quantité</td>
-        </tr>
-        <tr v-for="ingredient in value" :key="ingredient.id">
-            <td>
+<v-container fluid>
+    
+        <v-row>
+            <v-col>Nom Ingrédient</v-col>
+            <v-col>Quantité</v-col>
+        </v-row>
+        <v-row v-for="ingredient in value" :key="ingredient.id" >
+            <v-col class="py-0">
                 <v-text-field name="ingredientName" v-model="ingredient.nom" dense></v-text-field>
-            </td>
-            <td>
+            </v-col>
+            <v-col class="py-0">
                 <v-text-field name="ingredientQty" v-model="ingredient.qty"  dense></v-text-field>
-            </td>
-            <td><v-icon @click="removeIngredient(ingredient)">mdi-delete-circle-outline</v-icon></td>
-        </tr>
-        <tr> 
-            <td>
+            </v-col>
+            <v-col class="col-1 py-0"><v-icon @click="removeIngredient(ingredient)">mdi-delete-circle-outline</v-icon></v-col>
+        </v-row>
+        <v-row> 
+            <v-col class="py-0">
                 <v-text-field name="ingredientName" ref="ingredientName" v-model="newIngredient.nom" dense></v-text-field>
-            </td>
-            <td>
+            </v-col>
+            <v-col class="py-0">
                 <v-text-field name="ingredientQty" v-model="newIngredient.qty"  dense></v-text-field>
-            </td>
-            <td><v-icon 
+            </v-col>
+            <v-col class="col-1 py-0"><v-icon 
             @click="addIngredient()"
             @keyup.enter="addIngredient()"
             >
                 mdi-plus-circle-outline
-            </v-icon></td>
-        </tr>
-    </table>
+            </v-icon></v-col>
+        </v-row>
+</v-container>
 </template>
 
 <script>

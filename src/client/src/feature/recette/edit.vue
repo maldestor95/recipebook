@@ -4,7 +4,7 @@
             <v-tabs-slider color="yellow"></v-tabs-slider>
             <v-tab>Edit</v-tab>
             <v-tab>Preview</v-tab>
-            <v-tab>Valider</v-tab>
+            <v-tab>Valid</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab">
