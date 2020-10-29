@@ -73,8 +73,6 @@ watch: {
         },
     updateSelectionList() {
       const searchString= this.localSearchString.length==0?"":this.localSearchString
-      // eslint-disable-next-line no-console
-      console.log('**',searchString);
       let r = this.cleanUpSpecialChars(searchString)
           .split("")
           .map(x => x.toUpperCase() + ".*")

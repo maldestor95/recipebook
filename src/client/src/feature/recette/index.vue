@@ -11,7 +11,7 @@
 
       <view-recette v-model="recette" v-if="actionState=='recherche'| actionState=='voirRecette'"></view-recette>
 
-      <edit-recette v-if="actionState=='editRecette'|actionState=='nouvelleRecette'"></edit-recette>
+      <edit-recette v-if="actionState=='editRecette'|actionState=='nouvelleRecette'" ></edit-recette>
 
     </div>
 </template>
@@ -41,7 +41,7 @@ import rechercheRecette from './recherche'
       searchRecipe:store.state.recette.searchRecipe,
       recetteList:[],
       recette:{},
-      
+      editRecette:store.state.recette.editRecette      
     };
   },
 
@@ -53,7 +53,14 @@ import rechercheRecette from './recherche'
   },
   computed: {
     actionState(){ return store.state.recette.actionState}
-  }
+  },
+  watch: {
+    actionState(newValue){
+      if (newValue=='editRecette') this.recette={...store.state.recette.editRecette}
+    }
+  },
+
+
 };
 </script>
 

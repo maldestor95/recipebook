@@ -1,8 +1,6 @@
 <template>
   <div class="d-flex flex-wrap ">
-  <h1>
-      Préparation
-    </h1>
+    <h1> Préparation</h1>
     <section>
       <div v-html="processDescriptionMarked" />
     </section>
@@ -11,11 +9,16 @@
 
 <script>
 import marked from "marked";
-import {store} from "../../store/index"
 export default {
+  props: {
+    value: {
+      type: String,
+      default: "Process Description"
+    },
+  },
   computed: {
     processDescriptionMarked() {
-        return marked(store.state.recette.recette.processDescription)
+        return marked(this.value)
     }
   }
   

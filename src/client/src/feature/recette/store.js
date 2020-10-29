@@ -19,6 +19,14 @@ const store = {
               { nom: "ail", qty: 1 },
               { nom: "poivrons", qty: 2 }
             ]
+          },
+        editRecette:{
+            id: "",
+            nbPersonnes: 4,
+            nom: "",
+            temps: "",
+            processDescription: "",
+            ingredients: []
           }
           ,
           actionState:'recherche',  // recherche|nouvelleRecette|editRecette,|voirRecette
@@ -36,11 +44,31 @@ const store = {
         loadRecette(state, recette) {
             state.recette = recette
         },
-        changeRecetteActionState(state, actionState){
-            state.actionState=actionState
+        changeRecetteActionState(state, actionState) {
+                state.actionState = actionState
+                switch (actionState) {
+                    case 'editRecette':
+                        state.editRecette = {
+                            ...state.recette
+                        }
+                        break;
+                    case 'nouvelleRecette':
+                        state.editRecette = {
+                            id: "",
+                            nbPersonnes: 4,
+                            nom: "bla",
+                            temps: "",
+                            processDescription: "",
+                            ingredients: []
+                        }
+                        break;
+                    case 'recherche':
+                    break;
+                    default:
+                        break;
+            }
         },
         updateRecetteSearchString(state, newString){
-            // this.$set(state, 'searchString', newString);
             state.searchString=newString
         }
 

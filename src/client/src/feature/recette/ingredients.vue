@@ -5,7 +5,7 @@
         <v-col class="titre  ">Ingrédients</v-col>
         <v-col class= "titre  ">Quantité</v-col>
       </v-row>
-      <v-row v-for="ingredient in ingredientList" :key="ingredient.id" class="ingredient">
+      <v-row v-for="ingredient in value" :key="ingredient.id" class="ingredient">
         <v-col class=" py-0">{{ ingredient.nom }}</v-col>
         <v-col class=" py-0">{{ ingredient.qty }}</v-col>
       </v-row>
@@ -13,21 +13,21 @@
 </template>
 
 <script>
-import {store} from "../../store"
 export default {
+  props: {
+    value: {
+      type: Array,
+      default: ()=>[
+        {nom:'nom ing1',qty:'qty1'},
+        {nom:'nom ing2',qty:'qty2'}
+      ]
+    },
+  },
   
   data() {
     return {
      
-  }},
-  computed: {
-    ingredientList() {
-      return store.state.recette.recette.ingredients
-
-    }
-  },
-  
-
+  }}
 };
 </script>
 
