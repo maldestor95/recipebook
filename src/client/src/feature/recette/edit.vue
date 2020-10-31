@@ -53,7 +53,8 @@
                 <recette-preparation v-model="recette.processDescription"></recette-preparation>
             </v-tab-item>
             <v-tab-item>
-                Valider
+                <v-btn color="success" @click="updateServer()">update</v-btn>
+                <p>ID: {{recette.id}} </p>
             </v-tab-item>
         </v-tabs-items>
   
@@ -81,7 +82,20 @@ import recettePreparation from "./recettepreparation"
         },
         computed: mapState({
             actionState:state=>state.recette.actionState
-        })
+        }),
+        watch: {
+           actionState(newValue){
+               if (newValue=="nouvelleRecette") {
+                   this.recette=store.state.recette.editRecette
+               }
+           } 
+        },
+        methods: {
+            updateServer() {
+                if (store.state.recette.editRecette.id==="") store.dispatch('postRecette')
+                else store.dispatch('putRecette')
+            }
+        },
     }
 </script>
 

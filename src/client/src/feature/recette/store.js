@@ -96,6 +96,31 @@ const store = {
                     console.log(err)
               });
           },
+        putRecette(context, recetteId) {
+            axios
+              .put("/recette/" + recetteId,{recette:context.state.editRecette})
+              .then(data => {
+                context.commit("loadRecette",data.data)
+                context.dispatch('getRecettesList')
+              })
+              .catch(err => {
+                    // eslint-disable-next-line no-console
+                    console.log(err)
+              });
+          },
+        postRecette(context) {
+            axios
+              .post("/recette/new",{recette:context.state.editRecette})
+              .then(data => {
+                context.commit("loadRecette",data.data)
+                context.dispatch('getRecettesList')
+              })
+              .catch(err => {
+                    // eslint-disable-next-line no-console
+                    console.log(err)
+              });
+            
+          },
     }
 }
 export default store

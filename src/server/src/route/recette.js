@@ -84,23 +84,20 @@ router.route('/ingredients')
     })
 
 router.route('/recette/:recette_id')
-    .put(recetteAuthEditor, (req, res) => { //TODO
-        console.log(req.body)
-        let newRecette = qs.parse(req.body)
+    .put(recetteAuthEditor, (req, res) => { 
+        let newRecette = qs.parse(req.body).recette
         recettes.putRecette(newRecette)
             .then(data => res.send(data))
             .catch(err => res.send(err))
     })
-    .get((req, res) => { //TODO
-        console.log(req.body)
+    .get((req, res) => { 
         recettes.getRecette(req.params.recette_id)
             .then(data =>
                 res.send(data)
             )
             .catch(err => res.send(err))
     })
-    .post(recetteAuthEditor, (req, res) => { //TODO
-        console.log(req.body)
+    .post(recetteAuthEditor, (req, res) => { 
         let newRecette = qs.parse(req.body).recette
         recettes.postRecette(newRecette)
             .then()
