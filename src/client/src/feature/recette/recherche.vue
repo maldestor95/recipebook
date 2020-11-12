@@ -15,9 +15,6 @@
     store
   } from "../../store/index"
 export default {
-  mounted () {
-    this.$store.dispatch('getRecettesList');
-  },
   props: {
     value: {
       type: String,
