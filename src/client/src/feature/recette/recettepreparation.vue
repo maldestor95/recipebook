@@ -1,7 +1,7 @@
 <template>
-  <div class="d-flex flex-wrap ">
+  <div >
     <h1> Préparation</h1>
-    <section>
+    <section class="d-flex flex-wrap ">
       <div v-html="processDescriptionMarked" />
     </section>
   </div>

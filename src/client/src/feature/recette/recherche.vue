@@ -70,6 +70,7 @@ watch: {
             .then(()=>{ this.recette=store.state.recette.recette
                         this.$store.commit('changeRecetteActionState','voirRecette')
             });
+            this.$store.commit('eraseSearchRecette')
         },
     updateSelectionList() {
       const searchString= this.localSearchString.length==0?"":this.localSearchString

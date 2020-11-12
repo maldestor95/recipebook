@@ -70,6 +70,9 @@ const store = {
         },
         updateRecetteSearchString(state, newString){
             state.searchString=newString
+        },
+        eraseSearchRecette(state){
+            state.searchString=""
         }
 
     },
