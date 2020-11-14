@@ -171,6 +171,9 @@ function postRecette(recette) {
                 "categorie": "recette",
                 "nom": recette.nom,
                 "ingredients": recette.ingredients,
+                "nbPersonnes": recette.nbPersonnes,
+                "temps": recette.temps,
+                "processDescription": recette.processDescription,
                 "version": 0
             },
             ConditionExpression: "attribute_not_exists(#u)",

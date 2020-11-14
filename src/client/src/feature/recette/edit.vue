@@ -92,6 +92,7 @@ import recettePreparation from "./recettepreparation"
         },
         methods: {
             updateServer() {
+                store.commit('updateEditRecette',this.recette)
                 if (store.state.recette.editRecette.id==="") store.dispatch('postRecette')
                 else store.dispatch('putRecette')
             }

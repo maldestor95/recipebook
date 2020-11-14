@@ -73,6 +73,9 @@ const store = {
         },
         eraseSearchRecette(state){
             state.searchString=""
+        },
+        updateEditRecette(state,newRecette){
+            state.editRecette={...newRecette}
         }
 
     },
@@ -111,7 +114,9 @@ const store = {
                     console.log(err)
               });
           },
-        postRecette(context) {
+        postRecette(context) { //FIXME la creation de ne semble pas ajouter le processus de recette
+            // eslint-disable-next-line no-console
+            console.log(context.state.editRecette);
             axios
               .post("/recette/new",{recette:context.state.editRecette})
               .then(data => {

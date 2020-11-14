@@ -99,6 +99,7 @@ router.route('/recette/:recette_id')
     })
     .post(recetteAuthEditor, (req, res) => { 
         let newRecette = qs.parse(req.body).recette
+        console.log(newRecette)
         recettes.postRecette(newRecette)
             .then()
             .catch()
