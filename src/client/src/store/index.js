@@ -27,7 +27,7 @@ const user = {
                     state.sessionID = res.data.sessionID
                     state.applicationPrivilege = res.data.session.passport.user.userApplication
                     state.username = payload.name
-                    // sessionStorage.setItem('sessionID', JSON.stringify(state));
+                    sessionStorage.setItem('sessionID', JSON.stringify(state));
                 })
                 .catch(() => {
                     state.logged = false
@@ -40,7 +40,7 @@ const user = {
                     state.sessionID = "not logged anymore"
                     state.applicationPrivilege = null
                     state.username = null
-                    // sessionStorage.removeItem('sessionID');
+                    sessionStorage.removeItem('sessionID');
                 })
                 .catch(() => {
                     state.logged = false
@@ -49,12 +49,10 @@ const user = {
         },
 
         reinitSession(state) {
-            /*if (sessionStorage.getItem('sessionID')) {
+            if (sessionStorage.getItem('sessionID')) {
                 let t = JSON.parse(sessionStorage.getItem('sessionID'))
                 Object.keys(t).forEach(x => state[x] = t[x])
-            }*/
-            // eslint-disable-next-line no-console
-            console.log(state);
+            }
         },
     },
     getters: {
