@@ -22,8 +22,7 @@
         <textfield 
           :disabled="disabled"
           v-model="searchRecipe" @input="updateSearchString(searchRecipe)" >
-        </textfield>
-       
+        </textfield>  
     </div>
 </template>
 
@@ -48,9 +47,6 @@ components: {
             },
             updateSearchString(searchString) {
                 store.commit('updateRecetteSearchString',searchString)
-            },
-            clearRecipeString(){
-              this.searchRecipe=''
             }
         },
         computed: {
@@ -58,18 +54,19 @@ components: {
                 return store.state.recette.actionState
             },
             storeString(){
-              if (store.state.recette.searchString=="") this.clearRecipeString()
-
-              return store.state.recette.searchString
+               return this.$store.state.recette.searchString
             }
         },
         watch: {
-          searchRecipe(newValue) {
+          searchRecipe(newValue) { 
             if (newValue.length>0) {
               this.changeActionState('recherche')
               this.updateSearchString(newValue)
               }
           },
+          storeString(newValue){
+            this.searchRecipe=newValue
+          }
         },      
     }
 </script>

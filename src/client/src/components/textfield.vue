@@ -10,20 +10,17 @@
 
 <script>
     export default {
-        name:"textfield",
+        name: "textfield",
         props: {
             value: {
                 type: String,
                 default: ""
             },
-            disabled: {type:Boolean,default:false}
-},
-data() {
-    return {
-        valueIn :this.value
-    }
-
-},
+            disabled: {
+                type: Boolean,
+                default: false
+            }
+        }
     }
 </script>
 

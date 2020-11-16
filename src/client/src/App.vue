@@ -63,7 +63,6 @@
   export default {
     name: "App",
     components: {
-      // eslint-disable-next-line vue/no-unused-components
       LoginUser, cog, siteFooter,recetteMenu
     },
     data: () => ({
