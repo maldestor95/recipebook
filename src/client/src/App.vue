@@ -109,7 +109,7 @@
     },
     mounted() {
       this.$store.commit("reinitSession");
-      this.logged=this.storeState.user.logged
+      this.logged=this.storeState.auth.logged
     }
   };
 </script>

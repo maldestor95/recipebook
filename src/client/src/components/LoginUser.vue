@@ -95,12 +95,12 @@ export default {
   },
   watch: {
     loginstate(newValue) {
-      if (newValue) this.username=this.$store.state.user.username 
+      if (newValue) this.username=this.$store.state.auth.username 
     }
   },
   computed: {
     loginstate() {
-      return(this.$store.state.user.username != null)
+      return(this.$store.state.auth.username != null)
     }
   },
   methods: {
