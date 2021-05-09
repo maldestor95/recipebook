@@ -1,29 +1,29 @@
 ---
-- ingredient:Saumon   
+- ingredient: Saumon   
   qty: 400g
-- ingredient:Epinards
+- ingredient: Epinards
   qty: 500g
-- ingredient:riz
+- ingredient: riz
   qty: 80
-- g- ingredient:comté râpé
+- g- ingredient: comté râpé
   qty: 150g
-- ingredient:Aneth
+- ingredient: Aneth
   qty: 1
-- ingredient:jaune d'oeuf
+- ingredient: jaune d'oeuf
   qty: 1
-- ingredient:pâte feuilletée
+- ingredient: pâte feuilletée
   qty: 2
-- ingredient:crême fraiche
+- ingredient: crême fraiche
   qty: pour la sauce
-- ingredient:citron
+- ingredient: citron
   qty: 1
-- ingredient:sucre d'érable
+- ingredient: sucre d'érable
   qty: 1 cuillere
-- ingredient:sel
+- ingredient: sel
   qty: 1 pincée
-- ingredient:poivre
+- ingredient: poivre
   qty: 1 pincée
-- ingredient:paprika  
+- ingredient: paprika  
   qty: 1 pincée
  
 ...
