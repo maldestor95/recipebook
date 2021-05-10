@@ -31,10 +31,6 @@
 * Servez avec des frites maison ou des pommes de terre cuites au barbecue.
 
 
-",,,"[  { ""M"" : {      
-
-
-
 
 
 

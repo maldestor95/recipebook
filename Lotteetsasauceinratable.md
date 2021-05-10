@@ -1,4 +1,20 @@
 ---
+- ingredient: echalottes
+  qty: 2  
+- ingredient: vin blanc sec
+  qty: 12cl  
+- ingredient: crème fraiche
+  qty: 10cl  
+- ingredient: bouillon de poisson
+  qty: 1/2 cube  
+- ingredient: lotte
+  qty: 600 à 800g de filet  
+- ingredient: huile d'olive
+  qty: 1 cuillère à soupe  
+- ingredient: beurre
+  qty: 15g  
+- ingredient: sel
+  qty: 1 pincée
 ...
 # Pour la sauce inratable :
 * Mettre 10g de beurre dans une petite cocote, dès que le beurre commence à fondre ajouter des échalotes finement hachées,
@@ -19,6 +35,5 @@ Laisser se terminer la cuisson avec l’inertie de la chaleur.
 
 
 source
-https://www.pavillonfrance.fr/recettes-astuces-du-large/recettes-du-large/lotte-sa-sauce-inratable",,,"[  { ""M"" : {      ""nom"" : { ""S"" : ""echalottes"" },      ""qty"" : { ""S"" : ""2"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""vin blanc sec"" },      ""qty"" : { ""S"" : ""12cl"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""crème fraiche"" },      ""qty"" : { ""S"" : ""10cl"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""bouillon de poisson"" },      ""qty"" : { ""S"" : ""1/2 cube"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""lotte"" },      ""qty"" : { ""S"" : ""600 à 800g de filet"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""huile d'olive"" },      ""qty"" : { ""S"" : ""1 cuillère à soupe"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""beurre"" },      ""qty"" : { ""S"" : ""15g"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""sel"" },      ""qty"" : { ""S"" : ""1 pincée"" }    }  }]"
+https://www.pavillonfrance.fr/recettes-astuces-du-large/recettes-du-large/lotte-sa-sauce-inratable
 
-,
