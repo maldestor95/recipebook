@@ -1,4 +1,22 @@
 ---
+- ingredient: échine de porc
+  qty: 1.8kg
+- ingredient: oignons rouges
+  qty: 2
+- ingredient: Huile de tournesol
+  qty: 1 c.à soupe
+- ingredient: Sel et Poivre
+  qty: 1 pincée
+- ingredient: Ketchup
+  qty: 10cl
+- ingredient: paprika
+  qty: 1 cuil. à café
+- ingredient: moutarde
+  qty: 1 cuil. à soupe
+- ingredient: vinaigre de vin
+  qty: 5cl
+- ingredient: sauce Worcestershire
+  qty: 10cl
 ...
 * Préchauffez le four ou le barbecue à 160°C (th. 5-6)
 * Préparez la sauce barbecue : mélangez tous les ingrédients.
@@ -10,6 +28,26 @@
 
 * Sortez la cocotte du four, effilochez la viande à l’aide d’une fourchette et mélangez-la bien à la sauce barbecue. 
 
-* Servez avec des frites maison ou des pommes de terre cuites au barbecue.",,,"[  { ""M"" : {      ""nom"" : { ""S"" : ""échine de porc"" },      ""qty"" : { ""S"" : ""1.8kg"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""oignons rouges"" },      ""qty"" : { ""S"" : ""2"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""Huile de tournesol"" },      ""qty"" : { ""S"" : """" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""Sel et Poivre"" },      ""qty"" : { ""S"" : """" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""Ketchup"" },      ""qty"" : { ""S"" : """" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""paprika"" },      ""qty"" : { ""S"" : ""1 cuil. à café"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""moutarde"" },      ""qty"" : { ""S"" : ""1 cuil. à soupe"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""vinaigre de vin"" },      ""qty"" : { ""S"" : ""5cl"" }    }  },  { ""M"" : {      ""nom"" : { ""S"" : ""sauce Worcestershire"" },      ""qty"" : { ""S"" : ""10cl"" }    }  }]"
+* Servez avec des frites maison ou des pommes de terre cuites au barbecue.
 
-,
+
+",,,"[  { ""M"" : {      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
