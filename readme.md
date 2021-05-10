@@ -20,5 +20,5 @@ etc
 # Organisation du dépot
 
 * readme.md => ce fichier
-* list.md => liste des recettes
+* recettelist.md => liste des recettes
 * nomDeRecette.md => recette
