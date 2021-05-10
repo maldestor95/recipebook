@@ -9,9 +9,9 @@
   link:  burgerdagneauetpatatesdouces.md                                                                  
 - title: Cheese scones salés                                                                                
   link:  Cheesesconessalted.md                                                                                
-- title: chirashi saumon avocat                                                                             
+- title: Chirashi saumon avocat                                                                             
   link:  chirashisaumonavocat.md 
-- title: curry d'agneau                                                                                     
+- title: Curry d'agneau                                                                                     
   link:  currydagneau.md                                                                                     
 - title: Dinde au maroille                                                                                  
   link:  Dindeaumaroille.md
@@ -61,6 +61,3 @@
   link:  Taginedepouletauxraisins.md                                                                       
 - title: Truite au four
   link:  Truiteaufour.md                                                                                     
-
-
-
