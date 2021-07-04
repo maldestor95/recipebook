@@ -60,4 +60,6 @@
 - title: Tagine de poulet aux raisins
   link:  Taginedepouletauxraisins.md                                                                       
 - title: Truite au four
-  link:  Truiteaufour.md                                                                                     
+  link:  Truiteaufour.md    
+- title: taboule.md
+  link:  Taboulé pour 4 personnes                                                                                 
