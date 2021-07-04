@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/maldestor95/recipebook/issues"
   },
-  "homepage": "https://github.com/maldestor95/recipebook#readme"
+  "homepage": "https://github.com/maldestor95/recipebook#readme",
+  "devDependencies": {
+    "eslint": "^7.26.0",
+    "eslint-plugin-vue": "^7.9.0"
+  }
 }
