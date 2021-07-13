@@ -33,12 +33,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 
-app.get("/tot", function (req, res) {
+app.get("/", function (req, res) {
     res.send("Hello World!");
 });
-
-
-// app.use(require("./route/recette"))
 
 // app.use('/', express.static(__dirname + '/static'))
 app.use('/tt', (req, res) => res.sendFile(__dirname + '/static'))
