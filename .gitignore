@@ -4,7 +4,7 @@ node_modules
 /zip
 /src/client/dist 
 /src/client/out
-/dist
+/build
 /out
 
 # server folder
