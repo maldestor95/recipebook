@@ -1,6 +1,7 @@
 
 import express from "express";
-import * as bodyParser from 'body-parser'
+import * as pug from 'pug'
+import  frouter from './route'
 
 const path = require('path')
 
@@ -24,20 +25,30 @@ var myLogger = function (req: express.Request, res: express.Response, next: expr
 app.disable("x-powered-by");
 app.use(myLogger);
 
-app.use(bodyParser.urlencoded({
-    extended: false
-}))
-// parse application/json
+app.get('/public/:filename', function(req, res){
+      res.sendFile(__dirname+'/static/'+req.params['filename'])
+}
+)
 
+ app.use('/dirname',  function(req,res) { 
+    res.send(__dirname);
+ } )
 
-app.use(bodyParser.json())
+ app.use('/del',function(req,res){
+    app.delete('/static')
+    res.send('route static deleted')
+})
 
+app.use('/tt', (req, res) => res.sendFile(__dirname + '/static'))
 
 app.get("/", function (req, res) {
     res.send("Hello World!");
 });
 
-// app.use('/', express.static(__dirname + '/static'))
-app.use('/tt', (req, res) => res.sendFile(__dirname + '/static'))
-
+app.get("/pug",function(req,res){
+    const html = pug.render("p #{name}'s Pug source code!", {name:'toto'} )
+    console.log(html)
+    res.send(html)
+})
+app.use('/fr',frouter)
 export default app
