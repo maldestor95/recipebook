@@ -64,7 +64,7 @@
   },
   "include":["src/**/*"],
   "exclude": [ 
-    "tests","build","commitlint.config.js","**/__tests__/**/*",
+    "tests","build","commitlint.config.js","**/__tests__/**/*","**/*.spec.ts",
     "mocha.env.js",".mocharc.js"
   ]
 }
