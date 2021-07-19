@@ -6,6 +6,7 @@ node_modules
 /src/client/out
 /build
 /out
+tsconfig.tsbuildinfo
 
 # server folder
 ## code coverage report
