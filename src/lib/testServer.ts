@@ -1,20 +1,20 @@
 import express from "express";
-import { createServer } from "http";
+import { createServer, Server } from "http";
 
  const testApp = express();
- const initapp = (newport: number) => {
-  const port = 3000 | newport;
-  testApp.set('port', port);
-  var server = createServer(testApp);
-  server.listen(port, () => {
-    console.log(`server has started on port:${port} at ${new Date().toLocaleTimeString()}`);
-    if (process.env.NODE_ENV) {
-      console.log(`environment mode: ${process.env.NODE_ENV} `);
-    }
+ let server:Server;
+const port = 3001 ;
+testApp.set('port', port);
+server = createServer(testApp);
+server.listen(port, () => {
+  console.log(`server has started on port:${port} at ${new Date().toLocaleTimeString()}`);
+  if (process.env.NODE_ENV) {
+    console.log(`environment mode: ${process.env.NODE_ENV} `);
+  }
 
-  });
-  server.on('error', onError);
-  server.on('listening', onListening);
+});
+server.on('error', onError);
+server.on('listening', onListening);
   function onError(error: any) {
     if (error.syscall !== 'listen') {
       throw error;
@@ -48,19 +48,12 @@ import { createServer } from "http";
       console.log('Listening on ' + bind);
     }
   }
-};
- const route = (enpoint:string, route:express.Router)=>{
-    testApp.use(enpoint,route)
- }
- const deleteRoute = (enpoint:string)=>{
-    testApp.delete(enpoint)
- }
+//  const route = (enpoint:string, route:express.Router)=>{
+//     testApp.use(enpoint,route)
+//  }
+//  const deleteRoute = (enpoint:string)=>{
+//     testApp.delete(enpoint)
+//  }
 
-const Port=3001;
-export const testServer = {
-    Port : Port,
-    Address : `http://localhost:${Port}`,
-    app: initapp,
-    route:route,
-    delete: deleteRoute
-}
+export default testApp
+

@@ -8,7 +8,6 @@ const path = require('path')
 //Create Express Server
 const app = express();
 
-const port = 3000;
 const dev = process.env.NODE_ENV ? process.env.NODE_ENV : "production";
 
 
