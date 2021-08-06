@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node ./build/bin/www",
     "lint": "eslint . --ext .ts",
-    "start:dev": "nodemon ./src/bin/www.ts",
+    "start:dev": "nodemon ./src/app.ts",
     "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
     "test": "mocha -r mocha.env.js -r ts-node/register ",
     "test:coverage": "nyc --reporter=text mocha -r mocha.env.js -r ts-node/register",
@@ -52,5 +52,10 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "dependencies": {
+    "debounce": "^1.2.1",
+    "prompt-sync": "^4.2.0",
+    "yaml": "^1.10.2"
   }
 }
