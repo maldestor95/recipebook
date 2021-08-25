@@ -1,6 +1,9 @@
 ---
+
 title: Truite au four
+
 link:  Truiteaufour.md
+
 - ingredient: truite
   qty: 4
 - ingredient: Oignons
