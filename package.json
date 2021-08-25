@@ -54,8 +54,10 @@
     }
   },
   "dependencies": {
+    "@types/yargs": "^17.0.2",
     "debounce": "^1.2.1",
     "prompt-sync": "^4.2.0",
-    "yaml": "^1.10.2"
+    "yaml": "^1.10.2",
+    "yargs": "^17.1.1"
   }
 }
