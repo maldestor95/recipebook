@@ -1,0 +1,38 @@
+node_modules
+
+/test
+/zip
+/src/client/dist 
+/src/client/out
+/build
+/out
+tsconfig.tsbuildinfo
+.env
+
+# server folder
+## code coverage report
+/src/server/.nyc_output
+
+/src/server/build
+/src/server/tsconfig.tsbuildinfo
+
+
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+#editor
+.vscode
+.ssh
+
+# local env files
+.env.local
+.env.*.local
+.env
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
