@@ -11,8 +11,6 @@
   link:  Cheesesconessalted.md
 - title: chirashi saumon avocat.md
   link:  chirashisaumonavocat.md
-- title: Coulibiac de saumon.md
-  link:  Coulibiacdesaumon.md
 - title: curry d'agneau.md
   link:  currydagneau.md
 - title: Dinde au maroille.md
