@@ -5,61 +5,61 @@
   link: baraupetitlegume.md
 - title : Coulibiac de Saumon
   link: coulibiacdesaumon.md
-- title: Burger d'agneau et patates douces.md
+- title: Burger d'agneau et patates douces
   link:  burgerdagneauetpatatesdouces.md
-- title: Cheese scones salés.md
+- title: Cheese scones salés
   link:  Cheesesconessalted.md
-- title: chirashi saumon avocat.md
+- title: chirashi saumon avocat
   link:  chirashisaumonavocat.md
-- title: curry d'agneau.md
+- title: curry d'agneau
   link:  currydagneau.md
-- title: Dinde au maroille.md
+- title: Dinde au maroille
   link:  Dindeaumaroille.md
-- title: Dos de cabillaud et son crumble de chorizo au parmesan.md
+- title: Dos de cabillaud et son crumble de chorizo au parmesan
   link:  Dosdecabillaudetsoncrumbledechorizoauparmesan.md
-- title: Effiloché de porc.md
+- title: Effiloché de porc
   link:  Effilochedeporc.md
-- title: Encornets.md
+- title: Encornets
   link:  Encornets.md
-- title: Galette quinoa courgettes.md
+- title: Galette quinoa courgettes
   link:  Galettequinoacourgettes.md
-- title: Gauffres.md
+- title: Gauffres
   link:  Gauffres.md
-- title: Houmous.md
+- title: Houmous
   link:  Houmous.md
-- title: Lasagne au saumon et à l'origan.md
+- title: Lasagne au saumon et à l'origan
   link:  Lasagneausaumonorigan.md
-- title: Lotte et sa sauce inratable.md
+- title: Lotte et sa sauce inratable
   link:  Lotteetsasauceinratable.md
-- title: Mousse au chocolat.md
+- title: Mousse au chocolat
   link:  Mousseauchocolat.md
-- title: Muffin-topped winter beef Stew.md
+- title: Muffin-topped winter beef Stew
   link:  muffin-toppedwinterbeefstew.md
-- title: Pate brisée.md
+- title: Pate brisée
   link:  Patebrisee.md
-- title: Pate levée.md
+- title: Pate levée
   link:  Patelevee.md
-- title: Poulet au curry et lait de coco.md
+- title: Poulet au curry et lait de coco
   link:  Poulet au curry et lait de coco.md
-- title: Pâtes courgette ricotta.md
+- title: Pâtes courgette ricotta
   link:  Pâtes courgette ricotta.md
-- title: Ramen au poulet.md
+- title: Ramen au poulet
   link:  Ramen au poulet.md
-- title: Riz Cantonais.md
+- title: Riz Cantonais
   link:  rizcantonais.md
-- title: Rôti de porc au miel et aux pommes.md
+- title: Rôti de porc au miel et aux pommes
   link:  Rôti de porc au miel et aux pommes.md
-- title: Salade Quinoa.md
+- title: Salade Quinoa
   link:  Salade Quinoa.md
-- title: Sauce BBQ maison.md
+- title: Sauce BBQ maison
   link:  Sauce BBQ maison.md
-- title: Sauté de dinde au curry.md
+- title: Sauté de dinde au curry
   link:  Sauté de dinde au curry.md
-- title: Soupe d'asperges.md
+- title: Soupe d'asperges
   link:  Soupe d'asperges.md
-- title: Soupe lentille corail et carottes.md
+- title: Soupe lentille corail et carottes
   link:  Soupe lentille corail et carottes.md
-- title: Tagine de poulet aux raisins.md
+- title: Tagine de poulet aux raisins
   link:  Tagine de poulet aux raisins.md
 - title: Truite au four
   link:  Truiteaufour.md
