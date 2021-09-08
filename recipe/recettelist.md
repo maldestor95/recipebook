@@ -34,11 +34,11 @@
 - title: Mousse au chocolat.md
   link:  Mousseauchocolat.md
 - title: Muffin-topped winter beef Stew.md
-  link:  Muffin-topped winter beef Stew.md
+  link:  muffin-toppedwinterbeefstew.md
 - title: Pate brisée.md
-  link:  Pate brisée.md
+  link:  Patebrisee.md
 - title: Pate levée.md
-  link:  Pate levée.md
+  link:  Patelevee.md
 - title: Poulet au curry et lait de coco.md
   link:  Poulet au curry et lait de coco.md
 - title: Pâtes courgette ricotta.md
