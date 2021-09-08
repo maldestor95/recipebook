@@ -4,7 +4,7 @@
 - title: Bar aux petits légumes
   link: baraupetitlegume.md
 - title : Coulibiac de Saumon
-  link: Coulibiacdesaumon.md
+  link: coulibiacdesaumon.md
 - title: Burger d'agneau et patates douces.md
   link:  burgerdagneauetpatatesdouces.md
 - title: Cheese scones salés.md
