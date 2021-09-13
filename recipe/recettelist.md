@@ -56,13 +56,16 @@
 - title: Sauté de dinde au curry
   link:  Sauté de dinde au curry.md
 - title: Soupe d'asperges
-  link:  Soupe d'asperges.md
+  link:  soupedasperges.md
 - title: Soupe lentille corail et carottes
-  link:  Soupe lentille corail et carottes.md
+  link:  soupelentillecorailetcarottes.md
 - title: Tagine de poulet aux raisins
-  link:  Tagine de poulet aux raisins.md
+  link:  taginedepouletauxraisins.md
 - title: Truite au four
   link:  Truiteaufour.md
+- title: Croissants aux amandes
+  link:  croissantsauxamandes.md
+
 
 
 
