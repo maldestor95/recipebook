@@ -1,4 +1,10 @@
 ---
+
+title: Taboulé
+
+link:  taboule.md
+
+ingredients:
 - ingredient: Couscous
   qty: 200g
 - ingredient: oignons nouveaux
