@@ -1,4 +1,8 @@
 ---
+title: Sauce BBQ Maison
+link:  saucebbqmaison.md
+
+ingredients:
 - ingredient: oignon
   qty: 1
 - ingredient: ail

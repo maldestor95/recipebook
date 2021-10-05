@@ -1,4 +1,8 @@
 ---
+title: Roti de porc au miel et aux pommes
+link:  rotideporcaumieletauxpommes.md
+
+ingredients:
 - ingredient: roti de  porc
   qty: 1kg
 - ingredient: pommes

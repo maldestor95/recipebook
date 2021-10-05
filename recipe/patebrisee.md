@@ -1,4 +1,8 @@
 ---
+title: Pate Brisee
+link:  patebrisee.md
+
+ingredients:
 - ingredient: farine
   qty: 1kg
 - ingredient: sel

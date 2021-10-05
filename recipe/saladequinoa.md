@@ -1,4 +1,10 @@
 ---
+title: Salade de Quinoa
+link:  saladequinoa.md
+
+ingredients:
+- ingredient: quinoa
+  qty: 200g
 ...
 # Salade de Quino pour 4 personnes
 
