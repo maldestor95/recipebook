@@ -1,4 +1,8 @@
 ---
+title: Bar aux petits légumes
+link:  baraupetitlegume.md
+
+ingredients:
 - ingredient: Bar
   qty: 800g
 - ingredient: carottes

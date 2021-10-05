@@ -1,4 +1,8 @@
 ---
+title: Houmous
+link:  houmous.md
+
+ingredients:
 - ingredient: pois chiche
   qty: 1 boite
 - ingredient: citron

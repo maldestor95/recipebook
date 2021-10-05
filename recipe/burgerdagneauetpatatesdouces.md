@@ -1,4 +1,10 @@
 ---
+title: Burger d'agneau et patates douces
+link:  burgerdagneauetpatatesdouces.md
+
+ingredients:
+- ingredient: agneau
+  qty: 1Kg
 ...
 # ÉTAPE 1 :
 * Enlever le maximum de gras de la viande et la passer au hachoir.

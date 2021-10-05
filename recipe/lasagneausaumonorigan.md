@@ -1,4 +1,8 @@
 ---
+title: Lasagne au saumon et origan
+link:  lasagneausaumonorigan.md
+
+ingredients:
 - ingredient: beurre
   qty: 60g
 - ingredient: farine

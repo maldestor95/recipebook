@@ -1,4 +1,8 @@
 ---
+title: Curry d'agneau
+link:  currydagneau.md
+
+ingredients:
 - ingredient: agneau
   qty: 1 épaule d'agneau
 - ingredient: tomates
