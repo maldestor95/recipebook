@@ -1,8 +1,11 @@
-import { promises } from "dns";
+// import { promises } from "dns";
 import { readFile } from "fs/promises";
 import * as Joi from 'joi';
-import { string } from "joi";
+// import { string } from "joi";
 import * as Yaml from 'yaml'
+import * as fs from 'fs/promises'
+
+const recipePath='recipe/'
 
 const convertMarkdown= function(mdData:string):{ok:boolean,yml:string|null,md:string|null} {
     const errorMsg:{ok:boolean,yml:string|null,md:string|null}={ok:false,yml:null,md:null}
@@ -36,7 +39,8 @@ const recipeYAMLvalidation = function (yml:string|null): Joi.ValidationError|und
     const valid=schema.validate(parsedYML)
     return valid.error
 }
-export const  validaterecipe=async function(filename:string):Promise<Joi.ValidationError|{err:string}|boolean> {
+
+const  validaterecipe=async function(filename:string):Promise<Joi.ValidationError|{err:string}|boolean> {
     //open file
     const response = await readFile(filename,{encoding:'utf-8'})
     .then((fileData:string)=>{
@@ -55,4 +59,20 @@ export const  validaterecipe=async function(filename:string):Promise<Joi.Validat
     })
     return response
 }
-
+export const validaterecipefolder= function():void{
+    fs.readdir(recipePath)
+    .then(filenames => {
+        for (let filename of filenames) {
+            if (filename!='recettelist.md')
+            validaterecipe(`${recipePath}${filename}`)
+            .then((result)=>{
+                if (result!=true) console.log(filename, result)
+            })
+            .catch((err)=>{console.log(filename,err)})
+        }
+        console.log('validation complete')
+    })
+    .catch(err => {
+        throw(err)
+    })
+}
