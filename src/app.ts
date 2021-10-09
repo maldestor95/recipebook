@@ -3,24 +3,25 @@
 import { validaterecipe } from './validaterecipe'
 import * as fs from 'fs/promises'
 
-// console.log(validaterecipe('recipe/taboule.md'))
-// validaterecipe('recipe/truiteaufour.md').then((r)=>{console.log(r)})
-// 
+const validaterecipefolder= function():void{
 
-    	const recipePath='recipe/'
+    const recipePath='recipe/'
     fs.readdir(recipePath)
-  
-    // If promise resolved and
-    // datas are fetched
     .then(filenames => {
         for (let filename of filenames) {
+            if (filename!='recettelist.md')
             validaterecipe(`${recipePath}${filename}`)
-            .then((result)=>{console.log(filename, result)})
+            .then((result)=>{
+                if (result!=true) console.log(filename, result)
+
+            })
             .catch((err)=>{console.log(filename,err)})
         }
+        console.log('validation complete')
     })
-  
-    // If promise is rejected
     .catch(err => {
-        console.log(err)
+        throw(err)
     })
+}
+
+validaterecipefolder()
