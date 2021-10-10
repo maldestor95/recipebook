@@ -12,4 +12,4 @@ import {generateRecipelist} from './recipelist'
      console.log(data)
  })
 */
- validaterecipefolder()
+validaterecipefolder().then(console.log)
