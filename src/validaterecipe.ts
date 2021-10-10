@@ -42,22 +42,23 @@ const recipeYAMLvalidation = function (yml:string|null): Joi.ValidationError|und
 
 const  validaterecipe=async function(filename:string):Promise<Joi.ValidationError|{err:string}|boolean> {
     //open file
-    const response = await readFile(filename,{encoding:'utf-8'})
-    .then((fileData:string)=>{
-        //convert file
-        const parsedFile = convertMarkdown(fileData)
-        if (parsedFile.ok==false) throw {err:`couldn\'t parse file ${filename}`}
-        //validation yml
-        const valid=recipeYAMLvalidation(parsedFile.yml)           
-        if  (valid==undefined) return true
-        throw valid
+    return new Promise((resolve,reject)=>{
+        const response = readFile(filename,{encoding:'utf-8'})
+        .then((fileData:string)=>{
+            //convert file
+            const parsedFile = convertMarkdown(fileData)
+            if (parsedFile.ok==false) reject ({err:`couldn\'t parse file ${filename}`})
+            //validation yml
+            const valid=recipeYAMLvalidation(parsedFile.yml)           
+            if  (valid==undefined) resolve(true)
+            reject(valid)
+        })
+        .catch((err)=>{
+            // console.log(err)
+            // throw {err: `couldn\'t open file ${filename}`}
+            reject( err)
+        })
     })
-    .catch((err)=>{
-        // console.log(err)
-        // throw {err: `couldn\'t open file ${filename}`}
-        return err
-    })
-    return response
 }
 export const validaterecipefolder= function():void{
     fs.readdir(recipePath)
@@ -67,6 +68,7 @@ export const validaterecipefolder= function():void{
             validaterecipe(`${recipePath}${filename}`)
             .then((result)=>{
                 if (result!=true) console.log(filename, result)
+
             })
             .catch((err)=>{console.log(filename,err)})
         }

@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 
 import { validaterecipefolder } from './validaterecipe'
+import {generateRecipelist} from './recipelist'
 
-
-
-
-validaterecipefolder()
+ /*
+ generateRecipelist()
+ .then(data=>{
+     console.log(data)
+    })
+.catch(data=>{
+     console.log(data)
+ })
+*/
+ validaterecipefolder()
