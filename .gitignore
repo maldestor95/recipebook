@@ -11,7 +11,8 @@ tsconfig.tsbuildinfo
 
 # server folder
 ## code coverage report
-/src/server/.nyc_output
+.nyc_output
+coverage
 
 /src/server/build
 /src/server/tsconfig.tsbuildinfo
