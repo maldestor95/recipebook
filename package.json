@@ -11,8 +11,8 @@
     "test": "mocha -r mocha.env.js -r ts-node/register ",
     "test:coverage": "nyc --reporter=text mocha -r mocha.env.js -r ts-node/register",
     "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
-    "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch",
-    "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors"
+    "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch --colors",
+    "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors --watch"
   },
   "repository": {
     "type": "git",
