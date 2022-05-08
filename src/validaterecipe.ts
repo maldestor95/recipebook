@@ -3,27 +3,29 @@ import * as Joi from 'joi';
 import * as Yaml from 'yaml'
 import constants from './constants'
 
-type recipeValidationType = Joi.ValidationError|{err:string}|boolean|{yml?:string|null,md?:string|null}
-const convertMarkdown= function(mdData:string):{ok:boolean,yml:string|null,md:string|null} {
-    const errorMsg:{ok:boolean,yml:string|null,md:string|null}={ok:false,yml:null,md:null}
+type recipeValidationType = {
+    err: Joi.ValidationError|null
+    data: {yml:string|null,md:string|null}
+}
+type validateRecipeOption = {
+    yml :boolean,
+    md: boolean,
+}
+export const convertMarkdownRecipe= function(mdData:string):{err:string|null,data: {yml:string|null,md:string|null}} {
 
     const startYamlPosition = mdData.indexOf('---');
-    if (startYamlPosition <0) return errorMsg
+    if (startYamlPosition <0) return {err:'no Yaml Data at the beginning of the markdown document',data:{yml:null,md:null}}
     
     const endYamlPosition = mdData.indexOf('...');
-    if (endYamlPosition<startYamlPosition) return errorMsg
-    if (endYamlPosition<0) errorMsg
+    if (endYamlPosition<startYamlPosition) return {err:'no Yaml Data at the beginning of the markdown document',data:{yml:null,md:null}}
 
-    //find YAML part
-    const yml= mdData.substring(0, endYamlPosition + 3);
-    
-    //find MD part
-    const md= mdData.substring(endYamlPosition + 3);
+    const extractYmlPart= mdData.substring(0, endYamlPosition + 3);   
+    const extractMdPart= mdData.substring(endYamlPosition + 3);
 
-    return {ok:true,yml,md}
+    return {err:null,data:{yml:extractYmlPart,md:extractMdPart}}
 }
-const recipeYAMLvalidation = function (yml:string|null): Joi.ValidationError|undefined  {
-    const parsedYML=Yaml.parse(<string>yml)
+export const recipeYAMLvalidation = function (yml:string|null): {err:string|null, yml:object|null}  {
+    // Joi helps validating a yaml structure
     const schema = Joi.object({
         title: Joi.string(),
         link: Joi.string(),
@@ -33,32 +35,39 @@ const recipeYAMLvalidation = function (yml:string|null): Joi.ValidationError|und
         })
             .min(1)
     })
+    const parsedYML=Yaml.parse(<string>yml)
     const valid=schema.validate(parsedYML)
-    return valid.error
+    // console.log("valid:",valid)
+    if (valid.error) {
+        // console.log(valid.error)
+        return {err:valid.error.message,yml:null}
+    }
+    return {err:null,yml:parsedYML}
 }
 
-type validateRecipeOption = {
-    yml? :boolean,
-    md?: boolean,
-}
-const  validaterecipe=async function(filename:string,option?:validateRecipeOption):Promise<recipeValidationType> {
+
+const  validaterecipe=async function(filename:string):Promise<recipeValidationType> {
     return new Promise((resolve,reject)=>{
         const response = readFile(filename,{encoding:'utf-8'})
         .then((fileData:string)=>{
-            //convert file
-            const parsedFile = convertMarkdown(fileData)
-            if (parsedFile.ok==false) reject ({err:`couldn\'t parse file ${filename}`})
-            //validation yml
-            const valid=recipeYAMLvalidation(parsedFile.yml)           
-            if  (valid==undefined) {
-                if (option== undefined )resolve(true)
-                if (option?.yml) resolve({yml:parsedFile.yml})
-                if (option?.md) resolve({md:parsedFile.md})
+            const parsedFile = convertMarkdownRecipe(fileData)
+            if (parsedFile.err) reject ({err:`${filename}:\n${parsedFile.err}`})
+
+            const isYamlValid=recipeYAMLvalidation(parsedFile.data.yml)           
+            if  (!isYamlValid.err) {
+                resolve(
+                    {err:null,
+                         data:{
+                            yml:parsedFile.data.yml,
+                            md:parsedFile.data.md
+                            }
+                    }
+                )
             }
-            reject(valid)
+            reject({err:isYamlValid.err})
         })
         .catch((err)=>{
-            reject( err)
+            reject( {err:JSON.stringify(err)})
         })
     })
 }
@@ -67,7 +76,7 @@ export const validaterecipefolder= async function():Promise<boolean>{
     await readdir(constants.recipePath)
     .then(filenames => {
         for (let filename of filenames) {
-            if (filename!='recettelist.md')
+            if (filename!='recettelist.yml')
             validaterecipePromise.push(validaterecipe(`${constants.recipePath}${filename}`))
         }
     })
@@ -91,8 +100,7 @@ export const createRecipeArray= async function ():Promise<Array<{title:string, l
     await readdir(constants.recipePath)
     .then(filenames => {
         for (let filename of filenames) {
-            if (filename!='recettelist.md')
-            recipeArrayPromise.push(validaterecipe(`${constants.recipePath}${filename}`,{yml:true}))
+            if (filename!='recettelist.yml') recipeArrayPromise.push(validaterecipe(`${constants.recipePath}${filename}`))
         }
     })
     .catch(err => {
@@ -104,13 +112,15 @@ export const createRecipeArray= async function ():Promise<Array<{title:string, l
 
     await Promise.all(recipeArrayPromise)
     .then(ymlstringArray=>{
-        let ymldata=ymlstringArray.map(ymlstring=>{
-            console.log(ymlstring)
-            const parsedYML= Yaml.parse(<string>ymlstring)
-            return {title:parsedYML.title, link:parsedYML.link}
-        })
-        return ymldata
-    
+        // let ymldata=ymlstringArray.map(ymlstring=>{
+        //     console.log(ymlstring)
+        //     const parsedYML= Yaml.parse(<string>ymlstring)
+        //     return {title:parsedYML.title, link:parsedYML.link}
+        // })
+        // return ymldata
+        // let t = ymlstringArray[1]
+        // console.log(t?t.yml:'none')
+        return ymlstringArray[2]
     })
     .then(res=> {console.log(res)})
     .catch((err=>{ console.log(err)
@@ -135,3 +145,10 @@ export const createRecipeArray= async function ():Promise<Array<{title:string, l
     });
 }
 */
+export const test = {
+    createRecipeArray,
+    validaterecipe,
+    validaterecipefolder,
+    convertMarkdownRecipe,
+    recipeYAMLvalidation
+}
