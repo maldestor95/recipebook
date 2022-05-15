@@ -23,7 +23,7 @@ function extractTitleAndLink(recipe: recipeType): { title: string, link: string 
 function parseDirectoryPromise(dirName:string, dirFiles: string[]): Array<Promise<recipeType>> {
     const analyseFiles: Array<Promise<recipeType>> = []
     dirFiles.forEach(fileName => {
-        if (fileName != 'recettelist.yml')
+        if (fileName != 'recipelist.yml')
             analyseFiles.push(parseRecipe(`${dirName}/${fileName}`))
     })
     return analyseFiles
