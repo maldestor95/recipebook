@@ -5,11 +5,9 @@ import {generateRecipelist} from './recipelist'
 
  /*
  generateRecipelist()
- .then(data=>{
-     console.log(data)
-    })
-.catch(data=>{
-     console.log(data)
- })
 */
 validaterecipefolder().then(console.log)
+.then(d=>
+    generateRecipelist('recipe','recipe/recipelist.yml')
+)
+//createRecipeArray()

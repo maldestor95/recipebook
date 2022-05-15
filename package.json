@@ -4,7 +4,7 @@
   "description": "Recipe folder with desciption and ingredients list",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./build/bin/www",
+    "start": "npm run build && node ./build/app.js",
     "lint": "eslint . --ext .ts",
     "start:dev": "nodemon ./src/app.ts",
     "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
