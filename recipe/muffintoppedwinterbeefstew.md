@@ -1,4 +1,8 @@
 ---
+title: Muffin topped winter beef stew.md
+link:  muffintoppedwinterbeefstew.md
+
+ingredients:
 - ingredient: Boeuf à braiser
   qty: 500g, coupé en dé
 - ingredient: farine

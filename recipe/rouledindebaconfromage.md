@@ -1,4 +1,8 @@
 ---
+title: Roule Dinde Bacon Fromage
+link:  rouledindebaconfromage.md
+
+ingredients:
 - ingredient: filet de Poulet
   qty: 4
 - ingredient: bacon

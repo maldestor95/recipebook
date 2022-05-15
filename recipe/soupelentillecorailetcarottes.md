@@ -1,4 +1,9 @@
 ---
+title: Soupe lentilles corail et carottes
+
+link:  soupelentillecorailetcarottes.md
+
+ingredients:
 - ingredient: lentilles corail
   qty: 200g
 - ingredient: carotte

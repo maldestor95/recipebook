@@ -1,4 +1,8 @@
 ---
+title: Dinde au maroille
+link:  dindeaumaroille.md
+
+ingredients:
 - ingredient: dinde
   qty: 400g
 - ingredient: sel

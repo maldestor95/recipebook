@@ -1,4 +1,8 @@
 ---
+title: Mousse au chocolat
+link:  mousseauchocolat.md
+
+ingredients:
 - ingredient: Chocolat 
   qty: 200g
 - ingredient: oeufs

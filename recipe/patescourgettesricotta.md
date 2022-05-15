@@ -1,4 +1,8 @@
 ---
+title: Pates courgettes ricotta
+link:  patescourgettesricotta.md
+
+ingredients:
 - ingredient: huile d'olive
   qty: 2 cuillères à soupe
 - ingredient: échalottes

@@ -1,4 +1,8 @@
 ---
+title: Cheesescones salted
+link:  cheesesconessalted.md
+
+ingredients:
 - ingredient: self raising flour
   qty: 150g
 - ingredient: yaourt nature

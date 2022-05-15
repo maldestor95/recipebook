@@ -4,22 +4,23 @@ title: Truite au four
 
 link:  Truiteaufour.md
 
-- ingredient: truite
-  qty: 4
-- ingredient: Oignons
-  qty: 4
-- ingredient: persil
-  qty: 1 bouquet
-- ingredient: citron
-  qty: 2
-- ingredient: huile d'olive
-  qty: 1 cuillère
-- ingredient: vin blanc
-  qty: 10cl
-- ingredient: sel
-  qty: 1 pincée
-- ingredient: poivre
-  qty: 1 pincée
+ingredients:
+    - ingredient: truite
+      qty: 4
+    - ingredient: Oignons
+      qty: 4
+    - ingredient: persil
+      qty: 1 bouquet
+    - ingredient: citron
+      qty: 2
+    - ingredient: huile d'olive
+      qty: 1 cuillère
+    - ingredient: vin blanc
+      qty: 10cl
+    - ingredient: sel
+      qty: 1 pincée
+    - ingredient: poivre
+      qty: 1 pincée
 ...
 * Préchauffez votre four à 150 °C. Ciselez finement les oignons nouveaux et le persil.
 * Dans un grand plat allant au four, déposez les rondelles d'oignons nouveaux, et versez le vin blanc

@@ -1,4 +1,8 @@
 ---
+title: Lotte et sa sauce inratable
+link:  lotteetsasauceinratable.md.md
+
+ingredients:
 - ingredient: echalottes
   qty: 2  
 - ingredient: vin blanc sec

@@ -1,4 +1,8 @@
 ---
+title: Croissants aux amandes
+link:  croissantsauxamandes.md
+
+ingredients:
 - ingredient: croissants
   qty: 4
 - ingredient: Sucre en poudre

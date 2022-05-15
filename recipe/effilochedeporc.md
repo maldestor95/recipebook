@@ -1,4 +1,8 @@
 ---
+title: Effiloche de porc
+link:  effilochedeporc.md
+
+ingredients:
 - ingredient: échine de porc
   qty: 1.8kg
 - ingredient: oignons rouges

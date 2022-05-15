@@ -1,4 +1,8 @@
 ---
+title: Chirashi saumon avocat
+link:  chirashisaumonavocat.md
+
+ingredients:
 - ingredient: saumon cru
   qty: 300g
 - ingredient: avocats

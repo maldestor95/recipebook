@@ -1,24 +1,26 @@
 {
   "name": "recipebook",
   "version": "1.0.0",
-  "description": "Ce dépot  contient les recettes au format markdown avec un entête YML",
+  "description": "Recipe folder with desciption and ingredients list",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./build/bin/www",
+    "start": "npm run build && node ./build/app.js",
     "lint": "eslint . --ext .ts",
     "start:dev": "nodemon ./src/app.ts",
     "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
     "test": "mocha -r mocha.env.js -r ts-node/register ",
     "test:coverage": "nyc --reporter=text mocha -r mocha.env.js -r ts-node/register",
     "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
-    "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch",
-    "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors"
+    "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch --colors",
+    "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors --watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maldestor95/recipebook.git"
   },
-  "author": "",
+  "author": 
+  { "name" : "maldestor95"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/maldestor95/recipebook/issues"
@@ -40,6 +42,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.7.0",
     "husky": "^4.2.5",
+    "joi": "^17.4.2",
     "mocha": "^8.1.3",
     "nodemon": "^2.0.2",
     "nyc": "^15.1.0",
@@ -50,7 +53,8 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run test & npm run start"
     }
   },
   "dependencies": {

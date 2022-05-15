@@ -1,11 +1,15 @@
 ---
+title: Coulibiac de saumon
+link:  coulibiacdesaumon.md
+
+ingredients:
 - ingredient: Saumon   
   qty: 400g
 - ingredient: Epinards
   qty: 500g
 - ingredient: riz
   qty: 80
-- g- ingredient: comté râpé
+- ingredient: comté râpé
   qty: 150g
 - ingredient: Aneth
   qty: 1
