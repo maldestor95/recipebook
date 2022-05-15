@@ -97,13 +97,13 @@ describe("ValidateRecipe", function () {
 				done()})
 		})
 		it("shall fail ", done => {
-			valid.validaterecipe('src/test/badformat.md')
+			valid.validaterecipe('src/validaterecipe/test/badformat.md')
 			.then(res=>{
 				assert(res===null)
 				done()})
 			.catch(err=>{
 
-				assert(err.err=='src/test/badformat.md:\nno Yaml Data at the beginning of the markdown document')
+				assert(err.err=='src/validaterecipe/test/badformat.md:\nno Yaml Data at the beginning of the markdown document')
 				done()})
 		})
 	})
