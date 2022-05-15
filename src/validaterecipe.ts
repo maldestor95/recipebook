@@ -64,7 +64,7 @@ const  validaterecipe=async function(filename:string):Promise<recipeValidationTy
                     }
                 )
             }
-            reject({err:isYamlValid.err})
+            reject({err:{filename,yamlvalidation:isYamlValid.err}})
         })
         .catch((err)=>{
             reject( {err:JSON.stringify(err)})
@@ -76,7 +76,7 @@ export const validaterecipefolder= async function():Promise<boolean>{
     await readdir(constants.recipePath)
     .then(filenames => {
         for (let filename of filenames) {
-            if (filename!='recettelist.yml')
+            if (filename!='recipelist.yml')
             validaterecipePromise.push(validaterecipe(`${constants.recipePath}${filename}`))
         }
     })
