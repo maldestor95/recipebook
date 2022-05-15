@@ -12,7 +12,7 @@ ingredients:
 - ingredient: beurre
   qty: 500g
 ...
-* faire fondre le beurre
-*  mélanger farine, eau, beurre et sel
-* faire reposer 2h au frigo
-* diviser en 7 boules
+* Faire fondre le beurre
+* Mélanger farine, eau, beurre et sel
+* Faire reposer 2h au frigo
+* Diviser en 7 boules
