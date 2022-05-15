@@ -1,7 +1,7 @@
 {
   "name": "recipebook",
   "version": "1.0.0",
-  "description": "Ce dépot  contient les recettes au format markdown avec un entête YML",
+  "description": "Recipe folder with desciption and ingredients list",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node ./build/bin/www",
@@ -18,7 +18,9 @@
     "type": "git",
     "url": "git+https://github.com/maldestor95/recipebook.git"
   },
-  "author": "",
+  "author": 
+  { "name" : "maldestor95"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/maldestor95/recipebook/issues"
