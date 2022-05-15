@@ -5,17 +5,23 @@ function createRecipe(){
 
 }
 
-export type ingredient={
+export type ingredientType={
     ingredient: string,
     qty : string |number 
 }
+export type recipeType = {
+  title:string,
+  link:string,
+  ingredients:[ingredientType],
+  instructions:string
+}
 
 export class Ingredients{
-  list:[ingredient?]
+  list:[ingredientType?]
   constructor(){
     this.list=[];
   }
-  addIngredient(newIngredient: ingredient){
+  addIngredient(newIngredient: ingredientType){
       this.list.push(newIngredient)
   }
   ingredientsToYAML():string{

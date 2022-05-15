@@ -1,4 +1,10 @@
 ---
+title: Soupe d'asperges
+link:  soupedasperges.md
+
+ingredients:
+- ingredient: asperges
+  qty: 1 botte
 ...
 * Peler et débiter les asperges en tronçon
 * Peler et débiter les pommes de terre en morceau

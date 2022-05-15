@@ -1,4 +1,8 @@
 ---
+title: Dos de cabillaud et son crumble de chorizo au parmesan
+link:  dosdecabillaudetsoncrumbledechorizoauparmesan.md
+
+ingredients:
 - ingredient: cabillaud
   qty: dos 600g
 - ingredient: chorizo

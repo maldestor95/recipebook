@@ -1,4 +1,8 @@
 ---
+title: Gauffres
+link:  gauffres.md
+
+ingredients:
 - ingredient: Farine
   qty: 500g
 - ingredient: Oeufs

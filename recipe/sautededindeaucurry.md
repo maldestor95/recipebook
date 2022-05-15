@@ -1,4 +1,8 @@
 ---
+title: Sauté de dinde au curry
+link:  sautededindeaucurry.md
+
+ingredients:
 - ingredient: sel
   qty: 1
 - ingredient: dinde

@@ -1,4 +1,9 @@
 ---
+title: Tagine de poulet aux raisins
+
+link:  taginedepouletauxraisins.md
+
+ingredients:
 - ingredient: cuisses de poulet
   qty: 4
 - ingredient: Oignons

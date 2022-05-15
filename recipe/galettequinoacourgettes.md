@@ -1,4 +1,8 @@
 ---
+title: Galettes quinoa courgettes
+link:  galettequinoacourgettes.md
+
+ingredients:
 - ingredient: courgettes
   qty: 2
 - ingredient: quinoa

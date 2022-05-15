@@ -1,4 +1,8 @@
 ---
+title: Pate levée
+link:  patelevee.md
+
+ingredients:
 - ingredient: farine
   qty: 400g
 - ingredient: oeufs

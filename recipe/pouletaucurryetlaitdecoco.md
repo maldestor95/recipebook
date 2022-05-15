@@ -1,4 +1,10 @@
 ---
+title: Poulet au curry et lait de coco
+link:  pouletaucurryetlaitdecoco.md
+
+ingredients:
+- ingredient: oignon
+  qty : 2
 ...
 oignon
 tomates pelee

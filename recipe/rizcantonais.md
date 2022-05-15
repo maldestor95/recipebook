@@ -1,5 +1,11 @@
 ---
+title: Riz Cantonnais
+link:  rizcantonnais.md
+ingredients:
+- ingredient: riz
+  qty: 0
 ...
+
 #Préparation
 * cuire le riz
 * éplucher et couper la carotte en petits dés
