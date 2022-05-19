@@ -8,8 +8,6 @@ import {
 } from '../recipelist'
 
 
-
-
 describe("RecipeList", function () {
     it("extract recipe data", done => {
         parseRecipe('recipe/baraupetitlegume.md')
@@ -25,14 +23,4 @@ describe("RecipeList", function () {
                 done()
             })
     })
-    // it("createRecipeArray", done => {
-    //     generateRecipelist('recipe','src/test/list.yml')
-    //     .then(res=>{
-    //         done()
-    //     } )
-    //     .catch(err=>{
-    //         console.log(err); done()
-    //     })
-        
-    // })
 })

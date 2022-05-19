@@ -11,13 +11,13 @@ type validateRecipeOption = {
     yml :boolean,
     md: boolean,
 }
-export const convertMarkdownRecipe= function(mdData:string):{err:string|null,data: {yml:string|null,md:string|null}} {
+export const convertMarkdownRecipe= function(mdData:string):{err:string|null,data: {yml:string,md:string}} {
 
     const startYamlPosition = mdData.indexOf('---');
-    if (startYamlPosition <0) return {err:'no Yaml Data at the beginning of the markdown document',data:{yml:null,md:null}}
+    if (startYamlPosition <0) return {err:'no Yaml Data at the beginning of the markdown document',data:{yml:"",md:""}}
     
     const endYamlPosition = mdData.indexOf('...');
-    if (endYamlPosition<startYamlPosition) return {err:'no Yaml Data at the beginning of the markdown document',data:{yml:null,md:null}}
+    if (endYamlPosition<startYamlPosition) return {err:'no Yaml Data at the beginning of the markdown document',data:{yml:"",md:""}}
 
     const extractYmlPart= mdData.substring(0, endYamlPosition + 3);   
     const extractMdPart= mdData.substring(endYamlPosition + 3);

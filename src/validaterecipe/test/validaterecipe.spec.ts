@@ -50,8 +50,8 @@ describe("ValidateRecipe", function () {
 			const dummyMarkdown= Yaml.stringify(ymldata)+'\n...'+mddata
 			const convertedMarkdown= valid.convertMarkdownRecipe(dummyMarkdown)
 			assert(convertedMarkdown.err==='no Yaml Data at the beginning of the markdown document',`${convertedMarkdown.err}`)
-			assert(convertedMarkdown.data.md==null,'error in markdown')
-			assert(convertedMarkdown.data.yml==null,'error in yml')
+			assert(convertedMarkdown.data.md=="",'error in markdown')
+			assert(convertedMarkdown.data.yml=="",'error in yml')
 			done()
 		})
 	})
