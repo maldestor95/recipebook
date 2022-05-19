@@ -1,17 +1,15 @@
 import {recipeReference, recipeType} from './recipe'
 import * as Yaml from 'yaml'
 import axios from "axios" 
-import { parseRecipe } from './recipelist'
 import { convertMarkdownRecipe } from './validaterecipe'
-
-const pathToRecipeRepository=`https://raw.githubusercontent.com/maldestor95/recipebook/master/recipe/`
+import {recipePathUrl} from "./constants"
 /**
  * Get recipe List from published repository 
  * @returns array of Recipe reference [{title:'example',link:'link example'}]
  */
 export async function getRecipeList():Promise<Array<recipeReference>> {
      const t:Array<recipeReference>=[{title:'toto',link:'tata'}]
-    const recipePath=`${pathToRecipeRepository}recipelist.yml`
+    const recipePath=`${recipePathUrl}recipelist.yml`
      const result = await axios.get(recipePath)
      return new Promise((resolve, reject) => {
         if(result.status!=200) reject(`could not access ${recipePath}`)
@@ -20,18 +18,17 @@ export async function getRecipeList():Promise<Array<recipeReference>> {
 }
 /**
  * Get recipe from the recipe Repository
- * @param recipeUrl name of the file to open from the repository
+ * @param recipeFileName name of the file to open from the repository
  * @returns a recipe with the list of ingredients and instructions
  */
-export async function getRecipeFromURL(recipeUrl: string):Promise<recipeType> {
-   const recipePath = `${pathToRecipeRepository}${recipeUrl}`
-   // console.log(recipePath)
+export async function getRecipeFromURL(recipeFileName: string):Promise<recipeType> {
+   const recipePath = `${recipePathUrl}${recipeFileName}`
    const result = await axios.get(recipePath)
    return new Promise((resolve, reject) => {
-      if(result.status!=200) reject(`could not access ${recipeUrl}`)
+      if(result.status!=200) reject(`could not access ${recipeFileName}`)
 
       const recipeRawMarkdown=convertMarkdownRecipe(result.data)
-      if (recipeRawMarkdown.err) reject (`error while processing  ${recipeUrl}`)
+      if (recipeRawMarkdown.err) reject (`error while processing  ${recipeFileName}`)
       const parsedYML= Yaml.parse(<string>recipeRawMarkdown.data.yml)
       resolve(
          {
