@@ -9,9 +9,13 @@ export type ingredientType={
     ingredient: string,
     qty : string |number 
 }
-export type recipeType = {
+export type recipeReference = {
   title:string,
-  link:string,
+  link:string
+}
+export type recipeType = recipeReference & {
+  // title:string,
+  // link:string,
   ingredients:[ingredientType],
   instructions:string
 }
