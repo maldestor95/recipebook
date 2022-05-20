@@ -67,7 +67,9 @@ const  validaterecipe=async function(filename:string):Promise<recipeValidationTy
             reject({err:{filename,yamlvalidation:isYamlValid.err}})
         })
         .catch((err)=>{
-            reject( {err:JSON.stringify(err)})
+            console.log(filename,err);
+            
+            reject( {err:JSON.stringify({err,filename})})
         })
     })
 }
