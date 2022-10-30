@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { validaterecipefolder } from './validaterecipe'
+import { ValidateRecipe } from './validaterecipe'
 import {generateRecipelist} from './recipelist'
 
  /*
  generateRecipelist()
 */
-validaterecipefolder().then(console.log)
+ValidateRecipe.validaterecipefolder("recipe").then(console.log)
 .then(d=>
     generateRecipelist('recipe','recipe/recipelist.yml')
-)
+).catch(err=> console.log)
 //createRecipeArray()

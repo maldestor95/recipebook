@@ -1,6 +1,7 @@
 // generation of  Recipe list
 import { date } from 'joi'
-import { convertMarkdownRecipe, recipeYAMLvalidation, validaterecipefolder } from './validaterecipe'
+import { RecipeUtility /*convertMarkdownRecipe, recipeYAMLvalidation, validaterecipefolder*/
+ } from './validaterecipe'
 import constants from './constants'
 import { Recipe, recipeType } from './recipe'
 import { readFile, readdir, writeFile } from 'fs/promises'
@@ -55,10 +56,10 @@ export const parseRecipe = async function (filename: string): Promise<recipeType
     return new Promise((resolve, reject) => {
         const response = readFile(filename, { encoding: 'utf-8' })
             .then((fileData: string) => {
-                const parsedFile = convertMarkdownRecipe(fileData)
+                const parsedFile = RecipeUtility.extractRecipeFromMarkdown(fileData)
                 if (parsedFile.err) reject({ err: `${filename}:\n${parsedFile.err}` })
 
-                const isYamlValid = recipeYAMLvalidation(parsedFile.data.yml)
+                const isYamlValid = RecipeUtility.recipeYAMLvalidation(parsedFile.data.yml)
                 if (!isYamlValid.err) {
                     const parsedYML = Yaml.parse(<string>parsedFile.data.yml)
                     resolve(
