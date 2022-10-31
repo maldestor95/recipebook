@@ -24,13 +24,15 @@
  *  Generation of the inventory to be parsed by a third party application once deployed to github.
  */
 
-import { ValidateRecipe } from './validaterecipe'
+import { validaterecipefolder } from './validaterecipe'
 import {generateRecipelist} from './recipelist'
+const recipePath="recipe/"
+
  /*
  generateRecipelist()
 */
-ValidateRecipe.validaterecipefolder("recipe").then(console.log)
+validaterecipefolder(recipePath).then(console.log)
 .then(d=>
-    generateRecipelist('recipe','recipe/recipelist.yml')
+    generateRecipelist(recipePath,'recipe/recipelist.yml')
 ).catch(err=> console.log)
 //createRecipeArray()

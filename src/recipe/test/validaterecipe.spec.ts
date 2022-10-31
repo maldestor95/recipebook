@@ -1,9 +1,9 @@
 import {
 	assert
 } from "chai"
-import { RecipeUtility, ValidateRecipe as valid, ValidateRecipe } from '../validaterecipe'
+import { RecipeUtility, validaterecipe, validaterecipefolder } from '../validaterecipe'
 import * as Yaml from 'yaml'
-const recipePath = "recipe"
+import {recipePath} from "../constants"
 
 
 // createRecipeArray()
@@ -79,8 +79,7 @@ describe("ValidateRecipe", function () {
 	})
 	describe("validate single recipe", () => {
 		it("shall pass single validation", done => {
-			// valid.validaterecipe('recipe/baraupetitlegume.md')
-			ValidateRecipe.validaterecipe('recipe/baraupetitlegume.md')
+			validaterecipe('recipe/baraupetitlegume.md')
 				.then(res => {
 					assert(res.err === null)
 					done()
@@ -92,7 +91,7 @@ describe("ValidateRecipe", function () {
 				})
 		})
 		it("shall fail ", done => {
-			valid.validaterecipe('src/recipe/test/badformat.md')
+			validaterecipe('src/recipe/test/badformat.md')
 				.then(res => {
 					assert(res === null)
 					done()
@@ -107,7 +106,7 @@ describe("ValidateRecipe", function () {
 	describe("validate recipe folder", function () {
 
 		it("validaterecipefolder good path", done => {
-			ValidateRecipe.validaterecipefolder(recipePath)
+			validaterecipefolder(recipePath)
 				.then((result) => {
 					assert(result === true, "Folder not validated")
 					done()
@@ -118,7 +117,7 @@ describe("ValidateRecipe", function () {
 				})
 		})
 		it("validaterecipefolder bad path", done => {
-			ValidateRecipe.validaterecipefolder("Bad Path")
+			validaterecipefolder("Bad Path")
 				.then((result) => {
 					assert(result === false, "Folder not validated")
 					done()
