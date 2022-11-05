@@ -25,7 +25,7 @@
  */
 
 import { validaterecipefolder } from './validaterecipe'
-import {generateRecipelist} from './recipelist'
+import {generateRecipelistFile} from './recipelist'
 const recipePath="recipe/"
 
  /*
@@ -33,6 +33,6 @@ const recipePath="recipe/"
 */
 validaterecipefolder(recipePath).then(console.log)
 .then(d=>
-    generateRecipelist(recipePath,'recipe/recipelist.yml')
+    generateRecipelistFile(recipePath,'recipe/recipelist.yml')
 ).catch(err=> console.log)
 //createRecipeArray()

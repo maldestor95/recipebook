@@ -1,7 +1,8 @@
 import {
 	assert
 } from "chai"
-import { RecipeUtility, validaterecipe, validaterecipefolder } from '../validaterecipe'
+import {  validaterecipe, validaterecipefolder } from '../validaterecipe'
+import {RecipeUtility} from '../RecipeUtility'
 import * as Yaml from 'yaml'
 import {recipePath} from "../constants"
 

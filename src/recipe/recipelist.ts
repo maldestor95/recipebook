@@ -1,7 +1,6 @@
 // generation of  Recipe list
 import { date } from 'joi'
-import { RecipeUtility /*convertMarkdownRecipe, recipeYAMLvalidation, validaterecipefolder*/
- } from './validaterecipe'
+import { RecipeUtility /*convertMarkdownRecipe, recipeYAMLvalidation, validaterecipefolder*/ } from "./RecipeUtility"
 import constants from './constants'
 import { Recipe, recipeType } from './recipe'
 import { readFile, readdir, writeFile } from 'fs/promises'
@@ -29,7 +28,13 @@ function parseDirectoryPromise(dirName:string, dirFiles: string[]): Array<Promis
     })
     return analyseFiles
 }
-export const generateRecipelist = async function (dirName: string,destPath:string): Promise<resultType> {
+/**
+ * 
+ * @param dirName 
+ * @param destPath 
+ * @returns 
+ */
+export const generateRecipelistFile = async function (dirName: string,destPath:string): Promise<resultType> {
     // TODO parse all files
     // extract data
     // build file
