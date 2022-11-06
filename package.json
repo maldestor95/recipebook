@@ -1,7 +1,7 @@
 {
   "name": "recipebook",
-  "version": "1.0.0",
-  "description": "Recipe folder with desciption and ingredients list",
+  "version": "1.0.1",
+  "description": "Recipes folder with validation tool",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node ./build/recipe/app.js",

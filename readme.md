@@ -4,10 +4,16 @@ This repository contains Recipes for maldestor95
 Recipes a stored in the `recipe folder` while a set of utilities are located in the `src folder`
 
 
-# Utilities
+# How to use
 
-*  `npm run start` will  launch the standard application and perform the validation of all the recipes, ensuring they are matching the recipeFormat described below.
+## Build & validate the recipes
 
+ `npm run start` will  launch the standard application and perform the validation of all the recipes, ensuring they are matching the recipeFormat described below.
+
+# Create a recipe
+* create a `recipe.yml`file in the folder `recipe`
+* use snippets `new-recipe`or `ingredient-new` to ease the edit of the recipe.
+  
 # Recipe Format
 
 ## Header  YML: 
