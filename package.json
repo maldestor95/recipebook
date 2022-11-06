@@ -4,9 +4,9 @@
   "description": "Recipe folder with desciption and ingredients list",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./build/validaterecipe/app.js",
+    "start": "npm run build && node ./build/recipe/app.js",
     "lint": "eslint . --ext .ts",
-    "start:dev": "nodemon ./src/validaterecipe/app.ts",
+    "start:dev": "nodemon ./src/recipe/app.ts",
     "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
     "test": "mocha -r mocha.env.js -r ts-node/register ",
     "test:coverage": "nyc --reporter=text mocha -r mocha.env.js -r ts-node/register",

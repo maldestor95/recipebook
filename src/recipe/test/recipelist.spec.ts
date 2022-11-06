@@ -3,7 +3,7 @@ import {
 } from "chai"
 
 import {
-    generateRecipelist,
+    generateRecipelistFile,
     parseRecipe 
 } from '../recipelist'
 

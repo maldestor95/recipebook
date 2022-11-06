@@ -1,7 +1,7 @@
 import {recipeReference, recipeType} from './recipe'
 import * as Yaml from 'yaml'
 import axios from "axios" 
-import { convertMarkdownRecipe } from './validaterecipe'
+import { RecipeUtility } from "./RecipeUtility"
 import {recipePathUrl} from "./constants"
 /**
  * Get recipe List from published repository 
@@ -27,7 +27,7 @@ export async function getRecipeFromURL(recipeFileName: string):Promise<recipeTyp
    return new Promise((resolve, reject) => {
       if(result.status!=200) reject(`could not access ${recipeFileName}`)
 
-      const recipeRawMarkdown=convertMarkdownRecipe(result.data)
+      const recipeRawMarkdown=RecipeUtility.extractRecipeFromMarkdown(result.data)
       if (recipeRawMarkdown.err) reject (`error while processing  ${recipeFileName}`)
       const parsedYML= Yaml.parse(<string>recipeRawMarkdown.data.yml)
       resolve(

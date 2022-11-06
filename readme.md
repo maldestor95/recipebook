@@ -1,11 +1,16 @@
-This repository contains recipe for maldestor95
+This repository contains Recipes for maldestor95
 
 
-A specific format is used for the recipe
+Recipes a stored in the `recipe folder` while a set of utilities are located in the `src folder`
 
-# Format
 
-Header  YML: 
+# Utilities
+
+*  `npm run start` will  launch the standard application and perform the validation of all the recipes, ensuring they are matching the recipeFormat described below.
+
+# Recipe Format
+
+## Header  YML: 
 
 ```
   ---
@@ -15,18 +20,16 @@ Header  YML:
     qty: 800g
   ...
 ```
-Body in Markdown
+## Body in Markdown
 
 ```
 Préparer le bar : le vider, l'écailler, couper la tête.
 
 etc
 ```
-# Organisation du dépot 
-
-* readme.md => this file
-* recipe/recipelist.yml => recipelist that get updated at each commit
-* recipe/recipename.md =>  
-
+ 
+# Development
+Fairly common scripts have been developped for this repository:
+* `npm run start`to launch the standard application,
 
 
