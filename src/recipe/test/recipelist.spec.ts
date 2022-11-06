@@ -3,11 +3,9 @@ import {
 } from "chai"
 
 import {
-    generateRecipelist,
+    generateRecipelistFile,
     parseRecipe 
 } from '../recipelist'
-
-
 
 
 describe("RecipeList", function () {
@@ -25,14 +23,4 @@ describe("RecipeList", function () {
                 done()
             })
     })
-    // it("createRecipeArray", done => {
-    //     generateRecipelist('recipe','src/test/list.yml')
-    //     .then(res=>{
-    //         done()
-    //     } )
-    //     .catch(err=>{
-    //         console.log(err); done()
-    //     })
-        
-    // })
 })
