@@ -25,14 +25,14 @@
  */
 
 import { validaterecipefolder } from './validaterecipe'
-import {generateRecipelistFile} from './recipelist'
-const recipePath="recipe/"
+import { generateRecipelistFile } from './recipelist'
+const recipePath = "recipe/"
 
- /*
- generateRecipelist()
+/*
+generateRecipelist()
 */
-validaterecipefolder(recipePath).then(console.log)
-.then(d=>
-    generateRecipelistFile(recipePath,'recipe/recipelist.yml')
-).catch(err=> console.log)
+validaterecipefolder(recipePath).then(msg => { console.log(`is validation successfull? ${msg}`) })
+    .then(d =>
+        generateRecipelistFile(recipePath, 'recipe/recipelist.yml')
+    ).catch(err => console.log)
 //createRecipeArray()
