@@ -4,7 +4,7 @@
   "description": "Recipes folder with validation tool",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./build/recipe/app.js",
+    "validate": "npm run build && node ./build/recipe/app.js",
     "cli": "ts-node src/cli.ts",
     "lint": "eslint . --ext .ts",
     "start:dev": "nodemon ./src/recipe/app.ts",
