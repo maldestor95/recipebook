@@ -16,34 +16,35 @@ type validateRecipeOption = {
     yml: boolean,
     md: boolean,
 }
-export async function validaterecipefolder (recipePath: string): Promise<boolean> {
-        let validaterecipePromise: Array<Promise<recipeValidationType>> = []
-        if (!existsSync(recipePath)) { return false }
-        await readdir(recipePath,{withFileTypes:true})
+export async function validaterecipefolder(recipePath: string): Promise<boolean> {
+    let validaterecipePromise: Array<Promise<recipeValidationType>> = []
+    if (!existsSync(recipePath)) { return false }
+    await readdir(recipePath, { withFileTypes: true })
         .then(direntItem => {
-            const filenames= direntItem.filter(dItem=>dItem.isFile)
+            const filenames = direntItem.filter(dItem => dItem.isFile)
             for (let filename of filenames) {
-                if (filename.name!='recipelist.yml')
-                validaterecipePromise.push(validaterecipe(`${recipePath}${filename.name}`))
+                if (filename.name != 'recipelist.yml')
+                    validaterecipePromise.push(validaterecipe(`${recipePath}${filename.name}`))
             }
         })
         .catch(err => {
-            throw(err)
+            throw (err)
         })
-        
-        let conclusion=false
-    
-        await Promise.all(validaterecipePromise)
-        .then(validate=>{conclusion=true})
-        .catch((err=>{ console.log(err)
-            conclusion= false
+
+    let conclusion = false
+
+    await Promise.all(validaterecipePromise)
+        .then(validate => { conclusion = true })
+        .catch((err => {
+            console.log(err)
+            conclusion = false
         }))
 
-        return true
-    }
-export async function validaterecipe (filename: string): Promise<recipeValidationType> {
+    return conclusion
+}
+export async function validaterecipe(filename: string): Promise<recipeValidationType> {
     return new Promise((resolve, reject) => {
-        const response = readFile(filename, { encoding: 'utf-8' })
+        readFile(filename, { encoding: 'utf-8' })
             .then((fileData: string) => {
                 const parsedFile = RecipeUtility.extractRecipeFromMarkdown(fileData)
                 if (parsedFile.err) reject({ err: `${filename}:\n${parsedFile.err}` })
@@ -104,20 +105,4 @@ export const createRecipeArray = async function (): Promise<Array<{ title: strin
 
     return conclusion
 }
-/*export const generateRecipelist=async function():Promise<resultType> {
-    return new Promise((resolve, reject) => {
-        validaterecipefolder()
-        .then((status)=>{
-            if (status==false) reject ({err:"validation of recipes showed error"})// create table while parsing file
-        })
-        .then((datatable)=>{
-            //  generate file
-            resolve({data:"ok",err:null})
-        })
-        .catch((err:resultType)=>{
-            reject(err)
-        })
-    });
-}
-*/
 

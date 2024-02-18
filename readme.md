@@ -11,9 +11,11 @@ Recipes a stored in the `recipe folder` while a set of utilities are located in 
  `npm run start` will  launch the standard application and perform the validation of all the recipes, ensuring they are matching the recipeFormat described below.
 
 # Create a recipe
-* create a `recipe.yml`file in the folder `recipe`
-* use snippets `new-recipe`or `ingredient-new` to ease the edit of the recipe.
-  
+Below are the steps to create and publish a new recipe.
+* `npm run cli`
+  * use snippets `new-recipe`or `ingredient-new` to ease the edit of the recipe.
+* `npm run validate` to perform the validation of all the recipes _, ensuring they are matching the recipeFormat described below._
+*  `commit on master` to make the recipe available.
 # Recipe Format
 
 ## Header  YML: 
@@ -33,9 +35,3 @@ Préparer le bar : le vider, l'écailler, couper la tête.
 
 etc
 ```
- 
-# Development
-Fairly common scripts have been developped for this repository:
-* `npm run start`to launch the standard application,
-
-
