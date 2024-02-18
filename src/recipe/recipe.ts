@@ -1,3 +1,4 @@
+// import { recipeType } from './recipe';
 import YAML from 'yaml';
 
 export type ingredientType = {
@@ -42,3 +43,5 @@ export class Recipe {
     this.filename = markdownFileName
   }
 }
+
+export default { Recipe, Ingredients }

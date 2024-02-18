@@ -3,18 +3,18 @@
   "version": "1.0.1",
   "description": "Recipes folder with validation tool",
   "main": "index.js",
-  
   "scripts": {
     "start": "npm run build && node ./build/recipe/app.js",
+    "cli": "ts-node src/cli.ts",
     "lint": "eslint . --ext .ts",
     "start:dev": "nodemon ./src/recipe/app.ts",
     "build": "rimraf ./build tsconfig.tsbuildinfo && tsc",
+    "build2": "tsc",
     "test": "mocha -r mocha.env.js -r ts-node/register ",
     "test:coverage": "nyc --reporter=text mocha -r mocha.env.js -r ts-node/register",
     "test:utils": "mocha --config utils/__tests__/.mocharc.js -r mocha.env.js",
     "test:dev": "mocha -r mocha.env.js -r ts-node/register --watch --colors",
-    "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors --watch",
-    "cli": "ts-node src/cli.ts"
+    "test:ts": "mocha -r mocha.env.js -r ts-node/register src/**/*.spec.ts --colors --watch"
   },
   "repository": {
     "type": "git",
@@ -52,7 +52,7 @@
     "rimraf": "^3.0.2",
     "sinon": "^9.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "^4.0.2"
+    "typescript": "^5.3.3"
   },
   "husky": {
     "hooks": {
