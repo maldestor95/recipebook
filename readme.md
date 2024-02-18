@@ -35,3 +35,7 @@ Préparer le bar : le vider, l'écailler, couper la tête.
 
 etc
 ```
+
+# Revision
+* 1.1.0 creation of a CLI to initiate recipe creation via templating `npm run cli`
+* 1.0.1 Validation capability to ensure accurate formatting of the recipe
